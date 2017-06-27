@@ -1,0 +1,52 @@
+//所有项目配置
+allprojects {
+    //Add configuration here
+    group 'com.anthony'
+    version '1.0-SNAPSHOT'
+
+    apply plugin: 'java'
+
+
+    sourceCompatibility = 1.8
+
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        testCompile group: 'junit', name: 'junit', version: '4.12'
+    }
+
+}
+
+//client和server的配置
+configure(subprojects.findAll { it.name.contains('client') || it.name.contains('server') })
+        {
+            apply plugin: 'application'
+
+            dependencies {
+                compile project(':core')
+            }
+        }
+
+//所有子项目配置
+subprojects {
+
+}
+
+//某个子项目的配置
+project(':core') {
+//也可以放在子项目的build.gradle中
+}
+
+project(':server') {
+//也可以放在子项目的build.gradle中
+    mainClassName = 'com.anthony.Server'
+//    jar.manifest.attributes.'Main-Class' = mainClassName
+}
+
+project(':client') {
+//也可以放在子项目的build.gradle中
+    mainClassName = 'com.anthony.Client'
+//    jar.manifest.attributes.'Main-Class' = mainClassName
+}
