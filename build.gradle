@@ -12,13 +12,19 @@ allprojects {
     repositories {
         mavenCentral()
     }
-
+    [compileJava, compileTestJava, javadoc]*.options*.encoding = 'UTF-8'
     dependencies {
         compile group: 'ch.qos.logback', name: 'logback-core', version: '1.2.3'
         compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.25'
 
         compile group: 'ch.qos.logback', name: 'logback-classic', version: '1.2.3'
         testCompile group: 'junit', name: 'junit', version: '4.12'
+    }
+
+    jar {
+        from {
+            configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+        }
     }
 
 }
@@ -45,12 +51,12 @@ project(':core') {
 
 project(':server') {
 //也可以放在子项目的build.gradle中
-    mainClassName = 'com.anthony.Server'
-//    jar.manifest.attributes.'Main-Class' = mainClassName
+    mainClassName = 'com.anthony.chatapp.server.Server'
+    jar.manifest.attributes.'Main-Class' = mainClassName
 }
 
 project(':client') {
 //也可以放在子项目的build.gradle中
-    mainClassName = 'com.anthony.Client'
-//    jar.manifest.attributes.'Main-Class' = mainClassName
+    mainClassName = 'com.anthony.chatapp.client.Client'
+    jar.manifest.attributes.'Main-Class' = mainClassName
 }

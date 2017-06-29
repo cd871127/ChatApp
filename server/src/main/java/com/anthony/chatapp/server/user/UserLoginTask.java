@@ -1,28 +1,46 @@
 package com.anthony.chatapp.server.user;
 
+import com.anthony.chatapp.core.protocol.Message;
+import com.anthony.chatapp.core.protocol.TextMessage;
 import com.anthony.chatapp.core.service.Task;
 
+import java.io.DataInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.Socket;
-import java.util.Scanner;
 
 /**
  * Created by chend on 2017/6/28.
  */
 public class UserLoginTask implements Task {
-    @Override
-    public void execute(Socket socket) {
-        UserContainer container=UserContainer.getInstance();
-        try {
-            InputStream in=socket.getInputStream();
-            Scanner scanner=new Scanner(in);
-            while (scanner.hasNext())
-                System.out.println(scanner.next());
+    private Socket socket;
 
+    public UserLoginTask(Socket socket) {
+        this.socket = socket;
+    }
+
+    private void execute() {
+        UserContainer container = UserContainer.getInstance();
+        try {
+            DataInputStream dataInputStream = new DataInputStream(socket.getInputStream());
+//            ByteBuffer buffer=ByteBuffer.allocate(Message.HEADER_LENGTH);
+            byte[] data = new byte[Message.HEADER_LENGTH];
+            Message message = new TextMessage();
+            dataInputStream.read(data);
+            Message.decodeHeaders(data, message);
+            int length = message.getBodyLength();
+            byte[] body = new byte[length];
+            dataInputStream.read(body);
+            Message.decodeBody(body, message);
+            System.out.println(message);
+            socket.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
 
+    }
+
+    @Override
+    public void run() {
+        execute();
     }
 }
