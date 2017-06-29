@@ -24,10 +24,12 @@ public class UserLoginTask implements Task {
             DataInputStream dataInputStream = new DataInputStream(socket.getInputStream());
 //            ByteBuffer buffer=ByteBuffer.allocate(Message.HEADER_LENGTH);
             byte[] data = new byte[Message.HEADER_LENGTH];
-            Message message = new TextMessage();
+            Message message = new Message();
             dataInputStream.read(data);
             Message.decodeHeaders(data, message);
+            System.out.println(message);
             int length = message.getBodyLength();
+            System.out.println(length);
             byte[] body = new byte[length];
             dataInputStream.read(body);
             Message.decodeBody(body, message);

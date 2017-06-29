@@ -25,7 +25,7 @@ public class Message {
     protected static Charset charset = Charset.forName("UTF-8");
     public static final int HEADER_LENGTH = 256;
 
-    Message() {
+    public Message() {
         headers = new HashMap<>();
     }
 
