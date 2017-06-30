@@ -1,9 +1,15 @@
-package com.anthony.chatapp.core.protocol;
+package com.anthony.chatapp.core.protocol.message;
 
 import com.anthony.chatapp.core.exception.MessageHeaderLengthException;
+import com.anthony.chatapp.core.protocol.constant.Header;
+import com.anthony.chatapp.core.protocol.constant.MessageTypes;
+import com.anthony.chatapp.core.protocol.constant.Operations;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by chend on 2017/6/29.
@@ -20,77 +26,75 @@ import java.util.HashMap;
  */
 public class Message {
 
-    private HashMap<String, String> headers;
+    private Map<String, String> headers;
     private byte[] body;
     protected static Charset charset = Charset.forName("UTF-8");
     public static final int HEADER_LENGTH = 256;
+
 
     public Message() {
         headers = new HashMap<>();
     }
 
-    public void addHeader(HeaderType type, String value) {
-        headers.put(type.toString(), value);
+    public void addHeader(String key, String value) {
+        headers.put(key, value);
     }
 
-    public void addHeader(HeaderType type, MessageTypes messageTypes) {
-        headers.put(type.toString(), messageTypes.toString());
-    }
-
-    public void addHeader(HeaderType type, Operations operation) {
-        headers.put(type.toString(), operation.toString());
-    }
-
-    public void setHeaders(HashMap<String, String> headers) {
+    public void setHeaders(Map<String, String> headers) {
         this.headers = headers;
     }
 
-    public void removeHeader(HeaderType type) {
-        headers.remove(type.toString());
+    public void removeHeader(String key) {
+        headers.remove(key);
     }
 
     public void setFrom(String src) {
-        addHeader(HeaderType.FROM, src);
+        addHeader(Header.FROM, src);
     }
 
     public void setTo(String desc) {
-        addHeader(HeaderType.TO, desc);
+        addHeader(Header.TO, desc);
     }
-//    public void appendBody(String content) {
-//        byte[] bytes = content.getBytes(charset);
-//        for (byte b : bytes) {
-//            body.add(b);
-//        }
-//    }
+
+
+    public String getMessageType() {
+        return headers.get(Header.TYPE);
+    }
+
+    public Operations getOperation()
+    {
+        return null;
+    }
+
 
     public void setBody(byte[] bytes) {
         this.body = bytes;
-        addHeader(HeaderType.LENGTH, String.valueOf(bytes.length));
+        addHeader(Header.LENGTH, String.valueOf(bytes==null?0:bytes.length));
     }
 
-    public int getBodyLength()
-    {
-        return Integer.valueOf(headers.get(HeaderType.LENGTH.toString()));
+    public int getBodyLength() {
+        return Integer.valueOf(headers.get(Header.LENGTH));
     }
 
     public byte[] encode() throws MessageHeaderLengthException {
         StringBuilder stringBuilder = new StringBuilder();
         headers.forEach((k, v) -> stringBuilder.append(k).append(": ").append(v).append("\n"));
-        byte[] data = new byte[HEADER_LENGTH + (body == null ? 0 : body.length)];
+
         byte[] tmp = stringBuilder.toString().getBytes(charset);
         if (tmp.length > HEADER_LENGTH)
             throw new MessageHeaderLengthException("Max length of header is 256 byte, current is " + tmp.length + " bytes.");
+        byte[] data = new byte[HEADER_LENGTH + (body == null ? 0 : body.length)];
         System.arraycopy(tmp, 0, data, 0, tmp.length);
         if (body != null)
             System.arraycopy(body, 0, data, HEADER_LENGTH, body.length);
         return data;
     }
 
-    public static void decodeHeaders(final byte[] data, Message message) {
+    public static Map<String, String> decodeHeaders(final byte[] headerBytes) {
         HashMap<String, String> headers = new HashMap<>();
 
-        byte[] headerBytes = new byte[HEADER_LENGTH];
-        System.arraycopy(data, 0, headerBytes, 0, HEADER_LENGTH);
+//        byte[] headerBytes = new byte[HEADER_LENGTH];
+//        System.arraycopy(data, 0, headerBytes, 0, HEADER_LENGTH);
 
         //消息头变为string
         String headerStr = new String(headerBytes, charset);
@@ -99,25 +103,31 @@ public class Message {
         //convert header to map
         for (String headerLine : headerArray) {
             String[] header = headerLine.split(":");
-            if (HeaderType.contain(header[0])) {
+            if (Header.contain(header[0])) {
                 headers.put(header[0], header[1].trim());
             }
         }
-        message.headers = headers;
+        return headers;
     }
 
     public static void decodeBody(final byte[] data, Message message) {
-        int bodyLength = Integer.valueOf(message.headers.get(HeaderType.LENGTH.toString()));
-        //data copy to body
-        byte[] tmp = new byte[bodyLength];
-        System.arraycopy(data, HEADER_LENGTH, tmp, 0, bodyLength);
-        message.body = tmp;
+
+
     }
 
-    public static Message decode(final byte[] data) {
-        Message message = new TextMessage();
-        decodeHeaders(data, message);
-        decodeBody(data, message);
+    public static Message decode(InputStream in) throws IOException {
+        Message message = new Message();
+        byte[] header = new byte[HEADER_LENGTH];
+        int readCount = in.read(header, 0, HEADER_LENGTH);
+        if (HEADER_LENGTH != readCount)
+            throw new IOException();
+        message.headers = decodeHeaders(header);
+
+        int bodyLength = Integer.valueOf(message.headers.get(Header.LENGTH));
+        message.body = new byte[bodyLength];
+        int readBodyLength = in.read(message.body, 0, bodyLength);
+        if (readBodyLength != bodyLength)
+            throw new IOException();
         return message;
     }
 
@@ -126,7 +136,7 @@ public class Message {
         StringBuilder stringBuilder = new StringBuilder();
         headers.forEach((k, v) -> stringBuilder.append(k).append(": ").append(v).append("\n"));
         stringBuilder.append("\n").append("body length: ").append(body == null ? 0 : body.length).append("\n");
-        if (MessageTypes.TEXT.toString().equals(headers.get(HeaderType.TYPE.toString())))
+        if (MessageTypes.TEXT.toString().equals(headers.get(Header.TYPE)))
             stringBuilder.append("body: \n").append(new String(body, charset));
         return stringBuilder.toString();
     }
