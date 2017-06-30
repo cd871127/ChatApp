@@ -1,7 +1,6 @@
 package com.anthony.chatapp.server.user;
 
 import com.anthony.chatapp.core.protocol.Message;
-import com.anthony.chatapp.core.protocol.TextMessage;
 import com.anthony.chatapp.core.service.Task;
 
 import java.io.DataInputStream;
@@ -23,17 +22,8 @@ public class UserLoginTask implements Task {
         try {
             DataInputStream dataInputStream = new DataInputStream(socket.getInputStream());
 //            ByteBuffer buffer=ByteBuffer.allocate(Message.HEADER_LENGTH);
-            byte[] data = new byte[Message.HEADER_LENGTH];
-            Message message = new Message();
-            dataInputStream.read(data);
-            Message.decodeHeaders(data, message);
-            System.out.println(message);
-            int length = message.getBodyLength();
-            System.out.println(length);
-            byte[] body = new byte[length];
-            dataInputStream.read(body);
-            Message.decodeBody(body, message);
-            System.out.println(message);
+            Message message=parse(dataInputStream);
+
             socket.close();
         } catch (IOException e) {
             e.printStackTrace();
@@ -41,6 +31,17 @@ public class UserLoginTask implements Task {
 
     }
 
+    private Message parse(DataInputStream dataInputStream) throws IOException {
+        byte[] data = new byte[Message.HEADER_LENGTH];
+        Message message = new Message();
+        dataInputStream.read(data, 0, Message.HEADER_LENGTH);
+        Message.decodeHeaders(data, message);
+        int length = message.getBodyLength();
+        byte[] body = new byte[length];
+        dataInputStream.read(body);
+        Message.decodeBody(body, message);
+        return message;
+    }
     @Override
     public void run() {
         execute();
