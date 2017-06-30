@@ -22,10 +22,13 @@ public class Server {
 //        userLoginService.start();
         logger.debug("app start");
         ConnectionService cs = new ConnectionService();
-        MessageDispatcherService mds=new MessageDispatcherService();
-        cs.mds=mds;
+        MessageReceiveService mrs=new MessageReceiveService();
+        MessageDispatchService mds=new MessageDispatchService();
+        cs.mrs=mrs;
+        mrs.mds=mds;
         ExecutorService executorService = Executors.newFixedThreadPool(3);
         executorService.submit(cs);
+        executorService.submit(mrs);
         executorService.submit(mds);
         executorService.shutdown();
 //        logger.debug("executorService shutdown ");

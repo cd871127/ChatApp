@@ -1,15 +1,10 @@
 package com.anthony.chatapp.core.protocol.message;
 
-import com.anthony.chatapp.core.exception.MessageHeaderLengthException;
-import com.anthony.chatapp.core.protocol.constant.Header;
-import com.anthony.chatapp.core.protocol.constant.MessageTypes;
-import com.anthony.chatapp.core.protocol.constant.Operations;
+import com.alibaba.fastjson.JSON;
+import com.anthony.chatapp.core.system.Parameters;
 
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.nio.charset.Charset;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Created by chend on 2017/6/29.
@@ -24,121 +19,212 @@ import java.util.Map;
  * <p>
  * body保存消息体
  */
-public class Message {
+public class Message implements Serializable {
 
-    private Map<String, String> headers;
-    private byte[] body;
-    protected static Charset charset = Charset.forName("UTF-8");
-    public static final int HEADER_LENGTH = 256;
+    private static final long serialVersionUID = 1L;
 
+    public static final int HEADER_BYTE_COUNT = 4;
 
-    public Message() {
-        headers = new HashMap<>();
-    }
-
-    public void addHeader(String key, String value) {
-        headers.put(key, value);
-    }
-
-    public void setHeaders(Map<String, String> headers) {
-        this.headers = headers;
-    }
-
-    public void removeHeader(String key) {
-        headers.remove(key);
-    }
-
-    public void setFrom(String src) {
-        addHeader(Header.FROM, src);
-    }
-
-    public void setTo(String desc) {
-        addHeader(Header.TO, desc);
-    }
-
-
-    public String getMessageType() {
-        return headers.get(Header.TYPE);
-    }
-
-    public Operations getOperation()
-    {
-        return null;
-    }
-
-
-    public void setBody(byte[] bytes) {
-        this.body = bytes;
-        addHeader(Header.LENGTH, String.valueOf(bytes==null?0:bytes.length));
-    }
-
-    public int getBodyLength() {
-        return Integer.valueOf(headers.get(Header.LENGTH));
-    }
-
-    public byte[] encode() throws MessageHeaderLengthException {
-        StringBuilder stringBuilder = new StringBuilder();
-        headers.forEach((k, v) -> stringBuilder.append(k).append(": ").append(v).append("\n"));
-
-        byte[] tmp = stringBuilder.toString().getBytes(charset);
-        if (tmp.length > HEADER_LENGTH)
-            throw new MessageHeaderLengthException("Max length of header is 256 byte, current is " + tmp.length + " bytes.");
-        byte[] data = new byte[HEADER_LENGTH + (body == null ? 0 : body.length)];
-        System.arraycopy(tmp, 0, data, 0, tmp.length);
-        if (body != null)
-            System.arraycopy(body, 0, data, HEADER_LENGTH, body.length);
-        return data;
-    }
-
-    public static Map<String, String> decodeHeaders(final byte[] headerBytes) {
-        HashMap<String, String> headers = new HashMap<>();
-
-//        byte[] headerBytes = new byte[HEADER_LENGTH];
-//        System.arraycopy(data, 0, headerBytes, 0, HEADER_LENGTH);
-
-        //消息头变为string
-        String headerStr = new String(headerBytes, charset);
-        String[] headerArray = headerStr.split("\n");
-
-        //convert header to map
-        for (String headerLine : headerArray) {
-            String[] header = headerLine.split(":");
-            if (Header.contain(header[0])) {
-                headers.put(header[0], header[1].trim());
-            }
-        }
-        return headers;
-    }
-
-    public static void decodeBody(final byte[] data, Message message) {
-
-
-    }
-
-    public static Message decode(InputStream in) throws IOException {
-        Message message = new Message();
-        byte[] header = new byte[HEADER_LENGTH];
-        int readCount = in.read(header, 0, HEADER_LENGTH);
-        if (HEADER_LENGTH != readCount)
-            throw new IOException();
-        message.headers = decodeHeaders(header);
-
-        int bodyLength = Integer.valueOf(message.headers.get(Header.LENGTH));
-        message.body = new byte[bodyLength];
-        int readBodyLength = in.read(message.body, 0, bodyLength);
-        if (readBodyLength != bodyLength)
-            throw new IOException();
-        return message;
-    }
+    private static final String sender = Parameters.SENDER;
+    private String receiver;
+    private String timestamp;
+    private MessageTypes type;
+    private String text;
+    private String fileName;
+    private FileTypes fileType;
 
     @Override
     public String toString() {
-        StringBuilder stringBuilder = new StringBuilder();
-        headers.forEach((k, v) -> stringBuilder.append(k).append(": ").append(v).append("\n"));
-        stringBuilder.append("\n").append("body length: ").append(body == null ? 0 : body.length).append("\n");
-        if (MessageTypes.TEXT.toString().equals(headers.get(Header.TYPE)))
-            stringBuilder.append("body: \n").append(new String(body, charset));
-        return stringBuilder.toString();
+        return "Message{" +
+                "receiver='" + receiver + '\'' +
+                ", timestamp='" + timestamp + '\'' +
+                ", type=" + type +
+                ", text='" + text + '\'' +
+                ", fileName='" + fileName + '\'' +
+                ", fileType=" + fileType +
+                '}';
+    }
+
+    private Message() {
+    }
+
+    private Message(MessageBuilder builder) {
+        receiver = builder.receiver;
+        timestamp = builder.timestamp;
+        type = builder.type;
+        text = builder.text;
+        fileName = builder.fileName;
+        fileType = builder.fileType;
+    }
+
+    protected static Charset charset = Charset.forName("UTF-8");
+
+    public byte[] encode() {
+        byte[] jsonByte = JSON.toJSONString(this).getBytes(charset);
+        byte[] data = new byte[HEADER_BYTE_COUNT + jsonByte.length];
+        System.arraycopy(jsonByte, 0, data, HEADER_BYTE_COUNT, jsonByte.length);
+
+        try {
+            System.arraycopy(intToByteArray(jsonByte.length), 0, data, 0, HEADER_BYTE_COUNT);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return data;
+    }
+
+    public static Message decode(byte[] data) {
+        return JSON.parseObject(data, Message.class);
+    }
+
+    private byte[] intToByteArray(int i) throws IOException {
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        DataOutputStream dataOutputStream = new DataOutputStream(byteArrayOutputStream);
+        try {
+            dataOutputStream.writeInt(i);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        byte[] buf = byteArrayOutputStream.toByteArray();
+        dataOutputStream.close();
+        byteArrayOutputStream.close();
+        return buf;
+    }
+
+    public static int getMessageLength(byte[] data) {
+        ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(data);
+        DataInputStream dataInputStream = new DataInputStream(byteArrayInputStream);
+        int res = -1;
+        try {
+            res = dataInputStream.readInt();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return res;
+    }
+
+    public String getText() {
+        return text;
+    }
+
+    public void setText(String text) {
+        this.text = text;
+    }
+
+    public String getFileName() {
+        return fileName;
+    }
+
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
+    }
+
+    public FileTypes getFileType() {
+        return fileType;
+    }
+
+    public void setFileType(FileTypes fileType) {
+        this.fileType = fileType;
+    }
+
+    public String getSender() {
+        return sender;
+    }
+
+    public String getReceiver() {
+        return receiver;
+    }
+
+    public void setReceiver(String receiver) {
+        this.receiver = receiver;
+    }
+
+    public String getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(String timestamp) {
+        this.timestamp = timestamp;
+    }
+
+    public MessageTypes getType() {
+        return type;
+    }
+
+    public void setType(MessageTypes type) {
+        this.type = type;
+    }
+
+    public enum Operations {
+        LOGIN, LOGOUT;
+    }
+
+    public enum MessageTypes {
+        FILE, TEXT, OPERATION
+    }
+
+    public enum FileTypes {
+        VEDIO, IMAGE, AUDIO, NORMAL
+    }
+
+
+    public static class MessageBuilder {
+        private String receiver;
+        private String timestamp;
+        private MessageTypes type;
+        private String text;
+        private String fileName;
+        private FileTypes fileType;
+
+        public MessageBuilder(String receiver, MessageTypes type, String timestamp) {
+            this.receiver = receiver;
+            this.type = type;
+            this.timestamp = timestamp;
+        }
+
+        public MessageBuilder(String receiver, String text, String timestamp) {
+            this(receiver, MessageTypes.TEXT, timestamp);
+            this.text = text;
+        }
+
+        public MessageBuilder(String receiver, String fileName, FileTypes fileType, String timestamp) {
+            this(receiver, MessageTypes.FILE, timestamp);
+            this.fileName = fileName;
+            this.fileType = fileType;
+        }
+
+        public MessageBuilder text(String text) {
+            this.text = text;
+            return this;
+        }
+
+        public MessageBuilder fileName(String fileName) {
+            this.fileName = fileName;
+            return this;
+        }
+
+        public MessageBuilder fileType(FileTypes fileType) {
+            this.fileType = fileType;
+            return this;
+        }
+
+        public MessageBuilder receiver(String receiver) {
+            this.receiver = receiver;
+            return this;
+        }
+
+        public MessageBuilder timestamp(String timestamp) {
+            this.timestamp = timestamp;
+            return this;
+        }
+
+        public MessageBuilder type(MessageTypes type) {
+            this.type = type;
+            return this;
+        }
+
+        public Message build() {
+            return new Message(this);
+        }
     }
 
 }

@@ -18,21 +18,21 @@ public class UserLoginTask implements Task {
     }
 
     private void execute() {
-        UserContainer container = UserContainer.getInstance();
-        try {
-//            DataInputStream dataInputStream = new DataInputStream(socket.getInputStream());
-//            Message message=parse(dataInputStream);
-            Message message;
-            do {
-                message = Message.decode(socket.getInputStream());
-                System.out.println(message);
-            }while (true);
-
-
-//            socket.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+//        UserContainer container = UserContainer.getInstance();
+//        try {
+////            DataInputStream dataInputStream = new DataInputStream(socket.getInputStream());
+////            Message message=parse(dataInputStream);
+//            Message message;
+//            do {
+//                message = Message.decode(socket.getInputStream());
+//                System.out.println(message);
+//            }while (true);
+//
+//
+////            socket.close();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
 
     }
 
@@ -44,15 +44,16 @@ public class UserLoginTask implements Task {
     }
 
     private Message parse(DataInputStream dataInputStream) throws IOException {
-        byte[] data = new byte[Message.HEADER_LENGTH];
-        Message message = new Message();
-        dataInputStream.read(data, 0, Message.HEADER_LENGTH);
-//        Message.decodeHeaders(data, message);
-        int length = message.getBodyLength();
-        byte[] body = new byte[length];
-        dataInputStream.read(body);
-//        Message.decodeBody(body, message);
-        return message;
+//        byte[] data = new byte[Message.HEADER_LENGTH];
+//        Message message = new Message();
+//        dataInputStream.read(data, 0, Message.HEADER_LENGTH);
+////        Message.decodeHeaders(data, message);
+//        int length = message.getBodyLength();
+//        byte[] body = new byte[length];
+//        dataInputStream.read(body);
+////        Message.decodeBody(body, message);
+//        return message;
+        return null;
     }
 
     @Override

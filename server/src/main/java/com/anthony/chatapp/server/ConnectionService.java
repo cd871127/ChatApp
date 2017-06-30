@@ -15,16 +15,12 @@ import java.nio.channels.SocketChannel;
 public class ConnectionService implements Runnable {
     private Logger logger = LoggerFactory.getLogger(getClass());
     private ServerSocketChannel serverSocketChannel;
-    public MessageDispatcherService mds;
+    public MessageReceiveService mrs;
 
     public ConnectionService() throws IOException {
         serverSocketChannel = ServerSocketChannel.open();
-//        selector = Selector.open();
-//        serverSocketChannel.configureBlocking(false);
         serverSocketChannel.socket().bind(new InetSocketAddress(Const.USER_LOGIN_PORT));
-//        serverSocketChannel.register(selector, SelectionKey.OP_ACCEPT);
     }
-
 
     @Override
     public void run() {
@@ -33,7 +29,7 @@ public class ConnectionService implements Runnable {
             while (!Const.isShutdown) {
                 socketChannel = serverSocketChannel.accept();
                 logger.debug("new connection");
-                mds.addChannel(socketChannel);
+                mrs.addChannel(socketChannel);
                 logger.debug("new connection2");
             }
         } catch (IOException e) {
