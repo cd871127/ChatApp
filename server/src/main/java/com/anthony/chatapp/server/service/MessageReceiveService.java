@@ -1,7 +1,7 @@
-package com.anthony.chatapp.server;
+package com.anthony.chatapp.server.service;
 
 import com.anthony.chatapp.core.Const;
-import com.anthony.chatapp.core.protocol.processor.handler.MessageReceiver;
+import com.anthony.chatapp.server.receiver.MessageReceiver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -14,21 +14,36 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.locks.ReentrantLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
  * Created by chend on 2017/6/30.
  */
 public class MessageReceiveService implements Runnable {
-    private Logger logger = LoggerFactory.getLogger(getClass());
-    private Map<String, SocketChannel> clients = new HashMap<>();
+    private static Logger logger = LoggerFactory.getLogger(MessageReceiveService.class);
+    private Map<String, MessageReceiver> clients = new HashMap<>();
     private Selector selector;
-    private ReentrantLock lock = new ReentrantLock();
+    private ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
     private ExecutorService executorService = Executors.newFixedThreadPool(2);
-    public MessageDispatchService mds;
+    private MessageDispatchService mds;
 
-    public MessageReceiveService() throws IOException {
+    private static MessageReceiveService instance = null;
+
+    private MessageReceiveService() throws IOException {
         selector = Selector.open();
+        mds = MessageDispatchService.getInstance();
+    }
+
+    public static MessageReceiveService getInstance() {
+        if (null == instance) {
+            try {
+                instance = new MessageReceiveService();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            logger.debug("MessageReceiveService created");
+        }
+        return instance;
     }
 
     public void addChannel(SocketChannel channel) {
@@ -37,10 +52,10 @@ public class MessageReceiveService implements Runnable {
             channel.configureBlocking(false);
             if (channel.isConnectionPending())
                 channel.finishConnect();
-            lock.lock();
+            lock.writeLock().lock();
             selector.wakeup();
             channel.register(selector, SelectionKey.OP_READ);
-            lock.unlock();
+            lock.writeLock().unlock();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -50,15 +65,15 @@ public class MessageReceiveService implements Runnable {
     public void run() {
         try {
             while (!Const.isShutdown) {
-                if (lock.isLocked())
+                if (lock.isWriteLocked())
                     continue;
                 selector.select();
                 Iterator<SelectionKey> keyIterator = selector.selectedKeys().iterator();
                 while (keyIterator.hasNext()) {
                     SelectionKey key = keyIterator.next();
-                    if (key.isValid() && (key.attachment() == null || !(key.attachment().equals(true)))) {
-                        //添加附件,防止key还没有处理完,状态没更新,启动了新的线程,那么就是两个线程处理同一个key
-                        key.attach(true);
+                    if (key.isReadable()) {
+                        //设置对读没兴趣 以防重复处理key
+                        key.interestOps(key.interestOps() & ~SelectionKey.OP_READ);
                         mds.addMessage(executorService.submit(new MessageReceiver(key)));
                     }
                     keyIterator.remove();
@@ -72,5 +87,11 @@ public class MessageReceiveService implements Runnable {
         executorService.shutdown();
     }
 
+    public void interestOps(SelectionKey key, int ops) {
+        lock.writeLock().lock();
+        selector.wakeup();
+        key.interestOps(ops);
+        lock.writeLock().unlock();
+    }
 
 }

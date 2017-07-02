@@ -1,4 +1,4 @@
-package com.anthony.chatapp.server;
+package com.anthony.chatapp.server.service;
 
 import com.anthony.chatapp.core.Const;
 import org.slf4j.Logger;
@@ -15,11 +15,13 @@ import java.nio.channels.SocketChannel;
 public class ConnectionService implements Runnable {
     private Logger logger = LoggerFactory.getLogger(getClass());
     private ServerSocketChannel serverSocketChannel;
-    public MessageReceiveService mrs;
+    private MessageReceiveService mrs;
 
     public ConnectionService() throws IOException {
         serverSocketChannel = ServerSocketChannel.open();
         serverSocketChannel.socket().bind(new InetSocketAddress(Const.USER_LOGIN_PORT));
+        mrs = MessageReceiveService.getInstance();
+        logger.debug("ConnectionService created");
     }
 
     @Override
@@ -28,9 +30,8 @@ public class ConnectionService implements Runnable {
         try {
             while (!Const.isShutdown) {
                 socketChannel = serverSocketChannel.accept();
-                logger.debug("new connection");
+                logger.info("new connection: " + socketChannel.getRemoteAddress().toString());
                 mrs.addChannel(socketChannel);
-                logger.debug("new connection2");
             }
         } catch (IOException e) {
             e.printStackTrace();

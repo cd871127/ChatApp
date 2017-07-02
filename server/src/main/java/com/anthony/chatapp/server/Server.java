@@ -3,6 +3,9 @@ package com.anthony.chatapp.server;
 
 //import com.anthony.chatapp.core.protocol.MessageType;
 
+import com.anthony.chatapp.server.service.ConnectionService;
+import com.anthony.chatapp.server.service.MessageDispatchService;
+import com.anthony.chatapp.server.service.MessageReceiveService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,21 +20,15 @@ public class Server {
     private static Logger logger = LoggerFactory.getLogger(Server.class);
 
     public static void main(String[] args) throws IOException {
-//        UserLoginService userLoginService = new UserLoginService(Const.USER_LOGIN_PORT);
-//        System.out.println(Runtime.getRuntime().availableProcessors());
-//        userLoginService.start();
-        logger.debug("app start");
+        logger.info("Initialise Server:");
         ConnectionService cs = new ConnectionService();
-        MessageReceiveService mrs=new MessageReceiveService();
-        MessageDispatchService mds=new MessageDispatchService();
-        cs.mrs=mrs;
-        mrs.mds=mds;
+
         ExecutorService executorService = Executors.newFixedThreadPool(3);
         executorService.submit(cs);
-        executorService.submit(mrs);
-        executorService.submit(mds);
+        executorService.submit(MessageReceiveService.getInstance());
+        executorService.submit(MessageDispatchService.getInstance());
+        logger.info("Chat App start:");
         executorService.shutdown();
-//        logger.debug("executorService shutdown ");
 
     }
 

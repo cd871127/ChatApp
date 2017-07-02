@@ -42,7 +42,7 @@ public class UserContainer {
             return false;
 
         /*add user*/
-        container.put(userInfo.getUserName(),userInfo);
+        container.put(userInfo.getUserName(), userInfo);
 
         rwl.writeLock().unlock();
         return true;

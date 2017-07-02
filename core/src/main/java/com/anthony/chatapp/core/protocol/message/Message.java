@@ -32,6 +32,7 @@ public class Message implements Serializable {
     private String text;
     private String fileName;
     private FileTypes fileType;
+    private Operations operation;
 
     @Override
     public String toString() {
@@ -42,10 +43,19 @@ public class Message implements Serializable {
                 ", text='" + text + '\'' +
                 ", fileName='" + fileName + '\'' +
                 ", fileType=" + fileType +
+                ", operation=" + operation +
                 '}';
     }
 
     private Message() {
+    }
+
+    public Operations getOperation() {
+        return operation;
+    }
+
+    public void setOperation(Operations operation) {
+        this.operation = operation;
     }
 
     private Message(MessageBuilder builder) {
@@ -55,6 +65,7 @@ public class Message implements Serializable {
         text = builder.text;
         fileName = builder.fileName;
         fileType = builder.fileType;
+        operation=builder.operation;
     }
 
     protected static Charset charset = Charset.forName("UTF-8");
@@ -174,6 +185,7 @@ public class Message implements Serializable {
         private String text;
         private String fileName;
         private FileTypes fileType;
+        private Operations operation;
 
         public MessageBuilder(String receiver, MessageTypes type, String timestamp) {
             this.receiver = receiver;
@@ -190,6 +202,17 @@ public class Message implements Serializable {
             this(receiver, MessageTypes.FILE, timestamp);
             this.fileName = fileName;
             this.fileType = fileType;
+        }
+
+        public MessageBuilder(String receiver, Operations operation, String timestamp) {
+            this(receiver, MessageTypes.OPERATION, timestamp);
+            this.operation = operation;
+        }
+
+
+        public MessageBuilder operation(Operations operation) {
+            this.operation = operation;
+            return this;
         }
 
         public MessageBuilder text(String text) {
