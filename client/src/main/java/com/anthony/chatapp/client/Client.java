@@ -1,6 +1,6 @@
 package com.anthony.chatapp.client;
 
-import com.anthony.chatapp.core.protocol.message.Message;
+import com.anthony.chatapp.core.message.Message;
 import com.anthony.chatapp.core.system.Parameters;
 
 import java.io.IOException;
@@ -17,7 +17,6 @@ public class Client {
 
     private static SocketChannel socketChannel;
 
-
     public static void main(String[] args) throws IOException, InterruptedException {
         socketChannel = SocketChannel.open();
         InetAddress localhost = InetAddress.getLocalHost();
@@ -26,13 +25,12 @@ public class Client {
             System.out.println("wait");
         }
 
-
         Thread t1 = new Thread(Client::channel);
 
         t1.start();
 
-        Thread t2 = new Thread(Client::read);
-        t2.start();
+//        Thread t2 = new Thread(Client::read);
+//        t2.start();
     }
 
 

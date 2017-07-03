@@ -1,16 +1,18 @@
 package com.anthony.chatapp.server.handler.factory;
 
 
-import com.anthony.chatapp.core.protocol.message.Message;
+import com.anthony.chatapp.core.handler.MessageHandler;
+import com.anthony.chatapp.core.handler.factory.MessageHandlerFactory;
+import com.anthony.chatapp.core.message.Message;
 import com.anthony.chatapp.server.handler.FileHandler;
-import com.anthony.chatapp.server.handler.MessageHandler;
 import com.anthony.chatapp.server.handler.OperationHandler;
 import com.anthony.chatapp.server.handler.TextHandler;
 
 /**
  * Created by chend on 2017/7/1.
  */
-public class MessageHandlerFactory {
+public class ServerMessageHandlerFactory implements MessageHandlerFactory {
+
     public static MessageHandler getMessageHandler(Message message) {
         MessageHandler messageHandler = null;
         Message.MessageTypes messageType = message.getType();

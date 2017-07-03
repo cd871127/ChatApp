@@ -1,7 +1,7 @@
-package com.anthony.chatapp.server.service;
+package com.anthony.chatapp.core.service;
 
 import com.anthony.chatapp.core.Const;
-import com.anthony.chatapp.server.receiver.MessageReceiver;
+import com.anthony.chatapp.core.service.receiver.MessageReceiver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,23 +27,10 @@ public class MessageReceiveService implements Runnable {
     private ExecutorService executorService = Executors.newFixedThreadPool(2);
     private MessageDispatchService mds;
 
-    private static MessageReceiveService instance = null;
 
-    private MessageReceiveService() throws IOException {
+    public MessageReceiveService(MessageDispatchService mds) throws IOException {
         selector = Selector.open();
-        mds = MessageDispatchService.getInstance();
-    }
-
-    public static MessageReceiveService getInstance() {
-        if (null == instance) {
-            try {
-                instance = new MessageReceiveService();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            logger.debug("MessageReceiveService created");
-        }
-        return instance;
+        this.mds = mds;
     }
 
     public void addChannel(SocketChannel channel) {
@@ -74,7 +61,7 @@ public class MessageReceiveService implements Runnable {
                     if (key.isReadable()) {
                         //设置对读没兴趣 以防重复处理key
                         key.interestOps(key.interestOps() & ~SelectionKey.OP_READ);
-                        mds.addMessage(executorService.submit(new MessageReceiver(key)));
+                        mds.addMessage(executorService.submit(new MessageReceiver(key,this)));
                     }
                     keyIterator.remove();
                 }

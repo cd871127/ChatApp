@@ -1,6 +1,7 @@
 package com.anthony.chatapp.server.handler;
 
-import com.anthony.chatapp.core.protocol.message.Message;
+import com.anthony.chatapp.core.handler.AbstractMessageHandler;
+import com.anthony.chatapp.core.message.Message;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

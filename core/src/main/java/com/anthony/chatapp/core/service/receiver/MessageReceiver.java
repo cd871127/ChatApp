@@ -1,7 +1,7 @@
-package com.anthony.chatapp.server.receiver;
+package com.anthony.chatapp.core.service.receiver;
 
-import com.anthony.chatapp.core.protocol.message.Message;
-import com.anthony.chatapp.server.service.MessageReceiveService;
+import com.anthony.chatapp.core.message.Message;
+import com.anthony.chatapp.core.service.MessageReceiveService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,9 +17,11 @@ import java.util.concurrent.Callable;
 public class MessageReceiver implements Callable<Message> {
     private static Logger logger = LoggerFactory.getLogger(MessageReceiver.class);
     private SelectionKey key;
+    private MessageReceiveService mrs;
 
-    public MessageReceiver(SelectionKey key) {
+    public MessageReceiver(SelectionKey key, MessageReceiveService mrs) {
         this.key = key;
+        this.mrs = mrs;
     }
 
     private static int i = 0;
@@ -34,7 +36,7 @@ public class MessageReceiver implements Callable<Message> {
             byte[] bodyBytes = read(socketChannel, bodyLength);
             message = Message.decode(bodyBytes);
             //设置key对读感兴趣
-            MessageReceiveService.getInstance().interestOps(key, key.interestOps() | SelectionKey.OP_READ);
+            mrs.interestOps(key, key.interestOps() | SelectionKey.OP_READ);
         } catch (IOException e) {
             message = null;
             logger.warn("lose connection");

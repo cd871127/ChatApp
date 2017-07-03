@@ -1,4 +1,4 @@
-package com.anthony.chatapp.core.protocol.message;
+package com.anthony.chatapp.core.message;
 
 import com.alibaba.fastjson.JSON;
 import com.anthony.chatapp.core.system.Parameters;
@@ -50,15 +50,8 @@ public class Message implements Serializable {
     private Message() {
     }
 
-    public Operations getOperation() {
-        return operation;
-    }
-
-    public void setOperation(Operations operation) {
-        this.operation = operation;
-    }
-
     private Message(MessageBuilder builder) {
+        this();
         receiver = builder.receiver;
         timestamp = builder.timestamp;
         type = builder.type;
@@ -67,6 +60,16 @@ public class Message implements Serializable {
         fileType = builder.fileType;
         operation=builder.operation;
     }
+
+    public Operations getOperation() {
+        return operation;
+    }
+
+    public void setOperation(Operations operation) {
+        this.operation = operation;
+    }
+
+
 
     protected static Charset charset = Charset.forName("UTF-8");
 

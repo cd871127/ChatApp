@@ -1,6 +1,6 @@
-package com.anthony.chatapp.server.handler;
+package com.anthony.chatapp.core.handler;
 
-import com.anthony.chatapp.core.protocol.message.Message;
+import com.anthony.chatapp.core.message.Message;
 
 /**
  * Created by chend on 2017/7/1.
@@ -8,7 +8,7 @@ import com.anthony.chatapp.core.protocol.message.Message;
 public abstract class AbstractMessageHandler implements MessageHandler {
     protected Message message;
 
-    AbstractMessageHandler(Message message) {
+    public AbstractMessageHandler(Message message) {
         this.message = message;
     }
 }

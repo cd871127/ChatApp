@@ -1,4 +1,4 @@
-package com.anthony.chatapp.server.service;
+package com.anthony.chatapp.core.service;
 
 import com.anthony.chatapp.core.Const;
 import org.slf4j.Logger;
@@ -17,10 +17,10 @@ public class ConnectionService implements Runnable {
     private ServerSocketChannel serverSocketChannel;
     private MessageReceiveService mrs;
 
-    public ConnectionService() throws IOException {
+    public ConnectionService(MessageReceiveService mrs,int port) throws IOException {
         serverSocketChannel = ServerSocketChannel.open();
-        serverSocketChannel.socket().bind(new InetSocketAddress(Const.USER_LOGIN_PORT));
-        mrs = MessageReceiveService.getInstance();
+        serverSocketChannel.socket().bind(new InetSocketAddress(port));
+        this.mrs = mrs;
         logger.debug("ConnectionService created");
     }
 
