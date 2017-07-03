@@ -16,6 +16,9 @@ public class Client {
             System.out.println("input your name:");
             Parameters.SENDER = scanner.nextLine();
         }
+
+//        Parameters.SENDER="111";///////////////////
+
         ClientService clientService = new ClientService();
         clientService.start();
 
@@ -27,6 +30,9 @@ public class Client {
         Scanner scanner = new Scanner(System.in);
         while (scanner.hasNext()) {
             String[] tmp = scanner.nextLine().split(":");
+//        int i=0;
+//        while (true){/////////////
+//            String[] tmp = (i+"sss:234234").split(":");///////////////////
             Message message = new Message.MessageBuilder(tmp[1], tmp[0]).build();
             ClientMessageSender.getInstance().send(message);
         }

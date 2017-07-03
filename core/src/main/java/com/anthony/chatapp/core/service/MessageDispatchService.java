@@ -35,6 +35,7 @@ public class MessageDispatchService implements Runnable {
                     MessageAndKey messageAndKey = future.get();
                     if (null != messageAndKey) {
                         MessageHandler messageHandler = mdf.getMessageHandler(messageAndKey);
+                        if(messageHandler!=null)
                         messageHandler.handle();
 
                     }
