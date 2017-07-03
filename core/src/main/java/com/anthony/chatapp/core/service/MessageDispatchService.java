@@ -1,8 +1,8 @@
 package com.anthony.chatapp.core.service;
 
-import com.anthony.chatapp.core.handler.MessageHandler;
-import com.anthony.chatapp.core.handler.factory.MessageHandlerFactory;
-import com.anthony.chatapp.core.message.Message;
+import com.anthony.chatapp.core.message.handler.MessageHandler;
+import com.anthony.chatapp.core.message.handler.factory.MessageHandlerFactory;
+import com.anthony.chatapp.core.message.entity.Message;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,7 +17,10 @@ import java.util.concurrent.LinkedBlockingQueue;
 public class MessageDispatchService implements Runnable {
     private static Logger logger = LoggerFactory.getLogger(MessageDispatchService.class);
 
-    public MessageDispatchService() {
+    private MessageHandlerFactory mdf;
+
+    public MessageDispatchService(MessageHandlerFactory mdf) {
+        this.mdf=mdf;
     }
 
     private BlockingQueue<Future<Message>> futureList = new LinkedBlockingQueue<>();
@@ -31,8 +34,9 @@ public class MessageDispatchService implements Runnable {
                 if (future.isDone()) {
                     Message message = future.get();
                     if (null != message) {
-                        MessageHandler messageHandler = MessageHandlerFactory.getMessageHandler(message);
+                        MessageHandler messageHandler = mdf.getMessageHandler(message);
                         messageHandler.handle();
+
                     }
                 } else {
                     addMessage(future);

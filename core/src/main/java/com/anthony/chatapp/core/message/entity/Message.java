@@ -1,6 +1,7 @@
-package com.anthony.chatapp.core.message;
+package com.anthony.chatapp.core.message.entity;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.anthony.chatapp.core.system.Parameters;
 
 import java.io.*;
@@ -25,51 +26,35 @@ public class Message implements Serializable {
 
     public static final int HEADER_BYTE_COUNT = 4;
 
-    private static final String sender = Parameters.SENDER;
+    private String sender;
     private String receiver;
     private String timestamp;
     private MessageTypes type;
-    private String text;
-    private String fileName;
-    private FileTypes fileType;
-    private Operations operation;
+    private Object attachment;
 
     @Override
     public String toString() {
         return "Message{" +
                 "receiver='" + receiver + '\'' +
+                ", sender='" + sender + '\'' +
                 ", timestamp='" + timestamp + '\'' +
                 ", type=" + type +
-                ", text='" + text + '\'' +
-                ", fileName='" + fileName + '\'' +
-                ", fileType=" + fileType +
-                ", operation=" + operation +
+                ", attachment='" + attachment + '\'' +
                 '}';
     }
 
     private Message() {
     }
 
+
     private Message(MessageBuilder builder) {
         this();
         receiver = builder.receiver;
         timestamp = builder.timestamp;
         type = builder.type;
-        text = builder.text;
-        fileName = builder.fileName;
-        fileType = builder.fileType;
-        operation=builder.operation;
+        sender = builder.sender;
+        attachment = builder.attachment;
     }
-
-    public Operations getOperation() {
-        return operation;
-    }
-
-    public void setOperation(Operations operation) {
-        this.operation = operation;
-    }
-
-
 
     protected static Charset charset = Charset.forName("UTF-8");
 
@@ -87,7 +72,20 @@ public class Message implements Serializable {
     }
 
     public static Message decode(byte[] data) {
-        return JSON.parseObject(data, Message.class);
+        Message message = JSON.parseObject(data, Message.class);
+        Object object = message.getAttachment();
+        if (object != null && !(object instanceof String)) {
+            JSONObject jsonObject = (JSONObject) object;
+            switch (message.getType()) {
+                case OPERATION:
+                    message.setAttachment(jsonObject.toJavaObject(Operation.class));
+                    break;
+                case FILE:
+                    message.setAttachment(jsonObject.toJavaObject(File.class));
+                    break;
+            }
+        }
+        return message;
     }
 
     private byte[] intToByteArray(int i) throws IOException {
@@ -116,32 +114,12 @@ public class Message implements Serializable {
         return res;
     }
 
-    public String getText() {
-        return text;
-    }
-
-    public void setText(String text) {
-        this.text = text;
-    }
-
-    public String getFileName() {
-        return fileName;
-    }
-
-    public void setFileName(String fileName) {
-        this.fileName = fileName;
-    }
-
-    public FileTypes getFileType() {
-        return fileType;
-    }
-
-    public void setFileType(FileTypes fileType) {
-        this.fileType = fileType;
-    }
-
     public String getSender() {
         return sender;
+    }
+
+    public void setSender(String sender) {
+        this.sender = sender;
     }
 
     public String getReceiver() {
@@ -168,68 +146,87 @@ public class Message implements Serializable {
         this.type = type;
     }
 
-    public enum Operations {
-        LOGIN, LOGOUT;
+    public Object getAttachment() {
+        return attachment;
+    }
+
+    public void setAttachment(Object attachment) {
+        this.attachment = attachment;
     }
 
     public enum MessageTypes {
         FILE, TEXT, OPERATION
     }
 
-    public enum FileTypes {
-        VEDIO, IMAGE, AUDIO, NORMAL
-    }
-
-
     public static class MessageBuilder {
         private String receiver;
         private String timestamp;
         private MessageTypes type;
-        private String text;
-        private String fileName;
-        private FileTypes fileType;
-        private Operations operation;
+        private String sender;
+        private Object attachment;
 
-        public MessageBuilder(String receiver, MessageTypes type, String timestamp) {
+        private MessageBuilder() {
+            this.sender = Parameters.SENDER;
+            timestamp = String.valueOf(System.currentTimeMillis());
+        }
+
+        public MessageBuilder(String receiver, MessageTypes type, Object attachment) {
+            this();
             this.receiver = receiver;
             this.type = type;
-            this.timestamp = timestamp;
+            this.attachment = attachment;
         }
 
-        public MessageBuilder(String receiver, String text, String timestamp) {
-            this(receiver, MessageTypes.TEXT, timestamp);
-            this.text = text;
-        }
-
-        public MessageBuilder(String receiver, String fileName, FileTypes fileType, String timestamp) {
-            this(receiver, MessageTypes.FILE, timestamp);
-            this.fileName = fileName;
-            this.fileType = fileType;
-        }
-
-        public MessageBuilder(String receiver, Operations operation, String timestamp) {
-            this(receiver, MessageTypes.OPERATION, timestamp);
-            this.operation = operation;
+        /**
+         * build text message
+         **/
+        public MessageBuilder(String text, String receiver) {
+            this();
+            this.receiver = receiver;
+            this.type = MessageTypes.TEXT;
+            attachment = text;
         }
 
 
-        public MessageBuilder operation(Operations operation) {
-            this.operation = operation;
+        /**
+         * build operation message
+         **/
+        public MessageBuilder(Operation.OperationTypes operationType, Object attachment, String receiver) {
+            this();
+            this.receiver = receiver;
+            this.type = MessageTypes.OPERATION;
+            Operation operation = new Operation();
+            operation.setAttachment(attachment);
+            operation.setOperationType(operationType);
+            this.attachment = operation;
+        }
+
+        public MessageBuilder(Operation.OperationTypes operationType, String receiver) {
+            this(operationType, null, receiver);
+        }
+
+
+        /**
+         * build file message
+         **/
+        public MessageBuilder(String fileName, long fileSize, File.FileTypes fileType, String receiver) {
+            this();
+            this.receiver = receiver;
+            this.type = MessageTypes.FILE;
+            File file = new File();
+            file.setFileName(fileName);
+            file.setFileSize(fileSize);
+            file.setFileType(fileType);
+            attachment = file;
+        }
+
+        public MessageBuilder attachment(String attachment) {
+            this.attachment = attachment;
             return this;
         }
 
-        public MessageBuilder text(String text) {
-            this.text = text;
-            return this;
-        }
-
-        public MessageBuilder fileName(String fileName) {
-            this.fileName = fileName;
-            return this;
-        }
-
-        public MessageBuilder fileType(FileTypes fileType) {
-            this.fileType = fileType;
+        public MessageBuilder sender(String sender) {
+            this.sender = sender;
             return this;
         }
 

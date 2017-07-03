@@ -1,5 +1,6 @@
 package com.anthony.chatapp.core.service.manager;
 
+import com.anthony.chatapp.core.message.handler.factory.MessageHandlerFactory;
 import com.anthony.chatapp.core.service.ConnectionService;
 import com.anthony.chatapp.core.service.MessageDispatchService;
 import com.anthony.chatapp.core.service.MessageReceiveService;
@@ -7,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.nio.channels.SocketChannel;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -20,29 +22,37 @@ public class ServiceManager {
     private MessageDispatchService mds;
     private MessageReceiveService mrs;
     private ConnectionService cs;
+    private MessageHandlerFactory mdf;
 
-    public ServiceManager(int port) {
+    public ServiceManager(int port, MessageHandlerFactory mdf) {
         this.port = port;
+        this.mdf=mdf;
     }
 
-    private void init() {
-        mds = new MessageDispatchService();
+    private boolean init() {
+        mds = new MessageDispatchService(mdf);
         try {
             mrs = new MessageReceiveService(mds);
             cs = new ConnectionService(mrs, port);
         } catch (IOException e) {
             logger.debug("app start failed!");
             e.printStackTrace();
-            return;
+            return false;
         }
+        return true;
     }
 
     public void startService() {
-        init();
+        if (!init())
+            return;
         ExecutorService es = Executors.newFixedThreadPool(3);
         es.submit(cs);
         es.submit(mrs);
         es.submit(mds);
         es.shutdown();
+    }
+
+    public void addChannel(SocketChannel socketChannel) {
+        mrs.addChannel(socketChannel);
     }
 }

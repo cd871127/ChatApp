@@ -1,6 +1,6 @@
-package com.anthony.chatapp.core.handler;
+package com.anthony.chatapp.core.message.handler;
 
-import com.anthony.chatapp.core.message.Message;
+import com.anthony.chatapp.core.message.entity.Message;
 
 /**
  * Created by chend on 2017/7/1.

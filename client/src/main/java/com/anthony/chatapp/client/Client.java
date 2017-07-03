@@ -1,6 +1,10 @@
 package com.anthony.chatapp.client;
 
-import com.anthony.chatapp.core.message.Message;
+import com.anthony.chatapp.client.hanlder.factory.ClientMessageHandlerFactory;
+import com.anthony.chatapp.core.message.entity.Message;
+import com.anthony.chatapp.core.message.entity.Operation;
+import com.anthony.chatapp.core.message.sender.MessageSender;
+import com.anthony.chatapp.core.service.manager.ServiceManager;
 import com.anthony.chatapp.core.system.Parameters;
 
 import java.io.IOException;
@@ -18,16 +22,19 @@ public class Client {
     private static SocketChannel socketChannel;
 
     public static void main(String[] args) throws IOException, InterruptedException {
+        ServiceManager sm = new ServiceManager(51126, new ClientMessageHandlerFactory());
         socketChannel = SocketChannel.open();
         InetAddress localhost = InetAddress.getLocalHost();
         socketChannel.connect(new InetSocketAddress(localhost, 51127));
         while (!socketChannel.isConnected()) {
             System.out.println("wait");
         }
+        sm.startService();
+        sm.addChannel(socketChannel);
 
         Thread t1 = new Thread(Client::channel);
-
         t1.start();
+
 
 //        Thread t2 = new Thread(Client::read);
 //        t2.start();
@@ -63,20 +70,15 @@ public class Client {
             System.out.println("input receiver:");
             String receiver = scanner.nextLine();
 
-            Message loginInfo = new Message.MessageBuilder("server", Message.Operations.LOGIN, String.valueOf(System.currentTimeMillis())).build();
+Message message=new Message.MessageBuilder(Operation.OperationTypes.LOGIN,"server").build();
 
-            byteBuffer.clear();
-            byteBuffer.put(loginInfo.encode());
-            byteBuffer.flip();
-            socketChannel.write(byteBuffer);
+            MessageSender ms = new MessageSender();
+            ms.send(message, socketChannel);
 
             while (scanner.hasNext()) {
-                Message message = new Message.MessageBuilder(receiver, scanner.next(), String.valueOf(System.currentTimeMillis())).build();
+                message = new Message.MessageBuilder(scanner.nextLine(),"server").build();
 
-                byteBuffer.clear();
-                byteBuffer.put(message.encode());
-                byteBuffer.flip();
-                socketChannel.write(byteBuffer);
+                ms.send(message, socketChannel);
                 System.out.println("send: " + (++i));
                 System.out.println(message);
             }

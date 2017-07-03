@@ -5,6 +5,7 @@ package com.anthony.chatapp.server;
 
 import com.anthony.chatapp.core.service.manager.ServiceManager;
 import com.anthony.chatapp.core.system.Parameters;
+import com.anthony.chatapp.server.handler.factory.ServerMessageHandlerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,7 +27,7 @@ public class Server {
 //        executorService.submit(MessageDispatchService.getInstance());
 //        logger.info("Chat App start:");
 //        executorService.shutdown();
-        ServiceManager sm=new ServiceManager(Parameters.SERV_PORT);
+        ServiceManager sm=new ServiceManager(Parameters.SERV_PORT,new ServerMessageHandlerFactory());
         sm.startService();
 
     }

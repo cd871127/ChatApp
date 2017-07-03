@@ -1,7 +1,7 @@
 package com.anthony.chatapp.server.handler;
 
-import com.anthony.chatapp.core.handler.AbstractMessageHandler;
-import com.anthony.chatapp.core.message.Message;
+import com.anthony.chatapp.core.message.entity.Message;
+import com.anthony.chatapp.core.message.handler.AbstractMessageHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,6 +17,13 @@ public class TextHandler extends AbstractMessageHandler {
 
     @Override
     public void handle() {
-        logger.debug(message.toString());
+//        SocketChannel socketChannel = UserManager.getInstance().getUserChannel("");
+//        try {
+//            new MessageSender().send(message, socketChannel);
+//        } catch (IOException e) {
+//            logger.debug("send to " + message.getReceiver() + " failed");
+//            e.printStackTrace();
+//        }
+        System.out.println(message);
     }
 }
