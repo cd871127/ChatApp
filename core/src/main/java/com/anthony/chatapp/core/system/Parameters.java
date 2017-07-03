@@ -7,5 +7,6 @@ public class Parameters {
     protected Parameters(){}
 
     public static String SENDER="";
-    public static int SERV_PORT=51127;
+    public static int SERVER_PORT =51127;
+    public static int CLIENT_PORT =51126;
 }

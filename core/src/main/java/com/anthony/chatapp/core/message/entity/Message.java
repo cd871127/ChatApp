@@ -3,6 +3,7 @@ package com.anthony.chatapp.core.message.entity;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.anthony.chatapp.core.system.Parameters;
+import com.anthony.chatapp.core.user.UserInfo;
 
 import java.io.*;
 import java.nio.charset.Charset;
@@ -31,6 +32,7 @@ public class Message implements Serializable {
     private String timestamp;
     private MessageTypes type;
     private Object attachment;
+    private UserInfo userInfo;
 
     @Override
     public String toString() {
@@ -54,6 +56,7 @@ public class Message implements Serializable {
         type = builder.type;
         sender = builder.sender;
         attachment = builder.attachment;
+        userInfo=builder.userInfo;
     }
 
     protected static Charset charset = Charset.forName("UTF-8");
@@ -154,6 +157,14 @@ public class Message implements Serializable {
         this.attachment = attachment;
     }
 
+    public UserInfo getUserInfo() {
+        return userInfo;
+    }
+
+    public void setUserInfo(UserInfo userInfo) {
+        this.userInfo = userInfo;
+    }
+
     public enum MessageTypes {
         FILE, TEXT, OPERATION
     }
@@ -164,6 +175,7 @@ public class Message implements Serializable {
         private MessageTypes type;
         private String sender;
         private Object attachment;
+        private UserInfo userInfo;
 
         private MessageBuilder() {
             this.sender = Parameters.SENDER;
@@ -187,7 +199,6 @@ public class Message implements Serializable {
             attachment = text;
         }
 
-
         /**
          * build operation message
          **/
@@ -205,7 +216,6 @@ public class Message implements Serializable {
             this(operationType, null, receiver);
         }
 
-
         /**
          * build file message
          **/
@@ -218,6 +228,11 @@ public class Message implements Serializable {
             file.setFileSize(fileSize);
             file.setFileType(fileType);
             attachment = file;
+        }
+
+        public MessageBuilder userInfo(UserInfo userInfo) {
+            this.userInfo = userInfo;
+            return this;
         }
 
         public MessageBuilder attachment(String attachment) {

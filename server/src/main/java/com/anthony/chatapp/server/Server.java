@@ -27,7 +27,7 @@ public class Server {
 //        executorService.submit(MessageDispatchService.getInstance());
 //        logger.info("Chat App start:");
 //        executorService.shutdown();
-        ServiceManager sm=new ServiceManager(Parameters.SERV_PORT,new ServerMessageHandlerFactory());
+        ServiceManager sm=new ServiceManager(Parameters.SERVER_PORT,new ServerMessageHandlerFactory());
         sm.startService();
 
     }

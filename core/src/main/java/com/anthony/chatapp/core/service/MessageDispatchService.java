@@ -1,8 +1,8 @@
 package com.anthony.chatapp.core.service;
 
+import com.anthony.chatapp.core.message.MessageAndKey;
 import com.anthony.chatapp.core.message.handler.MessageHandler;
 import com.anthony.chatapp.core.message.handler.factory.MessageHandlerFactory;
-import com.anthony.chatapp.core.message.entity.Message;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,21 +20,21 @@ public class MessageDispatchService implements Runnable {
     private MessageHandlerFactory mdf;
 
     public MessageDispatchService(MessageHandlerFactory mdf) {
-        this.mdf=mdf;
+        this.mdf = mdf;
     }
 
-    private BlockingQueue<Future<Message>> futureList = new LinkedBlockingQueue<>();
+    private BlockingQueue<Future<MessageAndKey>> futureList = new LinkedBlockingQueue<>();
 
     @Override
     public void run() {
-        Future<Message> future = null;
+        Future<MessageAndKey> future = null;
         do {
             try {
                 future = futureList.take();
                 if (future.isDone()) {
-                    Message message = future.get();
-                    if (null != message) {
-                        MessageHandler messageHandler = mdf.getMessageHandler(message);
+                    MessageAndKey messageAndKey = future.get();
+                    if (null != messageAndKey) {
+                        MessageHandler messageHandler = mdf.getMessageHandler(messageAndKey);
                         messageHandler.handle();
 
                     }
@@ -48,7 +48,7 @@ public class MessageDispatchService implements Runnable {
     }
 
 
-    public void addMessage(Future<Message> future) {
+    public void addMessage(Future<MessageAndKey> future) {
         try {
             futureList.put(future);
         } catch (InterruptedException e) {

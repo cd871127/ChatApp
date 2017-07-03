@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.nio.channels.SelectionKey;
 import java.nio.channels.SocketChannel;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -52,7 +53,7 @@ public class ServiceManager {
         es.shutdown();
     }
 
-    public void addChannel(SocketChannel socketChannel) {
-        mrs.addChannel(socketChannel);
+    public SelectionKey addChannel(SocketChannel socketChannel) {
+        return mrs.addChannel(socketChannel);
     }
 }

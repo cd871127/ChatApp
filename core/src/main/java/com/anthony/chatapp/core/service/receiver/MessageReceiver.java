@@ -1,5 +1,6 @@
 package com.anthony.chatapp.core.service.receiver;
 
+import com.anthony.chatapp.core.message.MessageAndKey;
 import com.anthony.chatapp.core.message.entity.Message;
 import com.anthony.chatapp.core.service.MessageReceiveService;
 import org.slf4j.Logger;
@@ -14,7 +15,7 @@ import java.util.concurrent.Callable;
 /**
  * Created by chend on 2017/6/30.
  */
-public class MessageReceiver implements Callable<Message> {
+public class MessageReceiver implements Callable<MessageAndKey> {
     private static Logger logger = LoggerFactory.getLogger(MessageReceiver.class);
     private SelectionKey key;
     private MessageReceiveService mrs;
@@ -25,8 +26,9 @@ public class MessageReceiver implements Callable<Message> {
     }
 
     @Override
-    public Message call() {
+    public MessageAndKey call() {
         SocketChannel socketChannel = (SocketChannel) key.channel();
+
         Message message;
         try {
             byte[] lengthByte = read(socketChannel, Message.HEADER_BYTE_COUNT);
@@ -37,10 +39,10 @@ public class MessageReceiver implements Callable<Message> {
             //设置key对读感兴趣
             mrs.interestOps(key, key.interestOps() | SelectionKey.OP_READ);
         } catch (IOException e) {
-            message = null;
             logger.warn("lose connection");
+            return null;
         }
-        return message;
+        return new MessageAndKey(message, key);
     }
 
     private byte[] read(SocketChannel socketChannel, int length) throws IOException {

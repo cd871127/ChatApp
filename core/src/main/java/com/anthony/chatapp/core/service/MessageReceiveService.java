@@ -9,9 +9,7 @@ import java.io.IOException;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.SocketChannel;
-import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -21,7 +19,6 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  */
 public class MessageReceiveService implements Runnable {
     private static Logger logger = LoggerFactory.getLogger(MessageReceiveService.class);
-    private Map<String, MessageReceiver> clients = new HashMap<>();
     private Selector selector;
     private ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
     private ExecutorService executorService = Executors.newFixedThreadPool(2);
@@ -33,19 +30,21 @@ public class MessageReceiveService implements Runnable {
         this.mds = mds;
     }
 
-    public void addChannel(SocketChannel channel) {
+    public SelectionKey addChannel(SocketChannel channel) {
         logger.debug("add channel");
+        SelectionKey key=null;
         try {
             channel.configureBlocking(false);
             if (channel.isConnectionPending())
                 channel.finishConnect();
             lock.writeLock().lock();
             selector.wakeup();
-            channel.register(selector, SelectionKey.OP_READ);
+            key=channel.register(selector, SelectionKey.OP_READ);
             lock.writeLock().unlock();
         } catch (IOException e) {
             e.printStackTrace();
         }
+        return key;
     }
 
     @Override

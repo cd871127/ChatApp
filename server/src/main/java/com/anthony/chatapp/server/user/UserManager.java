@@ -53,7 +53,8 @@ public class UserManager {
     }
 
     public SocketChannel getUserChannel(String key) {
-        return getUserInfo(key).getSocketChannel();
+        return null;
+//        return getUserInfo(key).getSocketChannel();
     }
 
 }
