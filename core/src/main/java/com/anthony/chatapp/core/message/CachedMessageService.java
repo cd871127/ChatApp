@@ -1,7 +1,9 @@
 package com.anthony.chatapp.core.message;
 
+import com.anthony.chatapp.core.message.entity.CachedMessage;
 import com.anthony.chatapp.core.message.entity.Message;
 import com.anthony.chatapp.core.message.sender.Sender;
+import com.anthony.chatapp.core.service.Service;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -15,8 +17,8 @@ import static com.anthony.chatapp.core.Const.isShutdown;
  * Created by chend on 2017/7/4.
  * message的缓存队列,用于保存已发送的message,接收到确认信息收,删除
  */
-public class CachedMessageService implements Runnable {
-    private Map<String, Message> cache = new HashMap<>();
+public class CachedMessageService extends Service {
+    private Map<String, CachedMessage> cache = new HashMap<>();
 
     private static CachedMessageService ourInstance = new CachedMessageService();
 
@@ -24,9 +26,14 @@ public class CachedMessageService implements Runnable {
         return ourInstance;
     }
 
+    public static CachedMessageService getInstance(Sender sender) {
+        CachedMessageService.sender = sender;
+        return getInstance();
+    }
+
     private ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
 
-    private Sender sender;
+    private static Sender sender;
 
     private CachedMessageService() {
     }
@@ -41,7 +48,7 @@ public class CachedMessageService implements Runnable {
 
     public void addMessage(String key, Message message) {
         lock.writeLock().lock();
-        cache.put(key, message);
+        cache.put(key, new CachedMessage(message, System.currentTimeMillis()));
         lock.writeLock().unlock();
     }
 
@@ -57,15 +64,15 @@ public class CachedMessageService implements Runnable {
         while (!isShutdown) {
             Set<String> timeoutMessage = new HashSet<>();
             lock.readLock().lock();
-            System.out.println(cache.size());
             long currentTime = System.currentTimeMillis();
             cache.forEach((k, v) -> {
-                long elapse = currentTime - Long.valueOf(v.getTimestamp());
+                long elapse = currentTime - v.getCachedTime();
+                if (elapse >= 10000) {
+                    sender.send(v.getMessage());
+                }
+                elapse = currentTime - Long.valueOf(v.getMessage().getTimestamp());
                 if (elapse >= 60000) {
-                    System.out.println("bbbb");
                     timeoutMessage.add(k);
-                    System.out.println("resend");
-                    sender.send(v);
                 }
             });
             lock.readLock().unlock();
@@ -75,10 +82,11 @@ public class CachedMessageService implements Runnable {
             lock.writeLock().unlock();
 
             try {
-                Thread.sleep(10 * 1000);
+                Thread.sleep(750);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
     }
+
 }

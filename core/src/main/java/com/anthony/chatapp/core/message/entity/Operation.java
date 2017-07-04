@@ -32,6 +32,6 @@ public class Operation {
     }
 
     public enum OperationTypes {
-        LOGIN, LOGOUT, CONFIRM
+        LOGIN, LOGOUT, ACK, ACKACK, LC
     }
 }

@@ -1,10 +1,6 @@
 package com.anthony.chatapp.client.message.hanlder;
 
-import com.anthony.chatapp.client.ClientMessageSender;
-import com.anthony.chatapp.core.message.CachedMessageService;
 import com.anthony.chatapp.core.message.MessageAndKey;
-import com.anthony.chatapp.core.message.entity.Message;
-import com.anthony.chatapp.core.message.entity.Operation;
 import com.anthony.chatapp.core.message.handler.AbstractMessageHandler;
 
 /**
@@ -17,9 +13,7 @@ public class TextHandler extends AbstractMessageHandler {
 
     @Override
     public void handle() {
-        System.out.println(messageAndKey.getMessage());
-        Message message = new Message.MessageBuilder(Operation.OperationTypes.CONFIRM, messageAndKey.getMessage().getId(), "server").build();
-        ClientMessageSender.getInstance().send(message);
-        CachedMessageService.getInstance().addMessage(message.getId(),message);
+        sendAck(messageAndKey.getMessage());
+        System.out.println("received: "+messageAndKey.getMessage());
     }
 }

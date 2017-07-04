@@ -86,9 +86,10 @@ public class Message implements Serializable {
                     message.setAttachment(jsonObject.toJavaObject(Operation.class));
                     switch (((Operation) message.attachment).getOperationType()) {
                         case LOGIN:
-                            Operation operation= (Operation) message.attachment;
-                            JSONObject operationAttachment= (JSONObject) operation.getAttachment();
-                            operation.setAttachment(operationAttachment.toJavaObject(UserInfo.class));
+                            Operation operation = (Operation) message.attachment;
+                            JSONObject operationAttachment = (JSONObject) operation.getAttachment();
+                            if (operationAttachment != null)
+                                operation.setAttachment(operationAttachment.toJavaObject(UserInfo.class));
                             break;
                     }
                     break;
@@ -191,7 +192,6 @@ public class Message implements Serializable {
             this.sender = Parameters.SENDER;
             timestamp = String.valueOf(System.currentTimeMillis());
             id = UUID.randomUUID().toString().replace("-", "");
-            System.out.println(id);
         }
 
         public MessageBuilder(String receiver, MessageTypes type, Object attachment) {

@@ -1,10 +1,10 @@
 package com.anthony.chatapp.core.service;
 
 import com.anthony.chatapp.core.message.MessageAndKey;
+import com.anthony.chatapp.core.message.entity.Message;
+import com.anthony.chatapp.core.message.entity.Operation;
 import com.anthony.chatapp.core.message.handler.MessageHandler;
 import com.anthony.chatapp.core.message.handler.factory.MessageHandlerFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutionException;
@@ -14,8 +14,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 /**
  * Created by chend on 2017/7/1.
  */
-public class MessageDispatchService implements Runnable {
-    private static Logger logger = LoggerFactory.getLogger(MessageDispatchService.class);
+public class MessageDispatchService extends Service {
 
     private MessageHandlerFactory mdf;
 
@@ -33,12 +32,15 @@ public class MessageDispatchService implements Runnable {
                 future = futureList.take();
                 if (future.isDone()) {
                     MessageAndKey messageAndKey = future.get();
-                    if (null != messageAndKey) {
-                        MessageHandler messageHandler = mdf.getMessageHandler(messageAndKey);
-                        if(messageHandler!=null)
-                        messageHandler.handle();
-
+                    if (null == messageAndKey.getMessage()) {
+                        messageAndKey.setMessage(new Message.MessageBuilder(Operation.OperationTypes.LC,"server").build());
                     }
+                    MessageHandler messageHandler = mdf.getMessageHandler(messageAndKey);
+                    logger.debug("***********************************");
+                    logger.debug(messageAndKey.getMessage().toString());
+                    logger.debug("***********************************");
+                    if (messageHandler != null)
+                        messageHandler.handle();
                 } else {
                     addMessage(future);
                 }

@@ -16,7 +16,7 @@ import java.nio.channels.SocketChannel;
 public class ClientMessageSender extends MessageSender {
     private Logger logger = LoggerFactory.getLogger(getClass());
 
-    private static ClientMessageSender clientMessageSender;
+    private static ClientMessageSender clientMessageSender = new ClientMessageSender();
 
     //与服务器通信的key
     private SelectionKey key;
@@ -24,7 +24,7 @@ public class ClientMessageSender extends MessageSender {
     private ClientMessageSender() {
     }
 
-    private ClientMessageSender(SelectionKey key) {
+    public void setKey(SelectionKey key) {
         this.key = key;
     }
 
@@ -32,10 +32,6 @@ public class ClientMessageSender extends MessageSender {
         return clientMessageSender;
     }
 
-    public static ClientMessageSender getInstance(SelectionKey key) {
-        clientMessageSender = new ClientMessageSender(key);
-        return clientMessageSender;
-    }
 
     @Override
     public int send(Message message) {

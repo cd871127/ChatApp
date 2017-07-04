@@ -3,7 +3,6 @@ package com.anthony.chatapp.server.handler;
 import com.anthony.chatapp.core.message.CachedMessageService;
 import com.anthony.chatapp.core.message.MessageAndKey;
 import com.anthony.chatapp.core.message.entity.Message;
-import com.anthony.chatapp.core.message.entity.Operation;
 import com.anthony.chatapp.core.message.handler.AbstractMessageHandler;
 import com.anthony.chatapp.server.service.ServerMessageSenderService;
 import org.slf4j.Logger;
@@ -22,15 +21,12 @@ public class TextHandler extends AbstractMessageHandler {
     @Override
     public void handle() {
         Message message = messageAndKey.getMessage();
+        sendAck(message);
 
-
-        CachedMessageService.getInstance().addMessage(message.getId(), message);
-        Message confirm=new Message.MessageBuilder(Operation.OperationTypes.CONFIRM,message.getId(),message.getSender()).build();
         //发送确认信息
-        ServerMessageSenderService.getInstance().send(confirm);
+        CachedMessageService.getInstance().addMessage(message.getId(), message);
         //写入到消息队列中 消息队列自己发送消息
         ServerMessageSenderService.getInstance().send(message);
-        System.out.println(messageAndKey.getMessage());
     }
 
 

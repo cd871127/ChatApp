@@ -5,11 +5,16 @@ import com.anthony.chatapp.client.message.hanlder.TextHandler;
 import com.anthony.chatapp.core.message.MessageAndKey;
 import com.anthony.chatapp.core.message.handler.MessageHandler;
 import com.anthony.chatapp.core.message.handler.factory.MessageHandlerFactory;
+import com.anthony.chatapp.core.message.sender.Sender;
 
 /**
  * Created by chend on 2017/7/3.
  */
 public class ClientMessageHandlerFactory extends MessageHandlerFactory {
+
+    public ClientMessageHandlerFactory(Sender sender) {
+        super(sender);
+    }
 
     @Override
     protected MessageHandler textHandler(MessageAndKey messageAndKey) {

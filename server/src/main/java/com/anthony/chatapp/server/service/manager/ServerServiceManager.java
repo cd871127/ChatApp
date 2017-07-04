@@ -1,5 +1,6 @@
 package com.anthony.chatapp.server.service.manager;
 
+import com.anthony.chatapp.core.message.CachedMessageService;
 import com.anthony.chatapp.core.message.handler.factory.MessageHandlerFactory;
 import com.anthony.chatapp.core.service.manager.ServiceManager;
 import com.anthony.chatapp.server.service.ServerMessageSenderService;
@@ -14,8 +15,11 @@ public class ServerServiceManager extends ServiceManager {
 
     @Override
     public void startService() {
+        ServerMessageSenderService serverMessageSenderService = ServerMessageSenderService.getInstance();
+        CachedMessageService cachedMessageService = CachedMessageService.getInstance(serverMessageSenderService);
+        addService(cachedMessageService);
+        addService(serverMessageSenderService);
+
         super.startService();
-        Thread t = new Thread(ServerMessageSenderService.getInstance());
-        t.start();
     }
 }

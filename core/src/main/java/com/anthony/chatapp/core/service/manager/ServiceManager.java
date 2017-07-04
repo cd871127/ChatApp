@@ -1,6 +1,5 @@
 package com.anthony.chatapp.core.service.manager;
 
-import com.anthony.chatapp.core.message.CachedMessageService;
 import com.anthony.chatapp.core.message.handler.factory.MessageHandlerFactory;
 import com.anthony.chatapp.core.service.ConnectionService;
 import com.anthony.chatapp.core.service.MessageDispatchService;
@@ -25,7 +24,8 @@ public class ServiceManager {
     private MessageReceiveService mrs;
     private ConnectionService cs;
     private MessageHandlerFactory mdf;
-    private CachedMessageService cms;
+    protected ExecutorService es = Executors.newFixedThreadPool(6);
+
 
     public ServiceManager(int port, MessageHandlerFactory mdf) {
         this.port = port;
@@ -42,21 +42,22 @@ public class ServiceManager {
             e.printStackTrace();
             return false;
         }
-        cms = CachedMessageService.getInstance();
         return true;
     }
 
     public void startService() {
         if (!init())
             return;
-        ExecutorService es = Executors.newFixedThreadPool(4);
-
         es.submit(cs);
         es.submit(mrs);
         es.submit(mds);
-        es.submit(cms);
         es.shutdown();
     }
+
+    public void addService(Runnable runnable) {
+        es.submit(runnable);
+    }
+
 
     public SelectionKey addChannel(SocketChannel socketChannel) {
         return mrs.addChannel(socketChannel);

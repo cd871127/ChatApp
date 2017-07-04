@@ -12,7 +12,7 @@ import java.nio.channels.SocketChannel;
 /**
  * Created by chend on 2017/6/30.
  */
-public class ConnectionService implements Runnable {
+public class ConnectionService extends Service {
     private Logger logger = LoggerFactory.getLogger(getClass());
     private ServerSocketChannel serverSocketChannel;
     private MessageReceiveService mrs;
@@ -21,7 +21,6 @@ public class ConnectionService implements Runnable {
         serverSocketChannel = ServerSocketChannel.open();
         serverSocketChannel.socket().bind(new InetSocketAddress(port));
         this.mrs = mrs;
-        logger.debug("ConnectionService created");
     }
 
     @Override

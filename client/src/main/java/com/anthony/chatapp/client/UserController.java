@@ -2,13 +2,12 @@ package com.anthony.chatapp.client;
 
 import com.anthony.chatapp.core.message.entity.Message;
 import com.anthony.chatapp.core.message.entity.Operation;
-import com.anthony.chatapp.core.user.UserInfo;
 
 /**
  * Created by chend on 2017/7/3.
  */
 public class UserController {
-    private static boolean isLogin = false;
+    private boolean isLogin = false;
 
     private ClientMessageSender clientMessageSender;
 
@@ -17,7 +16,7 @@ public class UserController {
     }
 
     public void login() {
-        Message message = new Message.MessageBuilder(Operation.OperationTypes.LOGIN,new ClientInfo(), "server").build();
+        Message message = new Message.MessageBuilder(Operation.OperationTypes.LOGIN, new ClientInfo(), "server").build();
         clientMessageSender.send(message);
     }
 
@@ -26,11 +25,11 @@ public class UserController {
         return true;
     }
 
-    public static boolean isLogin() {
+    public boolean isLogin() {
         return isLogin;
     }
 
-    public static void setIsLogin(boolean isLogin) {
-        UserController.isLogin = isLogin;
+    public void setIsLogin(boolean isLogin) {
+        this.isLogin = isLogin;
     }
 }

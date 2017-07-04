@@ -4,6 +4,7 @@ package com.anthony.chatapp.server.handler.factory;
 import com.anthony.chatapp.core.message.MessageAndKey;
 import com.anthony.chatapp.core.message.handler.MessageHandler;
 import com.anthony.chatapp.core.message.handler.factory.MessageHandlerFactory;
+import com.anthony.chatapp.core.message.sender.Sender;
 import com.anthony.chatapp.server.handler.FileHandler;
 import com.anthony.chatapp.server.handler.OperationHandler;
 import com.anthony.chatapp.server.handler.TextHandler;
@@ -13,6 +14,10 @@ import com.anthony.chatapp.server.handler.TextHandler;
  */
 public class ServerMessageHandlerFactory extends MessageHandlerFactory {
 
+
+    public ServerMessageHandlerFactory(Sender sender) {
+        super(sender);
+    }
 
     @Override
     protected MessageHandler textHandler(MessageAndKey messageAndKey) {

@@ -36,12 +36,11 @@ public class MessageReceiver implements Callable<MessageAndKey> {
             int bodyLength = Message.getMessageLength(lengthByte);
             byte[] bodyBytes = read(socketChannel, bodyLength);
             message = Message.decode(bodyBytes);
-            logger.debug("receive message from  " + message.getSender() + " ,send to " + message.getReceiver());
             //设置key对读感兴趣
             mrs.interestOps(key, key.interestOps() | SelectionKey.OP_READ);
         } catch (BufferUnderflowException | IOException e) {
             logger.warn("lose connection");
-            return null;
+            return new MessageAndKey(null, key);
         }
         return new MessageAndKey(message, key);
     }
