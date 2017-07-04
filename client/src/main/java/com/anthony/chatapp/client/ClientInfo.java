@@ -18,7 +18,9 @@ public class ClientInfo extends UserInfo {
 
     private static String localUserId;
 
-
+    public ClientInfo() {
+        setUserId(localUserId);
+    }
 
     public String getPassword() {
         return password;

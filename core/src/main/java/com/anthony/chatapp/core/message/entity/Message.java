@@ -7,6 +7,7 @@ import com.anthony.chatapp.core.user.UserInfo;
 
 import java.io.*;
 import java.nio.charset.Charset;
+import java.util.UUID;
 
 /**
  * Created by chend on 2017/6/29.
@@ -27,16 +28,17 @@ public class Message implements Serializable {
 
     public static final int HEADER_BYTE_COUNT = 4;
 
+    private String id;
     private String sender;
     private String receiver;
     private String timestamp;
     private MessageTypes type;
     private Object attachment;
-    private UserInfo userInfo;
 
     @Override
     public String toString() {
         return "Message{" +
+                "id='" + id + '\'' +
                 "receiver='" + receiver + '\'' +
                 ", sender='" + sender + '\'' +
                 ", timestamp='" + timestamp + '\'' +
@@ -46,8 +48,8 @@ public class Message implements Serializable {
     }
 
     private Message() {
-    }
 
+    }
 
     private Message(MessageBuilder builder) {
         this();
@@ -56,7 +58,7 @@ public class Message implements Serializable {
         type = builder.type;
         sender = builder.sender;
         attachment = builder.attachment;
-        userInfo=builder.userInfo;
+        id = builder.id;
     }
 
     protected static Charset charset = Charset.forName("UTF-8");
@@ -82,6 +84,13 @@ public class Message implements Serializable {
             switch (message.getType()) {
                 case OPERATION:
                     message.setAttachment(jsonObject.toJavaObject(Operation.class));
+                    switch (((Operation) message.attachment).getOperationType()) {
+                        case LOGIN:
+                            Operation operation= (Operation) message.attachment;
+                            JSONObject operationAttachment= (JSONObject) operation.getAttachment();
+                            operation.setAttachment(operationAttachment.toJavaObject(UserInfo.class));
+                            break;
+                    }
                     break;
                 case FILE:
                     message.setAttachment(jsonObject.toJavaObject(File.class));
@@ -115,6 +124,14 @@ public class Message implements Serializable {
             e.printStackTrace();
         }
         return res;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getSender() {
@@ -157,13 +174,6 @@ public class Message implements Serializable {
         this.attachment = attachment;
     }
 
-    public UserInfo getUserInfo() {
-        return userInfo;
-    }
-
-    public void setUserInfo(UserInfo userInfo) {
-        this.userInfo = userInfo;
-    }
 
     public enum MessageTypes {
         FILE, TEXT, OPERATION
@@ -175,11 +185,13 @@ public class Message implements Serializable {
         private MessageTypes type;
         private String sender;
         private Object attachment;
-        private UserInfo userInfo;
+        private String id;
 
         private MessageBuilder() {
             this.sender = Parameters.SENDER;
             timestamp = String.valueOf(System.currentTimeMillis());
+            id = UUID.randomUUID().toString().replace("-", "");
+            System.out.println(id);
         }
 
         public MessageBuilder(String receiver, MessageTypes type, Object attachment) {
@@ -230,10 +242,6 @@ public class Message implements Serializable {
             attachment = file;
         }
 
-        public MessageBuilder userInfo(UserInfo userInfo) {
-            this.userInfo = userInfo;
-            return this;
-        }
 
         public MessageBuilder attachment(String attachment) {
             this.attachment = attachment;

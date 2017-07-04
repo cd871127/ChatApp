@@ -3,7 +3,7 @@ package com.anthony.chatapp.server.user;
 
 import com.anthony.chatapp.core.user.UserInfo;
 
-import java.nio.channels.SocketChannel;
+import java.nio.channels.SelectionKey;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -14,7 +14,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  */
 public class UserManager {
 
-    private Map<String, UserInfo> container;
+    private Map<String, UserAndKey> container;
     private static UserManager userManager;
     private ReentrantReadWriteLock rwl = new ReentrantReadWriteLock();
 
@@ -30,19 +30,19 @@ public class UserManager {
         return userManager;
     }
 
-    public boolean userLogin(UserInfo userInfo) {
+    public boolean userLogin(UserAndKey userAndKey) {
         rwl.writeLock().lock();
         /*add user*/
-        container.put(userInfo.getUserName(), userInfo);
+        container.put(userAndKey.getUserInfo().getUserId(), userAndKey);
         rwl.writeLock().unlock();
         return true;
     }
 
     public UserInfo getUserInfo(String key) {
         rwl.readLock().lock();
-        UserInfo userInfo = container.get(key);
+        UserAndKey userAndKey = container.get(key);
         rwl.readLock().unlock();
-        return userInfo;
+        return userAndKey == null ? null : userAndKey.getUserInfo();
     }
 
     public boolean userLogout(String key) {
@@ -52,9 +52,11 @@ public class UserManager {
         return true;
     }
 
-    public SocketChannel getUserChannel(String key) {
-        return null;
-//        return getUserInfo(key).getSocketChannel();
+    public SelectionKey getUserSelectionKey(String key) {
+        rwl.readLock().lock();
+        UserAndKey userAndKey = container.get(key);
+        rwl.readLock().unlock();
+        return userAndKey == null ? null : userAndKey.getKey();
     }
 
 }

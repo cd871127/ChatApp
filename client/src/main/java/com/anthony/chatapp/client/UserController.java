@@ -2,6 +2,7 @@ package com.anthony.chatapp.client;
 
 import com.anthony.chatapp.core.message.entity.Message;
 import com.anthony.chatapp.core.message.entity.Operation;
+import com.anthony.chatapp.core.user.UserInfo;
 
 /**
  * Created by chend on 2017/7/3.
@@ -16,7 +17,7 @@ public class UserController {
     }
 
     public boolean login() {
-        Message message = new Message.MessageBuilder(Operation.OperationTypes.LOGIN, "server").build();
+        Message message = new Message.MessageBuilder(Operation.OperationTypes.LOGIN,new ClientInfo(), "server").build();
         clientMessageSender.send(message);
         return true;
     }
