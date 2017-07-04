@@ -12,13 +12,10 @@ public class ServerServiceManager extends ServiceManager {
         super(port, mdf);
     }
 
-    private ServerMessageSenderService serverMessageSenderService;
-
     @Override
     public void startService() {
         super.startService();
-        serverMessageSenderService = ServerMessageSenderService.getInstance();
-        Thread t = new Thread(serverMessageSenderService);
+        Thread t = new Thread(ServerMessageSenderService.getInstance());
         t.start();
     }
 }

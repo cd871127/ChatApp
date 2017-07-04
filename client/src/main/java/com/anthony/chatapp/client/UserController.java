@@ -16,10 +16,9 @@ public class UserController {
         this.clientMessageSender = sender;
     }
 
-    public boolean login() {
+    public void login() {
         Message message = new Message.MessageBuilder(Operation.OperationTypes.LOGIN,new ClientInfo(), "server").build();
         clientMessageSender.send(message);
-        return true;
     }
 
 
@@ -27,7 +26,7 @@ public class UserController {
         return true;
     }
 
-    public static boolean isIsLogin() {
+    public static boolean isLogin() {
         return isLogin;
     }
 

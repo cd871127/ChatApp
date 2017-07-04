@@ -10,18 +10,18 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  * Created by chend on 2017/7/4.
  * message的缓存队列,用于保存已发送的message,接收到确认信息收,删除
  */
-public class CachedMessage {
+public class CachedMessageService implements Runnable{
     private Map<String, Message> cache = new HashMap<>();
 
-    private static CachedMessage ourInstance = new CachedMessage();
+    private static CachedMessageService ourInstance = new CachedMessageService();
 
-    public static CachedMessage getInstance() {
+    public static CachedMessageService getInstance() {
         return ourInstance;
     }
 
     private ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
 
-    private CachedMessage() {
+    private CachedMessageService() {
     }
 
     public boolean contains(String key) {
@@ -34,5 +34,10 @@ public class CachedMessage {
 
     public void removeMessage(String key) {
         cache.remove(key);
+    }
+
+    @Override
+    public void run() {
+
     }
 }

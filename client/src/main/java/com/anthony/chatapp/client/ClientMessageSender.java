@@ -17,6 +17,8 @@ public class ClientMessageSender extends MessageSender {
     private Logger logger = LoggerFactory.getLogger(getClass());
 
     private static ClientMessageSender clientMessageSender;
+
+    //与服务器通信的key
     private SelectionKey key;
 
     private ClientMessageSender() {

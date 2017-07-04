@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.nio.BufferUnderflowException;
 import java.nio.ByteBuffer;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.SocketChannel;
@@ -38,7 +39,7 @@ public class MessageReceiver implements Callable<MessageAndKey> {
             logger.debug("receive message from  " + message.getSender() + " ,send to " + message.getReceiver());
             //设置key对读感兴趣
             mrs.interestOps(key, key.interestOps() | SelectionKey.OP_READ);
-        } catch (IOException e) {
+        } catch (BufferUnderflowException | IOException e) {
             logger.warn("lose connection");
             return null;
         }

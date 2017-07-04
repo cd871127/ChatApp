@@ -43,7 +43,7 @@ public class ClientService {
 
     public void start() {
         init();
-        boolean isLogin=userController.login();
-        userController.setIsLogin(isLogin);
+        userController.login();
+
     }
 }
