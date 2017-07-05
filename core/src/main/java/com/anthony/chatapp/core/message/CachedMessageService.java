@@ -18,6 +18,7 @@ import static com.anthony.chatapp.core.Const.isShutdown;
  * message的缓存队列,用于保存已发送的message,接收到确认信息收,删除
  */
 public class CachedMessageService extends Service {
+    //messageid and message
     private Map<String, CachedMessage> cache = new HashMap<>();
 
     private static CachedMessageService ourInstance = new CachedMessageService();

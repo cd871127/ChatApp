@@ -7,7 +7,7 @@ import com.anthony.chatapp.core.message.entity.Operation;
  * Created by chend on 2017/7/3.
  */
 public class UserController {
-    private boolean isLogin = false;
+    private static volatile boolean isLogin;
 
     private ClientMessageSender clientMessageSender;
 
@@ -18,18 +18,21 @@ public class UserController {
     public void login() {
         Message message = new Message.MessageBuilder(Operation.OperationTypes.LOGIN, new ClientInfo(), "server").build();
         clientMessageSender.send(message);
+//        CachedMessageService.getInstance().addMessage(message.getId(),message);
     }
 
 
-    public boolean logout() {
-        return true;
+    public void logout() {
+        Message message = new Message.MessageBuilder(Operation.OperationTypes.LOGOUT, new ClientInfo(), "server").build();
+        clientMessageSender.send(message);
+        setIsLogin(false);
     }
 
-    public boolean isLogin() {
+    public static boolean isLogin() {
         return isLogin;
     }
 
-    public void setIsLogin(boolean isLogin) {
-        this.isLogin = isLogin;
+    public static void setIsLogin(boolean isLogin) {
+        UserController.isLogin = isLogin;
     }
 }

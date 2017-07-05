@@ -36,7 +36,9 @@ public class OperationHandler extends AbstractOperationHandler {
                 sender.send(new Message.MessageBuilder(Operation.OperationTypes.LOGIN, message.getSender()).build());
                 break;
             case LOGOUT:
-                logger.info("user logout");
+                logger.info("user " + message.getSender() + " logout");
+                UserManager.getInstance().userLogout(message.getSender());
+                sender.send(new Message.MessageBuilder(Operation.OperationTypes.LOGOUT, message.getSender()).build());
                 break;
             case ACK:
                 sendAckAck(message);

@@ -33,14 +33,15 @@ public class MessageDispatchService extends Service {
                 if (future.isDone()) {
                     MessageAndKey messageAndKey = future.get();
                     if (null == messageAndKey.getMessage()) {
-                        messageAndKey.setMessage(new Message.MessageBuilder(Operation.OperationTypes.LC,"server").build());
+                        messageAndKey.setMessage(new Message.MessageBuilder(Operation.OperationTypes.LC, "server").build());
                     }
                     MessageHandler messageHandler = mdf.getMessageHandler(messageAndKey);
                     logger.debug("***********************************");
                     logger.debug(messageAndKey.getMessage().toString());
                     logger.debug("***********************************");
-                    if (messageHandler != null)
+                    if (messageHandler != null) {
                         messageHandler.handle();
+                    }
                 } else {
                     addMessage(future);
                 }

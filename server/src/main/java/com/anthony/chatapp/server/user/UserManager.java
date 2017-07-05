@@ -6,7 +6,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.nio.channels.SelectionKey;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
@@ -18,7 +20,9 @@ public class UserManager {
 
     private Logger logger = LoggerFactory.getLogger(getClass());
 
+    //user id and userandkey
     private Map<String, UserAndKey> container;
+    //key and user id
     private Map<SelectionKey, String> keyUser;
     private static UserManager userManager;
     private ReentrantReadWriteLock rwl = new ReentrantReadWriteLock();
@@ -46,25 +50,25 @@ public class UserManager {
         return true;
     }
 
-    public UserInfo getUserInfo(String key) {
+    public UserInfo getUserInfo(String id) {
         rwl.readLock().lock();
-        UserAndKey userAndKey = container.get(key);
+        UserAndKey userAndKey = container.get(id);
         rwl.readLock().unlock();
         return userAndKey == null ? null : userAndKey.getUserInfo();
     }
 
-    public boolean userLogout(String key) {
+    public boolean userLogout(String id) {
         rwl.writeLock().lock();
-        keyUser.remove(getUserSelectionKey(key));
-        container.remove(key);
-        logger.debug("logout: " + key);
+        keyUser.remove(getUserSelectionKey(id));
+        container.remove(id);
+        logger.debug("logout: " + id);
         rwl.writeLock().unlock();
         return true;
     }
 
-    public SelectionKey getUserSelectionKey(String key) {
+    public SelectionKey getUserSelectionKey(String id) {
         rwl.readLock().lock();
-        UserAndKey userAndKey = container.get(key);
+        UserAndKey userAndKey = container.get(id);
         rwl.readLock().unlock();
         return userAndKey == null ? null : userAndKey.getKey();
     }
@@ -78,4 +82,9 @@ public class UserManager {
         rwl.writeLock().unlock();
     }
 
+    public List<String> getOnlineUsers() {
+        List<String> userList = new ArrayList<>();
+        userList.addAll(container.keySet());
+        return userList;
+    }
 }

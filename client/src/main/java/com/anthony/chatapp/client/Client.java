@@ -31,6 +31,8 @@ public class Client {
 //        while (!flag) {
 //            flag = UserController.isLogin();
 //        }
+        while (!UserController.isLogin())
+            ;
         System.out.println("login success");
 
 
