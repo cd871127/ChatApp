@@ -26,4 +26,5 @@ public abstract class MessageSender extends Service implements Sender {
         logger.debug("-----------------------------------");
         return messageByte.length;
     }
+
 }

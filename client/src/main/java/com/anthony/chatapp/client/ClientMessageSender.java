@@ -45,6 +45,16 @@ public class ClientMessageSender extends MessageSender {
             e.printStackTrace();
         }
         ClientLock.unLockWrite();
+        showMessage(message);
         return sendLength;
+    }
+
+    private void showMessage(Message message) {
+        Message.MessageTypes type = message.getType();
+        switch (type) {
+            case TEXT:
+                System.out.println(message.getSender() + ": " + message.getAttachment());
+                break;
+        }
     }
 }
