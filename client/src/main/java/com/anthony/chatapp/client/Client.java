@@ -14,8 +14,8 @@ import java.io.InputStreamReader;
 public class Client {
 
     public static void main(String[] args) throws IOException {
-        debug();
-//        userInput(args);
+//        debug();
+        userInput(args);
     }
 
 
