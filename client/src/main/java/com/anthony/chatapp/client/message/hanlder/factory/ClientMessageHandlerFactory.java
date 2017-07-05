@@ -9,6 +9,7 @@ import com.anthony.chatapp.core.message.sender.Sender;
 
 /**
  * Created by chend on 2017/7/3.
+ * 1
  */
 public class ClientMessageHandlerFactory extends MessageHandlerFactory {
 

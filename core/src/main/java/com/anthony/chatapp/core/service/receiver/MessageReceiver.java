@@ -15,6 +15,7 @@ import java.util.concurrent.Callable;
 
 /**
  * Created by chend on 2017/6/30.
+ * 从key中读取数据,转换到Message
  */
 public class MessageReceiver implements Callable<MessageAndKey> {
     private static Logger logger = LoggerFactory.getLogger(MessageReceiver.class);

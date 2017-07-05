@@ -11,6 +11,7 @@ import java.nio.channels.SocketChannel;
 
 /**
  * Created by chend on 2017/6/30.
+ * 接收新的链接
  */
 public class ConnectionService extends Service {
     private Logger logger = LoggerFactory.getLogger(getClass());

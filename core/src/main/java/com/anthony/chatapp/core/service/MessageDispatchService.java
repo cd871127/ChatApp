@@ -13,6 +13,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 /**
  * Created by chend on 2017/7/1.
+ * 根据不同的消息类型,分配不同的处理器
  */
 public class MessageDispatchService extends Service {
 
