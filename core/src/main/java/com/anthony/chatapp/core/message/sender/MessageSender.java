@@ -12,6 +12,7 @@ import java.nio.channels.SocketChannel;
  */
 public abstract class MessageSender extends Service implements Sender {
 
+    @Override
     public void run(){}
 
     protected int messageIntoSocketChannel(Message message, SocketChannel socketChannel) throws IOException {

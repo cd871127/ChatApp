@@ -16,6 +16,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
  * Created by chend on 2017/6/30.
+ * 处理SelectionKey
  */
 public class MessageReceiveService extends Service {
     private static Logger logger = LoggerFactory.getLogger(MessageReceiveService.class);

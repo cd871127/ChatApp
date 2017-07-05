@@ -1,6 +1,5 @@
 package com.anthony.chatapp.client.message.hanlder;
 
-import com.anthony.chatapp.client.UserController;
 import com.anthony.chatapp.core.message.CachedMessageService;
 import com.anthony.chatapp.core.message.MessageAndKey;
 import com.anthony.chatapp.core.message.entity.Message;

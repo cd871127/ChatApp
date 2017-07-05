@@ -2,10 +2,7 @@ package com.anthony.chatapp.server.service;
 
 import com.anthony.chatapp.core.message.entity.Message;
 import com.anthony.chatapp.core.message.sender.MessageSender;
-import com.anthony.chatapp.server.handler.TextHandler;
 import com.anthony.chatapp.server.user.UserManager;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.nio.channels.SelectionKey;
