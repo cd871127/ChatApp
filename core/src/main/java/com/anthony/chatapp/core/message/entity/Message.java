@@ -61,7 +61,7 @@ public class Message implements Serializable {
         id = builder.id;
     }
 
-    protected static Charset charset = Charset.forName("UTF-8");
+    private static Charset charset = Charset.forName("UTF-8");
 
     public byte[] encode() {
         byte[] jsonByte = JSON.toJSONString(this).getBytes(charset);
