@@ -2,6 +2,7 @@ package com.anthony.chatapp.client.message.hanlder;
 
 import com.anthony.chatapp.core.message.MessageAndKey;
 import com.anthony.chatapp.core.message.entity.Message;
+import com.anthony.chatapp.core.message.entity.Operation;
 import com.anthony.chatapp.core.message.handler.AbstractMessageHandler;
 
 /**
@@ -16,6 +17,6 @@ public class TextHandler extends AbstractMessageHandler {
     public void handle() {
         Message message=messageAndKey.getMessage();
         sendAck(message);
-        System.out.println(message.getSender()+": "+message.getAttachment());
+        System.out.println(message.getSender()+": "+((Operation)message).getAttachment());
     }
 }

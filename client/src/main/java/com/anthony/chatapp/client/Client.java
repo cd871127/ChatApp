@@ -2,6 +2,7 @@ package com.anthony.chatapp.client;
 
 import com.anthony.chatapp.core.message.CachedMessageService;
 import com.anthony.chatapp.core.message.entity.Message;
+import com.anthony.chatapp.core.message.entity.Text;
 import com.anthony.chatapp.core.system.Parameters;
 
 import java.io.BufferedReader;
@@ -39,7 +40,7 @@ public class Client {
         /**command ui**/
         String[] tmp = "sss:1111".split(":");
 
-        Message message = new Message.MessageBuilder(tmp[1], tmp[0]).build();
+        Message message = new Text(tmp[1], tmp[0]);
         ClientMessageSender.getInstance().send(message);
         CachedMessageService.getInstance().addMessage(message.getId(), message);
     }
@@ -70,7 +71,7 @@ public class Client {
 //        int i=0;
 //        while (true){/////////////
 //            String[] tmp = (i+"sss:234234").split(":");///////////////////
-            Message message = new Message.MessageBuilder(tmp[1], tmp[0]).build();
+            Message message = new Text(tmp[1], tmp[0]);
             ClientMessageSender.getInstance().send(message);
             CachedMessageService.getInstance().addMessage(message.getId(), message);
         }

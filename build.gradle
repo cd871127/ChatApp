@@ -48,23 +48,24 @@ configure(subprojects.findAll { it.name.contains('client') || it.name.contains('
         }
 
 //所有子项目配置
-subprojects {
-
-}
+//subprojects {
+//
+//}
 
 //某个子项目的配置
-project(':core') {
 //也可以放在子项目的build.gradle中
-}
+//project(':core') {
+//
+//}
 
-project(':server') {
 //也可以放在子项目的build.gradle中
-    mainClassName = 'com.anthony.chatapp.server.Server'
-    jar.manifest.attributes.'Main-Class' = mainClassName
-}
+//project(':server') {
+//    mainClassName = 'com.anthony.chatapp.server.Server'
+//    jar.manifest.attributes.'Main-Class' = mainClassName
+//}
 
-project(':client') {
 //也可以放在子项目的build.gradle中
-    mainClassName = 'com.anthony.chatapp.client.Client'
-    jar.manifest.attributes.'Main-Class' = mainClassName
-}
+//project(':client') {
+//    mainClassName = 'com.anthony.chatapp.client.Client'
+//    jar.manifest.attributes.'Main-Class' = mainClassName
+//}

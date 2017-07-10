@@ -16,15 +16,15 @@ public class UserController {
     }
 
     public void login() {
-        Message message = new Message.MessageBuilder(Operation.OperationTypes.LOGIN, new ClientInfo(), "server").build();
-        clientMessageSender.send(message);
+        Operation login=new Operation(Operation.OperationType.LOGIN,new ClientInfo(),"server");
+        clientMessageSender.send(login);
 //        CachedMessageService.getInstance().addMessage(message.getId(),message);
     }
 
 
     public void logout() {
-        Message message = new Message.MessageBuilder(Operation.OperationTypes.LOGOUT, new ClientInfo(), "server").build();
-        clientMessageSender.send(message);
+        Operation login=new Operation(Operation.OperationType.LOGOUT,new ClientInfo(),"server");
+        clientMessageSender.send(login);
         setIsLogin(false);
     }
 

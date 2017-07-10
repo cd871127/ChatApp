@@ -19,7 +19,7 @@ public class OperationHandler extends AbstractOperationHandler {
     @Override
     public void handle() {
         Message message = messageAndKey.getMessage();
-        Operation.OperationTypes type = ((Operation) message.getAttachment()).getOperationType();
+        Operation.OperationType type = ((Operation) message).getOperationType();
         switch (type) {
             case LOGIN:
                 UserController.setIsLogin(true);
@@ -29,7 +29,7 @@ public class OperationHandler extends AbstractOperationHandler {
                 sendAckAck(message);
                 break;
             case ACKACK:
-                CachedMessageService.getInstance().removeMessage(((Operation) (message.getAttachment())).getAttachment().toString());
+                CachedMessageService.getInstance().removeMessage(((Operation) message).getAttachment().toString());
                 break;
         }
     }

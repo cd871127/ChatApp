@@ -17,8 +17,8 @@ public abstract class MessageHandlerFactory {
     public MessageHandler getMessageHandler(MessageAndKey messageAndKey) {
         MessageHandler messageHandler = null;
         Message message = messageAndKey.getMessage();
-        Message.MessageTypes messageType = message.getType();
-        switch (messageType) {
+        Message.Type type = message.getType();
+        switch (type) {
             case TEXT:
                 messageHandler = textHandler(messageAndKey);
                 break;

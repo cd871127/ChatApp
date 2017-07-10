@@ -1,5 +1,6 @@
 package com.anthony.chatapp.server.handler;
 
+import com.alibaba.fastjson.JSONObject;
 import com.anthony.chatapp.core.message.CachedMessageService;
 import com.anthony.chatapp.core.message.MessageAndKey;
 import com.anthony.chatapp.core.message.entity.Message;
@@ -26,25 +27,26 @@ public class OperationHandler extends AbstractOperationHandler {
     @Override
     public void handle() {
         Message message = messageAndKey.getMessage();
-        Operation.OperationTypes type = ((Operation) message.getAttachment()).getOperationType();
+        Operation.OperationType type = ((Operation) message).getOperationType();
         switch (type) {
             case LOGIN:
                 logger.info("user " + message.getSender() + " login");
-                UserInfo userInfo = (UserInfo) ((Operation) (message.getAttachment())).getAttachment();
+                JSONObject jsonObject = (JSONObject) ((Operation) message).getAttachment();
+                UserInfo userInfo = jsonObject.toJavaObject(UserInfo.class);
                 UserAndKey userAndKey = new UserAndKey(userInfo, messageAndKey.getKey());
                 UserManager.getInstance().userLogin(userAndKey);
-                sender.send(new Message.MessageBuilder(Operation.OperationTypes.LOGIN, message.getSender()).build());
+                sender.send(new Operation(Operation.OperationType.LOGIN, message.getSender()));
                 break;
             case LOGOUT:
                 logger.info("user " + message.getSender() + " logout");
                 UserManager.getInstance().userLogout(message.getSender());
-                sender.send(new Message.MessageBuilder(Operation.OperationTypes.LOGOUT, message.getSender()).build());
+                sender.send(new Operation(Operation.OperationType.LOGOUT, message.getSender()));
                 break;
             case ACK:
                 sendAckAck(message);
                 break;
             case ACKACK:
-                CachedMessageService.getInstance().removeMessage(((Operation) (message.getAttachment())).getAttachment().toString());
+                CachedMessageService.getInstance().removeMessage(((Operation)message).getAttachment().toString());
                 break;
             case LC:
                 SelectionKey key = messageAndKey.getKey();

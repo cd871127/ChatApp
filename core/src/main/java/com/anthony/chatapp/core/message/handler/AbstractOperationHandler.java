@@ -5,6 +5,8 @@ import com.anthony.chatapp.core.message.MessageAndKey;
 import com.anthony.chatapp.core.message.entity.Message;
 import com.anthony.chatapp.core.message.entity.Operation;
 
+import java.nio.file.OpenOption;
+
 /**
  * Created by chend on 2017/7/4.
  */
@@ -15,8 +17,8 @@ public abstract class AbstractOperationHandler extends AbstractMessageHandler {
     }
 
     protected void sendAckAck(Message ack) {
-        CachedMessageService.getInstance().removeMessage(((Operation)ack.getAttachment()).getAttachment().toString());
-        Message ackAck = new Message.MessageBuilder(Operation.OperationTypes.ACKACK, ack.getId(), ack.getSender()).build();
+        CachedMessageService.getInstance().removeMessage(((Operation)ack).getAttachment().toString());
+        Message ackAck = new Operation(Operation.OperationType.ACKACK, ack.getId(), ack.getSender());
         sender.send(ackAck);
     }
 

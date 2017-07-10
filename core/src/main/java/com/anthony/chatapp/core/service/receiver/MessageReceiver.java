@@ -33,10 +33,14 @@ public class MessageReceiver implements Callable<MessageAndKey> {
 
         Message message;
         try {
-            byte[] lengthByte = read(socketChannel, Message.HEADER_BYTE_COUNT);
-            int bodyLength = Message.getMessageLength(lengthByte);
+            //处理消息头
+            byte[] headerByte = read(socketChannel, Message.TOTAL_HEADER_LENGTH);
+            //消息体长度
+            int bodyLength = Message.getMessageLength(headerByte, 1, Message.HEADER_LENGTH);
+            //消息类型
+            byte type = headerByte[0];
             byte[] bodyBytes = read(socketChannel, bodyLength);
-            message = Message.decode(bodyBytes);
+            message = Message.decode(bodyBytes, type);
             //设置key对读感兴趣
             mrs.interestOps(key, key.interestOps() | SelectionKey.OP_READ);
         } catch (BufferUnderflowException | IOException e) {

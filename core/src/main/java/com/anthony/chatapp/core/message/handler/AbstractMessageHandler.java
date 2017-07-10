@@ -18,8 +18,7 @@ public abstract class AbstractMessageHandler implements MessageHandler {
     }
 
     protected void sendAck(Message originMessage) {
-
-        Message ack = new Message.MessageBuilder(Operation.OperationTypes.ACK, originMessage.getId(), originMessage.getSender()).build();
+        Message ack = new Operation(Operation.OperationType.ACK, originMessage.getId(), originMessage.getSender());
         sender.send(ack);
         CachedMessageService.getInstance().addMessage(ack.getId(), ack);
     }

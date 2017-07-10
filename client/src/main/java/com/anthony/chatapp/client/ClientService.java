@@ -26,8 +26,9 @@ public class ClientService {
         try {
             socketChannel = SocketChannel.open();
 //            InetAddress localhost = InetAddress.getLocalHost();
+            InetAddress server = InetAddress.getLocalHost();
 //            InetAddress server = InetAddress.getByName("192.168.60.1");
-            InetAddress server = InetAddress.getByName("45.78.44.179");
+//            InetAddress server = InetAddress.getByName("45.78.44.179");
             socketChannel.connect(new InetSocketAddress(server, Parameters.SERVER_PORT));
         } catch (IOException e) {
             e.printStackTrace();

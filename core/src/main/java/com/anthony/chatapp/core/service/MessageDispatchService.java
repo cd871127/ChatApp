@@ -1,7 +1,6 @@
 package com.anthony.chatapp.core.service;
 
 import com.anthony.chatapp.core.message.MessageAndKey;
-import com.anthony.chatapp.core.message.entity.Message;
 import com.anthony.chatapp.core.message.entity.Operation;
 import com.anthony.chatapp.core.message.handler.MessageHandler;
 import com.anthony.chatapp.core.message.handler.factory.MessageHandlerFactory;
@@ -34,7 +33,7 @@ public class MessageDispatchService extends Service {
                 if (future.isDone()) {
                     MessageAndKey messageAndKey = future.get();
                     if (null == messageAndKey.getMessage()) {
-                        messageAndKey.setMessage(new Message.MessageBuilder(Operation.OperationTypes.LC, "server").build());
+                        messageAndKey.setMessage(new Operation(Operation.OperationType.LC, "server"));
                     }
                     MessageHandler messageHandler = mdf.getMessageHandler(messageAndKey);
                     logger.debug("***********************************");

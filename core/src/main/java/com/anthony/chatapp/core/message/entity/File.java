@@ -3,10 +3,16 @@ package com.anthony.chatapp.core.message.entity;
 /**
  * Created by chend on 2017/7/3.
  */
-public class File {
+public class File extends Message {
     private String fileName;
     private long fileSize;
     private FileTypes fileType;
+
+    private File(){}
+
+    public File(String receiver) {
+        super(receiver);
+    }
 
     public String getFileName() {
         return fileName;
@@ -39,6 +45,11 @@ public class File {
                 ", fileSize=" + fileSize +
                 ", fileType=" + fileType +
                 '}';
+    }
+
+    @Override
+    protected void encode(byte[] data) {
+        data[0] = Message.Type.FILE.value();
     }
 
     public enum FileTypes {
