@@ -9,8 +9,16 @@ import org.slf4j.LoggerFactory;
 public abstract class Service implements Runnable {
     protected Logger logger = LoggerFactory.getLogger(getClass());
 
+    //true表示服务启动,false表示服务关闭
+    protected boolean status = false;
+
     public Service() {
 
         logger.debug("created");
+    }
+
+    //关闭服务
+    public void shutdown() {
+        status = false;
     }
 }

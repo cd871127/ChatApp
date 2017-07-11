@@ -69,8 +69,6 @@ public class MessageReceiveService extends Service {
         } catch (IOException e) {
             e.printStackTrace();
         }
-//        catch (InterruptedException e) {
-//        }
         executorService.shutdown();
     }
 

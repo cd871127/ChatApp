@@ -3,7 +3,6 @@ package com.anthony.chatapp.client;
 import com.anthony.chatapp.client.message.hanlder.factory.ClientMessageHandlerFactory;
 import com.anthony.chatapp.core.message.CachedMessageService;
 import com.anthony.chatapp.core.service.manager.ServiceManager;
-import com.anthony.chatapp.core.system.Parameters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,17 +18,18 @@ import java.nio.channels.SocketChannel;
 public class ClientService {
     private Logger logger = LoggerFactory.getLogger(getClass());
     private SocketChannel socketChannel;
-    private ServiceManager serviceManager = new ServiceManager(Parameters.CLIENT_PORT, new ClientMessageHandlerFactory(ClientMessageSender.getInstance()));
+    private ServiceManager serviceManager = new ServiceManager(ClientParameter.getInstance().getClientPort(), new ClientMessageHandlerFactory(ClientMessageSender.getInstance()));
     private UserController userController;
 
     private void init() {
         try {
             socketChannel = SocketChannel.open();
 //            InetAddress localhost = InetAddress.getLocalHost();
-            InetAddress server = InetAddress.getLocalHost();
+//            InetAddress server = InetAddress.getLocalHost();
 //            InetAddress server = InetAddress.getByName("192.168.60.1");
 //            InetAddress server = InetAddress.getByName("45.78.44.179");
-            socketChannel.connect(new InetSocketAddress(server, Parameters.SERVER_PORT));
+            InetAddress server = InetAddress.getByName(ClientParameter.getInstance().getServerAddress());
+            socketChannel.connect(new InetSocketAddress(server, ClientParameter.getInstance().getServerPort()));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -43,7 +43,7 @@ public class ClientService {
         SelectionKey key = serviceManager.addChannel(socketChannel);
         ClientMessageSender.getInstance().setKey(key);
 
-        ClientInfo.setLocalUserId(Parameters.SENDER);
+//        ClientInfo.setLocalUserId(ClientParameter.getInstance().getClientID());
         //userController 要在sender后面
         userController = new UserController(ClientMessageSender.getInstance());
     }

@@ -3,7 +3,6 @@ package com.anthony.chatapp.client;
 import com.anthony.chatapp.core.message.CachedMessageService;
 import com.anthony.chatapp.core.message.entity.Message;
 import com.anthony.chatapp.core.message.entity.Text;
-import com.anthony.chatapp.core.system.Parameters;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -15,13 +14,15 @@ import java.io.InputStreamReader;
 public class Client {
 
     public static void main(String[] args) throws IOException {
+        ClientInfo clientInfo = new ClientInfo();
+        ClientParameter.getInstance().setClientInfo(clientInfo);
 //        debug();
         userInput(args);
     }
 
 
     private static void debug() {
-        Parameters.SENDER = "debug";
+        ClientParameter.getInstance().getClientInfo().setUserId("debug");
 
         ClientService clientService = new ClientService();
         clientService.start();
@@ -49,7 +50,7 @@ public class Client {
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
         if (args.length == 0) {
             System.out.println("input your name:");
-            Parameters.SENDER = reader.readLine();
+            ClientParameter.getInstance().getClientInfo().setUserId(reader.readLine());
         }
 
         ClientService clientService = new ClientService();

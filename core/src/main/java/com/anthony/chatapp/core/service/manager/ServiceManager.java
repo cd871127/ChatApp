@@ -15,7 +15,7 @@ import java.util.concurrent.Executors;
 
 /**
  * Created by chend on 2017/7/3.
- * 12
+ * 负责初始化,开启,关闭各种服务,维护服务的对象
  */
 public class ServiceManager {
     private Logger logger = LoggerFactory.getLogger(getClass());

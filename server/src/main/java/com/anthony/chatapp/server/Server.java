@@ -1,10 +1,8 @@
 package com.anthony.chatapp.server;
 
 
-//import com.anthony.chatapp.core.protocol.MessageType;
 
 import com.anthony.chatapp.core.service.manager.ServiceManager;
-import com.anthony.chatapp.core.system.Parameters;
 import com.anthony.chatapp.server.handler.factory.ServerMessageHandlerFactory;
 import com.anthony.chatapp.server.service.ServerMessageSenderService;
 import com.anthony.chatapp.server.service.manager.ServerServiceManager;
@@ -21,7 +19,7 @@ public class Server {
 
     public static void main(String[] args) throws IOException {
 //        Parameters.SENDER="server";
-        ServiceManager sm = new ServerServiceManager(Parameters.SERVER_PORT, new ServerMessageHandlerFactory(ServerMessageSenderService.getInstance()));
+        ServiceManager sm = new ServerServiceManager(ServerParameter.getInstance().getServerPort(), new ServerMessageHandlerFactory(ServerMessageSenderService.getInstance()));
         sm.startService();
         logger.info("Chat App server start");
 

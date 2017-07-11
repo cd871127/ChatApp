@@ -1,7 +1,7 @@
 package com.anthony.chatapp.core.message.entity;
 
 import com.alibaba.fastjson.JSON;
-import com.anthony.chatapp.core.system.Parameters;
+import com.anthony.chatapp.core.system.Parameter;
 
 import java.io.*;
 import java.nio.charset.Charset;
@@ -52,7 +52,7 @@ public abstract class Message implements Serializable {
     }
 
     public Message(String receiver) {
-        this.sender = Parameters.SENDER;
+        this.sender = Parameter.getInstance().getSender();
         timestamp = String.valueOf(System.currentTimeMillis());
         id = UUID.randomUUID().toString().replace("-", "");
         this.receiver = receiver;
