@@ -84,6 +84,7 @@ public abstract class Message implements Serializable {
         }
         encode(data);
 
+
         return data;
     }
 
@@ -156,9 +157,9 @@ public abstract class Message implements Serializable {
         return buf;
     }
 
-    public static int getMessageLength(byte[] data, int pos, int length) {
-        byte[] buffer = new byte[length];
-        System.arraycopy(data, pos, buffer, 0, length);
+    public static int getMessageBodyLength(byte[] data) {
+        byte[] buffer = new byte[HEADER_LENGTH];
+        System.arraycopy(data, 1, buffer, 0, HEADER_LENGTH);
         ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(buffer);
         DataInputStream dataInputStream = new DataInputStream(byteArrayInputStream);
         int res = -1;

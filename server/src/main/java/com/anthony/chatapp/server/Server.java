@@ -20,17 +20,10 @@ public class Server {
     private static Logger logger = LoggerFactory.getLogger(Server.class);
 
     public static void main(String[] args) throws IOException {
-//        logger.info("Initialise Server:");
-//        ConnectionService cs = new ConnectionService();
-//
-//        ExecutorService executorService = Executors.newFixedThreadPool(3);
-//        executorService.submit(cs);
-//        executorService.submit(MessageReceiveService.getInstance());
-//        executorService.submit(MessageDispatchService.getInstance());
-//        logger.info("Chat App start:");
-//        executorService.shutdown();
+//        Parameters.SENDER="server";
         ServiceManager sm = new ServerServiceManager(Parameters.SERVER_PORT, new ServerMessageHandlerFactory(ServerMessageSenderService.getInstance()));
         sm.startService();
+        logger.info("Chat App server start");
 
     }
 

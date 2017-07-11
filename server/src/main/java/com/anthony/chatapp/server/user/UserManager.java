@@ -63,6 +63,7 @@ public class UserManager {
         container.remove(id);
         logger.debug("logout: " + id);
         rwl.writeLock().unlock();
+
         return true;
     }
 

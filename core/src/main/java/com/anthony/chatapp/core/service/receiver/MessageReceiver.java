@@ -2,6 +2,7 @@ package com.anthony.chatapp.core.service.receiver;
 
 import com.anthony.chatapp.core.message.MessageAndKey;
 import com.anthony.chatapp.core.message.entity.Message;
+import com.anthony.chatapp.core.message.entity.Operation;
 import com.anthony.chatapp.core.service.MessageReceiveService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,17 +37,22 @@ public class MessageReceiver implements Callable<MessageAndKey> {
             //处理消息头
             byte[] headerByte = read(socketChannel, Message.TOTAL_HEADER_LENGTH);
             //消息体长度
-            int bodyLength = Message.getMessageLength(headerByte, 1, Message.HEADER_LENGTH);
+            int bodyLength = Message.getMessageBodyLength(headerByte);
             //消息类型
             byte type = headerByte[0];
             byte[] bodyBytes = read(socketChannel, bodyLength);
+
+
+
             message = Message.decode(bodyBytes, type);
+
             //设置key对读感兴趣
             mrs.interestOps(key, key.interestOps() | SelectionKey.OP_READ);
         } catch (BufferUnderflowException | IOException e) {
             logger.warn("lose connection");
             return new MessageAndKey(null, key);
         }
+
         return new MessageAndKey(message, key);
     }
 

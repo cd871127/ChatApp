@@ -35,6 +35,7 @@ public class MessageDispatchService extends Service {
                     if (null == messageAndKey.getMessage()) {
                         messageAndKey.setMessage(new Operation(Operation.OperationType.LC, "server"));
                     }
+
                     MessageHandler messageHandler = mdf.getMessageHandler(messageAndKey);
                     logger.debug("***********************************");
                     logger.debug(messageAndKey.getMessage().toString());

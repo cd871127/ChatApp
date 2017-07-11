@@ -2,7 +2,6 @@ package com.anthony.chatapp.client;
 
 import com.anthony.chatapp.client.lock.ClientLock;
 import com.anthony.chatapp.core.message.entity.Message;
-import com.anthony.chatapp.core.message.entity.Text;
 import com.anthony.chatapp.core.message.sender.MessageSender;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,16 +45,14 @@ public class ClientMessageSender extends MessageSender {
             e.printStackTrace();
         }
         ClientLock.unLockWrite();
-        showMessage(message);
         return sendLength;
     }
 
-    private void showMessage(Message message) {
-        Message.Type type = message.getType();
-        switch (type) {
-            case TEXT:
-                System.out.println(message.getSender() + ": " + ((Text)message).getText());
-                break;
-        }
-    }
+//    private void showMessage(Message message) {
+//        Message.Type type = message.getType();
+//        switch (type) {
+//            case TEXT:
+//                System.out.println(message.getSender() + ": " + ((Text)message).getText());
+//                break;
+//        }
 }

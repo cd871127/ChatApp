@@ -55,6 +55,7 @@ public class CachedMessageService extends Service {
         logger.debug("add to Cache: " + message.getId());
         cache.put(key, new CachedMessage(message, System.currentTimeMillis()));
         lock.writeLock().unlock();
+//        notify();
     }
 
     public void removeMessage(String key) {
@@ -68,8 +69,24 @@ public class CachedMessageService extends Service {
     @Override
     public void run() {
         while (!isShutdown) {
-            Set<String> timeoutMessage = new HashSet<>();
+
+            try {
+                Thread.sleep(750);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+
+//            if (cache.isEmpty()) {
+//                try {
+//                    wait();
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+
             lock.readLock().lock();
+            Set<String> timeoutMessage = new HashSet<>();
             long currentTime = System.currentTimeMillis();
             cache.forEach((k, v) -> {
                 long elapse = currentTime - v.getCachedTime();
@@ -83,15 +100,13 @@ public class CachedMessageService extends Service {
             });
             lock.readLock().unlock();
 
-            lock.writeLock().lock();
-            timeoutMessage.forEach((k) -> cache.remove(k));
-            lock.writeLock().unlock();
-
-            try {
-                Thread.sleep(750);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+            if (!timeoutMessage.isEmpty()) {
+                lock.writeLock().lock();
+                timeoutMessage.forEach((k) -> cache.remove(k));
+                lock.writeLock().unlock();
             }
+
+
         }
     }
 

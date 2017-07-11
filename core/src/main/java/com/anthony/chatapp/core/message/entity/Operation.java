@@ -39,7 +39,7 @@ public class Operation extends Message {
 
     @Override
     public String toString() {
-        return super.toString() + "operationType= " + operationType + "\n" + "attachment= " + attachment.toString() + "\n";
+        return super.toString() + "operationType= " + operationType + "\n" + "attachment= " + (attachment==null?"null":attachment.toString()) + "\n";
     }
 
     @Override

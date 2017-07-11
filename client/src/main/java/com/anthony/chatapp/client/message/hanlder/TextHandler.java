@@ -17,6 +17,6 @@ public class TextHandler extends AbstractMessageHandler {
     public void handle() {
         Message message=messageAndKey.getMessage();
         sendAck(message);
-        System.out.println(message.getSender()+": "+((Operation)message).getAttachment());
+        System.out.println(message);
     }
 }

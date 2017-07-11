@@ -5,6 +5,7 @@ import com.anthony.chatapp.core.message.CachedMessageService;
 import com.anthony.chatapp.core.message.MessageAndKey;
 import com.anthony.chatapp.core.message.entity.Message;
 import com.anthony.chatapp.core.message.entity.Operation;
+import com.anthony.chatapp.core.message.entity.Text;
 import com.anthony.chatapp.core.message.handler.AbstractOperationHandler;
 import com.anthony.chatapp.core.user.UserInfo;
 import com.anthony.chatapp.server.user.UserAndKey;
@@ -36,6 +37,7 @@ public class OperationHandler extends AbstractOperationHandler {
                 UserAndKey userAndKey = new UserAndKey(userInfo, messageAndKey.getKey());
                 UserManager.getInstance().userLogin(userAndKey);
                 sender.send(new Operation(Operation.OperationType.LOGIN, message.getSender()));
+                sender.send(new Text("welcome", message.getSender()));
                 break;
             case LOGOUT:
                 logger.info("user " + message.getSender() + " logout");
@@ -46,7 +48,7 @@ public class OperationHandler extends AbstractOperationHandler {
                 sendAckAck(message);
                 break;
             case ACKACK:
-                CachedMessageService.getInstance().removeMessage(((Operation)message).getAttachment().toString());
+                CachedMessageService.getInstance().removeMessage(((Operation) message).getAttachment().toString());
                 break;
             case LC:
                 SelectionKey key = messageAndKey.getKey();
