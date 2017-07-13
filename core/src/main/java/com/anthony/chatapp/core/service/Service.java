@@ -14,7 +14,7 @@ public abstract class Service implements Runnable {
 
     public Service() {
 
-        logger.debug("created");
+        logger.debug("created1");
     }
 
     //关闭服务
