@@ -12,7 +12,8 @@ public abstract class Parameter {
 
     protected static Parameter instance;
 
-    private int server_port;
+    private int serverPort;
+    private int listenPort;
     private Properties properties;
 
     public static Parameter getInstance() {
@@ -21,7 +22,7 @@ public abstract class Parameter {
 
     protected Parameter() {
         readProperties();
-        server_port = Integer.valueOf(properties.getProperty("server_port"));
+        serverPort = Integer.valueOf(properties.getProperty("server_port"));
     }
 
     //读取配置文件
@@ -37,7 +38,11 @@ public abstract class Parameter {
     }
 
     public int getServerPort() {
-        return server_port;
+        return serverPort;
+    }
+
+    public int getListenPort() {
+        return listenPort;
     }
 
     protected Properties getProperties() {
