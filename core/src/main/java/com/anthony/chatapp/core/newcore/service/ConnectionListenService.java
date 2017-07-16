@@ -1,19 +1,22 @@
 package com.anthony.chatapp.core.newcore.service;
 
 import com.anthony.chatapp.core.Const;
+import com.anthony.chatapp.core.newcore.Selector;
 
 import java.io.IOException;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
 
 /**
- * Created by chend on 2017/7/12.
+ *
  */
 public abstract class ConnectionListenService extends AbstractService {
-
     private ServerSocketChannel serverSocketChannel;
-//    private Selector selector;
 
+
+    /**
+     *
+     */
     private ConnectionListenService() {
         try {
             serverSocketChannel = ServerSocketChannel.open();
@@ -32,6 +35,9 @@ public abstract class ConnectionListenService extends AbstractService {
      */
     protected abstract void bindSocketToPort() throws IOException;
 
+    /**
+     * @throws Exception .
+     */
     @Override
     protected final void start() throws Exception {
         SocketChannel socketChannel;
@@ -39,7 +45,7 @@ public abstract class ConnectionListenService extends AbstractService {
             while (!Const.isShutdown) {
                 socketChannel = serverSocketChannel.accept();
                 logger.info("New connection from: " + socketChannel.getRemoteAddress().toString());
-//                mrs.addChannel(socketChannel);
+                Selector.getInstance().registChannel(socketChannel);
             }
         } catch (IOException e) {
             logger.error("ConnectionHandleService start");

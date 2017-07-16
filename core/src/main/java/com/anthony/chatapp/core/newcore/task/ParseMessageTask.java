@@ -36,6 +36,7 @@ public class ParseMessageTask extends Task<Object> {
             //设置key对读感兴趣
         } catch (BufferUnderflowException | IOException e) {
             logger.warn("lose connection");
+            //TODO 注销key
             return new MessageAndKey(null, key);
         } finally {
             Selector.getInstance().setKeyInterestOnRead(key);
