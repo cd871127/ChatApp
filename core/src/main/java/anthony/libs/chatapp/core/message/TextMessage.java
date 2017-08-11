@@ -30,6 +30,17 @@ public class TextMessage extends Message<String> {
 
     @Override
     public void setBody(byte[] bodyBytes) {
-        setBody(new String(bodyBytes,MessageUtil.MESSAGE_CHARSET));
+        setBody(new String(bodyBytes, MessageUtil.MESSAGE_CHARSET));
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("**********TextMessage  HEAD************\n");
+        getHeaders().forEach((k, v) -> sb.append(k).append(": ").append(v).append("\n"));
+        sb.append("**********TextMessage  BODY************\n");
+        sb.append(getText()).append("\n");
+        sb.append("**********TextMessage  END*************\n");
+        return sb.toString();
     }
 }

@@ -1,8 +1,8 @@
 package anthony.libs.chatapp.core.service.impl;
 
+import anthony.libs.chatapp.core.manager.ServiceManager;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
 
 /**
  * Created by chend on 2017/8/10.
@@ -10,8 +10,8 @@ import static org.junit.Assert.*;
 public class ConnectionServiceTest {
     @Test
     public void run() throws Exception {
-        ConnectionService c=new ConnectionService();
-        c.start();
+
+
     }
 
 }

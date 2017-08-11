@@ -7,13 +7,13 @@ import org.slf4j.LoggerFactory;
 /**
  * Created by chend on 2017/8/10.
  */
-public abstract class AbstractService implements Service {
+public abstract class AbstractService implements Runnable {
     //服务状态,false 表示停止, true表示运行
     private boolean status = false;
 
     private Logger logger = LoggerFactory.getLogger(getClass());
 
-    public AbstractService() {
+    protected AbstractService() {
         logger.info(getClass().getSimpleName() + " created");
     }
 
@@ -26,21 +26,23 @@ public abstract class AbstractService implements Service {
     }
 
     protected void setStatus(boolean status) {
-        this.status=status;
+        this.status = status;
     }
 
-    @Override
-    public final void start() {
+    private void start() {
         this.status = true;
         logger.info(getClass().getSimpleName() + " started");
         execute();
     }
 
-    @Override
     public final void stop() {
         this.status = false;
-
         logger.info(getClass().getSimpleName() + " stopped");
+    }
+
+    @Override
+    public void run() {
+        start();
     }
 
     protected abstract void execute();
