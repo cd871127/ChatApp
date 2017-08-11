@@ -1,7 +1,8 @@
 package anthony.libs.chatapp.core.service.impl;
 
-import anthony.libs.chatapp.core.container.SelectionKeyContainer;
-import anthony.libs.chatapp.core.service.AbstractRunnableService;
+import anthony.libs.chatapp.core.config.SystemConfig;
+import anthony.libs.chatapp.core.manager.SelectorManager;
+import anthony.libs.chatapp.core.service.AbstractService;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -12,27 +13,37 @@ import java.nio.channels.SocketChannel;
  * Created by chend on 2017/8/10.
  * 监听新连接
  */
-public class ConnectionListener extends AbstractRunnableService {
+public class ConnectionListener extends AbstractService {
+
+    private static ConnectionListener ourInstance = new ConnectionListener();
+
+    public static ConnectionListener getInstance() {
+        return ourInstance;
+    }
+
+    private ConnectionListener() {
+        super();
+    }
 
     @Override
-    public void run() {
+    protected void execute() {
         ServerSocketChannel serverSocketChannel = null;
         try {
             serverSocketChannel = ServerSocketChannel.open();
-            serverSocketChannel.socket().bind(new InetSocketAddress(1234));
+            serverSocketChannel.socket().bind(new InetSocketAddress(SystemConfig.port));
         } catch (IOException e) {
             setStatus(false);
             getLogger().error("创建ServerSocketChannel失败");
             e.printStackTrace();
         }
         try {
-            getLogger().info("开始监听端口:" + 1234);
+            getLogger().info("开始监听端口:" + SystemConfig.port);
             while (getStatus()) {
                 assert serverSocketChannel != null;
                 SocketChannel socketChannel = serverSocketChannel.accept();
                 getLogger().info("new connection: " + socketChannel.getRemoteAddress().toString());
                 //注册socketChannel
-                SelectionKeyContainer.getInstance().registerSocketChannel(socketChannel);
+                SelectorManager.getInstance().registerSocketChannel(socketChannel);
             }
         } catch (IOException e) {
             e.printStackTrace();

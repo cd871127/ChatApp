@@ -79,6 +79,36 @@ public class MessageUtil {
         return message;
     }
 
+    public static <T> T decode(byte[] messageBytes,int headerLength,int bodyLength) {
+
+        byte[] headerBytes = new byte[headerLength];
+        System.arraycopy(messageBytes, 0, headerBytes, 0, headerLength);
+        String[] headerArray = new String(headerBytes, MESSAGE_CHARSET).split("\n");
+        Map<String, String> headers = new HashMap<>();
+        for (String header : headerArray) {
+            String[] h = header.split(":");
+            headers.put(h[0], h[1]);
+        }
+
+        byte[] bodyBytes = null;
+        if (0 != bodyLength) {
+            bodyBytes = new byte[bodyLength];
+            System.arraycopy(messageBytes, headerLength, bodyBytes, 0, bodyLength);
+        }
+        T message;
+        try {
+            Class<?> clazz = Message.class.getClassLoader().loadClass(headers.get("class-name"));
+            message = (T) clazz.newInstance();
+            ((Message) message).setHeaders(headers);
+            ((Message) message).setBody(bodyBytes);
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {
+            e.printStackTrace();
+            return null;
+        }
+        return message;
+    }
+
+
 
     public static int byteArrayToInt(byte[] b) {
         return byteArrayToInt(b, 0);
