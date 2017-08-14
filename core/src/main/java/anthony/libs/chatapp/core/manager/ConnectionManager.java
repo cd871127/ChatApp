@@ -8,27 +8,28 @@ import java.io.IOException;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.SocketChannel;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
  * Created by chend on 2017/8/11.
  */
-public class SelectorManager {
+public class ConnectionManager {
     private Logger logger = LoggerFactory.getLogger(getClass());
     private Selector selector;
     private ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
 
-    private static SelectorManager ourInstance = new SelectorManager();
+    private static ConnectionManager ourInstance = new ConnectionManager();
 
-    public static SelectorManager getInstance() {
+    //连接数量
+    private final static int CON_NUM = 2;
+
+    public static ConnectionManager getInstance() {
         return ourInstance;
     }
 
 
-    private SelectorManager() {
+    private ConnectionManager() {
         try {
             selector = Selector.open();
         } catch (IOException e) {
@@ -48,7 +49,9 @@ public class SelectorManager {
             selector.wakeup();
             key = socketChannel.register(selector, SelectionKey.OP_READ);
             lock.writeLock().unlock();
-            SelectionKeyContainer.getInstance().put(((SocketChannel)key.channel()).getRemoteAddress().toString(), key);
+            Map<String, String> keyInfo = new HashMap<>();
+            keyInfo.put("ACTIVE_TIME", String.valueOf(System.currentTimeMillis()));
+            SelectionKeyContainer.getInstance().put(key, keyInfo);
         } catch (IOException e) {
             key = null;
             logger.error("注册channel失败");

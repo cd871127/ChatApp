@@ -1,8 +1,8 @@
 package anthony.libs.chatapp.core.handler;
 
-import anthony.libs.chatapp.core.manager.SelectorManager;
+import anthony.libs.chatapp.core.manager.ConnectionManager;
+import anthony.libs.chatapp.core.message.Message;
 import anthony.libs.chatapp.core.message.MessageUtil;
-import anthony.libs.chatapp.core.message.TextMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -10,12 +10,12 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.SocketChannel;
-import java.util.concurrent.Callable;
 
 /**
  * Created by chend on 2017/8/11.
+ * 读取SelectionKey中的message
  */
-public class SelectionKeyHandler implements Callable<TextMessage> {
+public class SelectionKeyHandler extends AbstractHandler<Message> {
     private SelectionKey selectionKey;
     private Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -24,22 +24,22 @@ public class SelectionKeyHandler implements Callable<TextMessage> {
     }
 
     @Override
-    public TextMessage call() throws Exception {
+    public Message handle() {
         SocketChannel socketChannel = (SocketChannel) selectionKey.channel();
-
-
-
-        byte[] t=read(socketChannel,8);
-        int headerLength= MessageUtil.byteArrayToInt(t);
-        int bodyLength=MessageUtil.byteArrayToInt(t,4);
-
-        byte[] entity=read(socketChannel,headerLength+bodyLength);
-
-        TextMessage message = MessageUtil.decode(entity,headerLength,bodyLength);
-        System.out.println(message);
-        SelectorManager.getInstance().interestOps(selectionKey, selectionKey.interestOps() | SelectionKey.OP_READ);
+        Message message;
+        try {
+            byte[] t = read(socketChannel, 8);
+            int headerLength = MessageUtil.byteArrayToInt(t);
+            int bodyLength = MessageUtil.byteArrayToInt(t, 4);
+            byte[] entity = read(socketChannel, headerLength + bodyLength);
+            message = MessageUtil.decode(entity, headerLength, bodyLength);
+            ConnectionManager.getInstance().interestOps(selectionKey, selectionKey.interestOps() | SelectionKey.OP_READ);
+        } catch (IOException e) {
+            logger.error("失去链接");
+            e.printStackTrace();
+            message = null;
+        }
         return message;
-
     }
 
     private byte[] read(SocketChannel socketChannel, int length) throws IOException {

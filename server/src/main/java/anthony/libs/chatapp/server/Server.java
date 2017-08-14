@@ -2,6 +2,7 @@ package anthony.libs.chatapp.server;
 
 import anthony.libs.chatapp.core.manager.ServiceManager;
 import anthony.libs.chatapp.core.service.impl.ConnectionListener;
+import anthony.libs.chatapp.core.service.impl.MessageProcessService;
 import anthony.libs.chatapp.core.service.impl.MessageListener;
 
 /**
@@ -12,6 +13,7 @@ public class Server {
         ServiceManager serviceManager = new ServiceManager(6);
         serviceManager.registerService(ConnectionListener.getInstance());
         serviceManager.registerService(MessageListener.getInstance());
+        serviceManager.registerService(MessageProcessService.getInstance());
         serviceManager.start();
     }
 
