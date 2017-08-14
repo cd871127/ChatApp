@@ -23,7 +23,10 @@ public class ConnectionListener extends AbstractService {
 
     private ConnectionListener() {
         super();
+        connectionManager=ConnectionManager.getInstance();
     }
+
+    private ConnectionManager connectionManager;
 
     @Override
     protected void execute() {
@@ -43,7 +46,7 @@ public class ConnectionListener extends AbstractService {
                 SocketChannel socketChannel = serverSocketChannel.accept();
                 getLogger().info("new connection: " + socketChannel.getRemoteAddress().toString());
                 //注册socketChannel
-                ConnectionManager.getInstance().registerSocketChannel(socketChannel);
+                connectionManager.registerSocketChannel(socketChannel);
             }
         } catch (IOException e) {
             e.printStackTrace();

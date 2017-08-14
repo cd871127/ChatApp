@@ -10,10 +10,24 @@ import anthony.libs.chatapp.core.service.impl.MessageListener;
  */
 public class Server {
     public static void main(String[] args) {
-        ServiceManager serviceManager = new ServiceManager(6);
+        Server server = new Server();
+        server.start();
+    }
+
+    public Server() {
+        init();
+    }
+
+    private ServiceManager serviceManager;
+
+    private void init() {
+        serviceManager = new ServiceManager(6);
         serviceManager.registerService(ConnectionListener.getInstance());
         serviceManager.registerService(MessageListener.getInstance());
         serviceManager.registerService(MessageProcessService.getInstance());
+    }
+
+    public void start() {
         serviceManager.start();
     }
 

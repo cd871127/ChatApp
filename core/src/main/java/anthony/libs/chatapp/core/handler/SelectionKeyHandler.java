@@ -34,6 +34,8 @@ public class SelectionKeyHandler extends AbstractHandler<Message> {
             int bodyLength = MessageUtil.byteArrayToInt(t, 4);
             byte[] entity = read(socketChannel, headerLength + bodyLength);
             message = MessageUtil.decode(entity, headerLength, bodyLength);
+            if (null != message)
+                message.setSelectionKey(selectionKey);
             ConnectionManager.getInstance().interestOps(selectionKey, selectionKey.interestOps() | SelectionKey.OP_READ);
         } catch (IOException | BufferUnderflowException e) {
             logger.error("失去链接");
@@ -43,7 +45,7 @@ public class SelectionKeyHandler extends AbstractHandler<Message> {
         return message;
     }
 
-    private byte[] read(SocketChannel socketChannel, int length) throws IOException,BufferUnderflowException {
+    private byte[] read(SocketChannel socketChannel, int length) throws IOException, BufferUnderflowException {
         ByteBuffer byteBuffer = ByteBuffer.allocateDirect(length);
         byteBuffer.clear();
         byte[] bytes = new byte[length];

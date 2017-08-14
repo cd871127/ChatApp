@@ -22,22 +22,26 @@ public class MessageListener extends AbstractService {
     }
 
     private ExecutorService es;
+    private ConnectionManager connectionManager;
+    private MessageContainer messageContainer;
 
     private MessageListener() {
         super();
         this.es = Executors.newFixedThreadPool(3);
+        this.connectionManager = ConnectionManager.getInstance();
+        this.messageContainer = MessageContainer.getInstance();
     }
 
 
     @Override
     protected void execute() {
         while (getStatus()) {
-            Set<SelectionKey> readableKeys = ConnectionManager.getInstance().getReadableKeys();
+            Set<SelectionKey> readableKeys = connectionManager.getReadableKeys();
             if (null != readableKeys)
                 readableKeys.forEach((v) -> {
                     //开新线程处理消息
                     getLogger().debug("new message");
-                    MessageContainer.getInstance().addFuture(es.submit(new SelectionKeyHandler(v)));
+                    messageContainer.addFuture(es.submit(new SelectionKeyHandler(v)));
                 });
         }
         es.shutdown();

@@ -1,6 +1,6 @@
 package anthony.libs.chatapp.core.manager;
 
-import anthony.libs.chatapp.core.container.SelectionKeyContainer;
+import anthony.libs.chatapp.core.container.UnLoginSelectionKeyContainer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -8,7 +8,9 @@ import java.io.IOException;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.SocketChannel;
-import java.util.*;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
@@ -49,9 +51,7 @@ public class ConnectionManager {
             selector.wakeup();
             key = socketChannel.register(selector, SelectionKey.OP_READ);
             lock.writeLock().unlock();
-            Map<String, String> keyInfo = new HashMap<>();
-            keyInfo.put("ACTIVE_TIME", String.valueOf(System.currentTimeMillis()));
-            SelectionKeyContainer.getInstance().put(key, keyInfo);
+            UnLoginSelectionKeyContainer.getInstance().put(key.toString(), key);
         } catch (IOException e) {
             key = null;
             logger.error("注册channel失败");
@@ -90,8 +90,8 @@ public class ConnectionManager {
         lock.writeLock().unlock();
     }
 
-    public void removeSelectionKey(SelectionKey key) {
-        SelectionKeyContainer.getInstance().remove(key);
+    public void removeUnLoginSelectionKey(SelectionKey key) {
+        UnLoginSelectionKeyContainer.getInstance().remove(key.toString());
         try {
             key.channel().close();
             key.cancel();
