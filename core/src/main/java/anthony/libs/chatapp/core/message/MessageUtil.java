@@ -12,6 +12,7 @@ public class MessageUtil {
     private static final int BODY_BLOCK_LENGTH = 4;
     private static final int HEADER_BLOCK_LENGTH = 4;
     private static final int TOTAL_FIXED_LENGTH = BODY_BLOCK_LENGTH + HEADER_BLOCK_LENGTH;
+    private static final String SPLITOR=":=:";
 
     public static final Charset MESSAGE_CHARSET = Charset.forName("UNICODE");
 
@@ -22,7 +23,7 @@ public class MessageUtil {
         //获取消息头的byte数组
         StringBuilder sb = new StringBuilder();
 
-        message.getHeaders().forEach((k, v) -> sb.append(k).append(":").append(v).append("\n"));
+        message.getHeaders().forEach((k, v) -> sb.append(k).append(SPLITOR).append(v).append("\n"));
         byte[] headerBytes = sb.toString().getBytes(MESSAGE_CHARSET);
 
         //获取消息实体的byte数组
@@ -57,7 +58,7 @@ public class MessageUtil {
         String[] headerArray = new String(headerBytes, MESSAGE_CHARSET).split("\n");
         Map<String, String> headers = new HashMap<>();
         for (String header : headerArray) {
-            String[] h = header.split(":");
+            String[] h = header.split(SPLITOR);
             headers.put(h[0], h[1]);
         }
 
@@ -86,7 +87,7 @@ public class MessageUtil {
         String[] headerArray = new String(headerBytes, MESSAGE_CHARSET).split("\n");
         Map<String, String> headers = new HashMap<>();
         for (String header : headerArray) {
-            String[] h = header.split(":");
+            String[] h = header.split(SPLITOR);
             headers.put(h[0], h[1]);
         }
 

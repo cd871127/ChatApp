@@ -5,6 +5,7 @@ import anthony.libs.chatapp.core.message.Message;
 import anthony.libs.chatapp.core.message.MessageUtil;
 import anthony.libs.chatapp.core.message.OperationMessage;
 import anthony.libs.chatapp.core.message.TextMessage;
+import anthony.libs.chatapp.core.user.UserInfo;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -28,6 +29,12 @@ public class Client {
 //            t.setText("123123123");
             OperationMessage login = new OperationMessage();
             login.setOperation(OperationMessage.TYPE.LOGIN);
+            UserInfo userInfo = new UserInfo();
+            userInfo.setUserId("00001");
+            userInfo.setUserName("cd871127");
+            userInfo.setPassWord("19871127cd");
+            login.setSender(userInfo.getUserId());
+            login.setOneHeader("USER_INFO", userInfo.toString());
             sendMessage(login, socketChannel);
 
 
@@ -38,6 +45,7 @@ public class Client {
                 text = scanner.nextLine();
                 TextMessage textMessage = new TextMessage();
                 textMessage.setText(text);
+                login.setSender(userInfo.getUserId());
                 sendMessage(textMessage, socketChannel);
             }
         } catch (IOException e) {

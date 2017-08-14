@@ -1,5 +1,6 @@
 package anthony.libs.chatapp.core.message;
 
+import java.nio.channels.SelectionKey;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -10,6 +11,7 @@ import java.util.UUID;
 public abstract class Message<T> {
     private Map<String, String> headers = new HashMap<>();
     private T body;
+    private SelectionKey selectionKey;
 
     public Message() {
         headers.put("id", UUID.randomUUID().toString().replace("-", ""));
@@ -50,6 +52,22 @@ public abstract class Message<T> {
 
     public String getDestination() {
         return headers.get("DESTINATION");
+    }
+
+    public void setSelectionKey(SelectionKey selectionKey) {
+        this.selectionKey = selectionKey;
+    }
+
+    public SelectionKey getSelectionKey() {
+        return selectionKey;
+    }
+
+    public void setOneHeader(String key, String value) {
+        headers.put(key, value);
+    }
+
+    public String getOneHeader(String key) {
+        return headers.get(key);
     }
 
     @Override

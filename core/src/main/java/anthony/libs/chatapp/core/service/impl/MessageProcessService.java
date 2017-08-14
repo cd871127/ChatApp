@@ -17,6 +17,8 @@ public class MessageProcessService extends AbstractService {
         return ourInstance;
     }
 
+    private MessageContainer messageContainer=MessageContainer.getInstance();
+
     private MessageProcessService() {
         super();
     }
@@ -25,7 +27,7 @@ public class MessageProcessService extends AbstractService {
     @SuppressWarnings("unchecked")
     protected void execute() {
         while (getStatus()) {
-            Message message = MessageContainer.getInstance().getMessage();
+            Message message = messageContainer.getMessage();
 
             MessageProcessor messageProcessor = MessageProcessorFactory.getProcessor(message.getClass().getName());
             //转发消息
