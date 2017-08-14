@@ -89,4 +89,14 @@ public class ConnectionManager {
         key.interestOps(ops);
         lock.writeLock().unlock();
     }
+
+    public void removeSelectionKey(SelectionKey key) {
+        SelectionKeyContainer.getInstance().remove(key);
+        try {
+            key.channel().close();
+            key.cancel();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }

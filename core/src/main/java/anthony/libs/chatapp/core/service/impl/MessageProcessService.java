@@ -2,7 +2,8 @@ package anthony.libs.chatapp.core.service.impl;
 
 import anthony.libs.chatapp.core.container.MessageContainer;
 import anthony.libs.chatapp.core.message.Message;
-import anthony.libs.chatapp.core.message.OperationMessage;
+import anthony.libs.chatapp.core.processor.MessageProcessor;
+import anthony.libs.chatapp.core.processor.factory.MessageProcessorFactory;
 import anthony.libs.chatapp.core.service.AbstractService;
 
 /**
@@ -21,12 +22,15 @@ public class MessageProcessService extends AbstractService {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     protected void execute() {
         while (getStatus()) {
             Message message = MessageContainer.getInstance().getMessage();
 
+            MessageProcessor messageProcessor = MessageProcessorFactory.getProcessor(message.getClass().getName());
             //转发消息
-            System.out.println(message.getBody().getClass().getName());
+            if (null != messageProcessor)
+                messageProcessor.process(message);
         }
     }
 }

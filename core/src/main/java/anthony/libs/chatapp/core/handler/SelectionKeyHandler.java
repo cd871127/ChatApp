@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.nio.BufferUnderflowException;
 import java.nio.ByteBuffer;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.SocketChannel;
@@ -34,7 +35,7 @@ public class SelectionKeyHandler extends AbstractHandler<Message> {
             byte[] entity = read(socketChannel, headerLength + bodyLength);
             message = MessageUtil.decode(entity, headerLength, bodyLength);
             ConnectionManager.getInstance().interestOps(selectionKey, selectionKey.interestOps() | SelectionKey.OP_READ);
-        } catch (IOException e) {
+        } catch (IOException | BufferUnderflowException e) {
             logger.error("失去链接");
             e.printStackTrace();
             message = null;
@@ -42,7 +43,7 @@ public class SelectionKeyHandler extends AbstractHandler<Message> {
         return message;
     }
 
-    private byte[] read(SocketChannel socketChannel, int length) throws IOException {
+    private byte[] read(SocketChannel socketChannel, int length) throws IOException,BufferUnderflowException {
         ByteBuffer byteBuffer = ByteBuffer.allocateDirect(length);
         byteBuffer.clear();
         byte[] bytes = new byte[length];

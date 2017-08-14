@@ -32,4 +32,10 @@ public abstract class AbstractMapBasedContainer<K, V> {
         mapContainer.put(k, v);
         lock.writeLock().unlock();
     }
+
+    public void remove(K k) {
+        lock.writeLock().lock();
+        mapContainer.remove(k);
+        lock.writeLock().unlock();
+    }
 }

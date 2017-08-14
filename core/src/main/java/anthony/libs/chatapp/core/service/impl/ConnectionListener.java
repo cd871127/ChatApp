@@ -30,14 +30,14 @@ public class ConnectionListener extends AbstractService {
         ServerSocketChannel serverSocketChannel = null;
         try {
             serverSocketChannel = ServerSocketChannel.open();
-            serverSocketChannel.socket().bind(new InetSocketAddress(SystemConfig.port));
+            serverSocketChannel.socket().bind(new InetSocketAddress(SystemConfig.SERVER_PORT));
         } catch (IOException e) {
             setStatus(false);
             getLogger().error("创建ServerSocketChannel失败");
             e.printStackTrace();
         }
         try {
-            getLogger().info("开始监听端口:" + SystemConfig.port);
+            getLogger().info("开始监听端口:" + SystemConfig.SERVER_PORT);
             while (getStatus()) {
                 assert serverSocketChannel != null;
                 SocketChannel socketChannel = serverSocketChannel.accept();

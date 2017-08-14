@@ -8,6 +8,6 @@ import anthony.libs.chatapp.core.message.TextMessage;
 public class TextMessageProcessor implements MessageProcessor<TextMessage> {
     @Override
     public void process(TextMessage textMessage) {
-
+        System.out.println("TextMessageProcessor");
     }
 }
