@@ -35,4 +35,32 @@ public abstract class Message<T> {
     public void setHeaders(Map<String, String> headers) {
         this.headers = headers;
     }
+
+    public void setSender(String sender) {
+        headers.put("SENDER", sender);
+    }
+
+    public String getSender() {
+        return headers.get("SENDER");
+    }
+
+    public void setDestination(String destination) {
+        headers.put("DESTINATION", destination);
+    }
+
+    public String getDestination() {
+        return headers.get("DESTINATION");
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof Message))
+            return false;
+        return o == this || this.headers.get("id").equals(((Message) o).headers.get("id")) && this.body.equals(((Message) o).body);
+    }
+
+    @Override
+    public int hashCode() {
+        return headers.get("id").hashCode();
+    }
 }
