@@ -1,7 +1,7 @@
 package anthony.libs.chatapp.core.service.impl;
 
 import anthony.libs.chatapp.core.config.SystemConfig;
-import anthony.libs.chatapp.core.manager.SelectorManager;
+import anthony.libs.chatapp.core.manager.ConnectionManager;
 import anthony.libs.chatapp.core.service.AbstractService;
 
 import java.io.IOException;
@@ -43,7 +43,7 @@ public class ConnectionListener extends AbstractService {
                 SocketChannel socketChannel = serverSocketChannel.accept();
                 getLogger().info("new connection: " + socketChannel.getRemoteAddress().toString());
                 //注册socketChannel
-                SelectorManager.getInstance().registerSocketChannel(socketChannel);
+                ConnectionManager.getInstance().registerSocketChannel(socketChannel);
             }
         } catch (IOException e) {
             e.printStackTrace();
