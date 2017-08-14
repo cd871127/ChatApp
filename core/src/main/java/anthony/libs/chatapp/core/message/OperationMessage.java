@@ -41,7 +41,7 @@ public class OperationMessage extends Message<OperationMessage.TYPE> {
     }
 
     public enum TYPE {
-        LOGIN("LOGIN"), LOGOUT("LOGOUT");
+        LOGIN("LOGIN"), LOGOUT("LOGOUT"), ACK("ACK"), ACK_ACK("ACK_ACK");
 
         private String value;
 

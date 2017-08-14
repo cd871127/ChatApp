@@ -5,5 +5,8 @@ package anthony.libs.chatapp.core.config;
  * 系统配置类
  */
 public abstract class SystemConfig {
-    public static int port=1234;
+    private SystemConfig() {
+    }
+
+    public static int SERVER_PORT = 1234;
 }

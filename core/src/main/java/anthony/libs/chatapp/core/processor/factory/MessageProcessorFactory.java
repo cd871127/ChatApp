@@ -1,6 +1,7 @@
 package anthony.libs.chatapp.core.processor.factory;
 
 import anthony.libs.chatapp.core.processor.MessageProcessor;
+import anthony.libs.chatapp.core.processor.OperationMessageProcessor;
 import anthony.libs.chatapp.core.processor.TextMessageProcessor;
 
 /**
@@ -12,6 +13,9 @@ public class MessageProcessorFactory {
         switch (messageClassName) {
             case "anthony.libs.chatapp.core.message.TextMessage":
                 messageProcessor = new TextMessageProcessor();
+                break;
+            case "anthony.libs.chatapp.core.message.OperationMessage":
+                messageProcessor = new OperationMessageProcessor();
                 break;
             default:
                 messageProcessor = null;
