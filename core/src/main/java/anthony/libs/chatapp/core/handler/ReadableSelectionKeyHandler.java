@@ -16,11 +16,11 @@ import java.nio.channels.SocketChannel;
  * Created by chend on 2017/8/11.
  * 读取SelectionKey中的message
  */
-public class SelectionKeyHandler extends AbstractHandler<Message> {
+public class ReadableSelectionKeyHandler extends AbstractHandler<Message> {
     private SelectionKey selectionKey;
     private Logger logger = LoggerFactory.getLogger(getClass());
 
-    public SelectionKeyHandler(SelectionKey selectionKey) {
+    public ReadableSelectionKeyHandler(SelectionKey selectionKey) {
         this.selectionKey = selectionKey;
     }
 

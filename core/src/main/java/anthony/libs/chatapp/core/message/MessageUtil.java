@@ -1,5 +1,8 @@
 package anthony.libs.chatapp.core.message;
 
+import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.nio.channels.SocketChannel;
 import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.Map;
@@ -129,6 +132,18 @@ public class MessageUtil {
                 (byte) ((a >> 8) & 0xFF),
                 (byte) (a & 0xFF)
         };
+    }
+
+    public static void sendMessage(Message message, SocketChannel socketChannel) {
+        byte[] messageByte = MessageUtil.encode(message);
+        ByteBuffer byteBuffer = ByteBuffer.allocateDirect(messageByte.length);
+        byteBuffer.put(messageByte);
+        byteBuffer.flip();
+        try {
+            socketChannel.write(byteBuffer);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 }

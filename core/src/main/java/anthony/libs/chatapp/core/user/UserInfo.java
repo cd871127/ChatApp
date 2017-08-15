@@ -2,8 +2,6 @@ package anthony.libs.chatapp.core.user;
 
 import com.alibaba.fastjson.JSON;
 
-import java.nio.channels.SelectionKey;
-
 public class UserInfo {
     private String userId;
     private String userName;
@@ -12,8 +10,14 @@ public class UserInfo {
     public UserInfo() {
     }
 
-    public UserInfo buildUserInfoFromJSONString(String JSONString) {
-        return JSON.parseObject(JSONString, getClass());
+    public UserInfo(String userName, String passWord) {
+        this();
+        this.userName = userName;
+        this.passWord = passWord;
+    }
+
+    public static UserInfo buildUserInfoFromJSONString(String JSONString) {
+        return JSON.parseObject(JSONString, UserInfo.class);
     }
 
     public String getUserId() {
