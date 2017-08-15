@@ -7,6 +7,7 @@ import anthony.libs.chatapp.core.message.Message;
 import anthony.libs.chatapp.core.message.MessageUtil;
 import anthony.libs.chatapp.core.message.OperationMessage;
 import anthony.libs.chatapp.core.service.impl.MessageListener;
+import anthony.libs.chatapp.core.service.impl.MessageProcessService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,15 +26,20 @@ public class Client {
     private SocketChannel socketChannel;
     private ServiceManager serviceManager;
     private ConnectionManager connectionManager;
+    private MessageProcessService messageProcessService;
+    private MessageListener messageListener;
 
     public Client() {
         serviceManager = new ServiceManager(2);
+        messageProcessService = MessageProcessService.getInstance();
+        messageListener = MessageListener.getInstance();
         connectionManager = ConnectionManager.getInstance();
     }
 
     public void clientServiceStart() {
         serviceManager = new ServiceManager(6);
-        serviceManager.registerService(MessageListener.getInstance());
+        serviceManager.registerService(messageProcessService);
+        serviceManager.registerService(messageListener);
         serviceManager.start();
     }
 
