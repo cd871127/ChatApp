@@ -1,2 +1,2 @@
-mainClassName = 'anthony.libs.chatapp.client.Client'
+mainClassName = 'anthony.libs.chatapp.client.Main'
 jar.manifest.attributes.'Main-Class' = mainClassName

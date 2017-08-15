@@ -12,7 +12,7 @@ public class OperationMessageProcessor implements MessageProcessor<OperationMess
         System.out.println("OperationMessageProcessor");
         switch (message.getOperation()) {
             case LOGIN:
-                ConnectionManager.getInstance().removeUnLoginSelectionKey(message.getSelectionKey());
+//                ConnectionManager.getInstance().removeUnLoginSelectionKey(message.getSelectionKey());
 
                 break;
         }
