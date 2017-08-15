@@ -9,8 +9,8 @@ buildscript {
 //所有项目配置
 allprojects {
     //Add configuration here
-    group 'com.anthony'
-    version '1.0-SNAPSHOT'
+    group 'anthony.cdapps'
+    version '0.1'
 
     apply plugin: 'java'
     apply plugin: 'com.github.johnrengelman.shadow'

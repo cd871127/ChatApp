@@ -4,7 +4,7 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 /**
- * Created by chend on 2017/7/12.
+ * Created by chend on 2017/7/12.1
  */
 public abstract class AbstractBlockQueueContainer<V> implements Container<V> {
     private BlockingQueue<V> container = new LinkedBlockingQueue<>();

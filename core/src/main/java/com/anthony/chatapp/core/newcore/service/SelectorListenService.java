@@ -12,8 +12,8 @@ import java.util.concurrent.Executors;
  * Created by chend on 2017/7/12.
  */
 public class SelectorListenService extends AbstractService {
-    private Selector selector;
-    private ExecutorService executorService = Executors.newCachedThreadPool();
+    private Selector selector = Selector.getInstance();
+    private ExecutorService executorService = Executors.newFixedThreadPool(3);
 
     @Override
     protected void start() throws Exception {
