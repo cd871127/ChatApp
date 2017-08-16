@@ -2,7 +2,6 @@ package anthony.libs.chatapp.core.message;
 
 import anthony.libs.chatapp.core.user.UserInfo;
 
-import java.nio.channels.SelectionKey;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -15,7 +14,7 @@ public abstract class Message<T> {
     private T body;
 
     public Message() {
-        headers.put("id", UUID.randomUUID().toString().replace("-", ""));
+        headers.put(HEAD_ID, UUID.randomUUID().toString().replace("-", ""));
         headers.put("class-name", getClass().getName());
     }
 
@@ -24,6 +23,10 @@ public abstract class Message<T> {
     }
 
     public abstract byte[] getBodyBytes();
+
+    public String getId() {
+        return headers.get(HEAD_ID);
+    }
 
     public T getBody() {
         return body;
@@ -75,15 +78,16 @@ public abstract class Message<T> {
     public boolean equals(Object o) {
         if (!(o instanceof Message))
             return false;
-        return o == this || this.headers.get("id").equals(((Message) o).headers.get("id")) && this.body.equals(((Message) o).body);
+        return o == this || this.headers.get(HEAD_ID).equals(((Message) o).headers.get(HEAD_ID)) && this.body.equals(((Message) o).body);
     }
 
     @Override
     public int hashCode() {
-        return headers.get("id").hashCode();
+        return headers.get(HEAD_ID).hashCode();
     }
 
     public String HEAD_USER_INFO = "USER_INFO";
     public String HEAD_SENDER = "SENDER";
     public String HEAD_DESTINATION = "DESTINATION";
+    public String HEAD_ID = "ID";
 }

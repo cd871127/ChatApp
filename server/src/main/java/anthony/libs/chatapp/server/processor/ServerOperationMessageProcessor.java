@@ -1,12 +1,9 @@
 package anthony.libs.chatapp.server.processor;
 
-import anthony.libs.chatapp.core.message.MessageUtil;
 import anthony.libs.chatapp.core.message.OperationMessage;
 import anthony.libs.chatapp.core.processor.AbstractOperationMessageProcessor;
 import anthony.libs.chatapp.core.user.ClientInfo;
 import anthony.libs.chatapp.server.container.ClientInfoContainer;
-
-import java.nio.channels.SocketChannel;
 
 /**
  * Created by chend on 2017/8/14.
@@ -35,22 +32,27 @@ public class ServerOperationMessageProcessor extends AbstractOperationMessagePro
         newClientInfo.setUserInfo(message.getUserInfo());
         ClientInfo oldClientInfo = clientInfoContainer.addClientInfo(newClientInfo);
         //顶掉以前的登陆信息
-        if (null != oldClientInfo)
-            MessageUtil.sendMessage(new OperationMessage(OperationMessage.TYPE.ANOTHER_LOGIN),
-                    (SocketChannel) oldClientInfo.getSelectionKey().channel());
+        if (null != oldClientInfo) {
+            OperationMessage antherLogin = new OperationMessage(OperationMessage.TYPE.ANOTHER_LOGIN);
+            antherLogin.setDestination(oldClientInfo.getUserInfo().getUserId());
+            messageQueue.put(antherLogin);
+        }
+//            MessageUtil.sendMessage(new OperationMessage(OperationMessage.TYPE.ANOTHER_LOGIN),
+//                    (SocketChannel) oldClientInfo.getSelectionKey().channel());
         //发送登陆成功确认
-        MessageUtil.sendMessage(new OperationMessage(OperationMessage.TYPE.LOGIN_SUCCESS),
-                (SocketChannel) getSelectionKey().channel());
+        OperationMessage loginSuccess = new OperationMessage(OperationMessage.TYPE.LOGIN_SUCCESS);
+        loginSuccess.setDestination(newClientInfo.getUserInfo().getUserId());
+        messageQueue.put(loginSuccess);
+//        MessageUtil.sendMessage(new OperationMessage(OperationMessage.TYPE.LOGIN_SUCCESS),
+//                (SocketChannel) getSelectionKey().channel());
     }
 
-    private void ack(OperationMessage message)
-    {
+    private void ack(OperationMessage message) {
         //删除缓存的message 缓存ack 发送ackack
 
     }
 
-    private void ackAck(OperationMessage message)
-    {
+    private void ackAck(OperationMessage message) {
         //删除缓存的ack
     }
 
