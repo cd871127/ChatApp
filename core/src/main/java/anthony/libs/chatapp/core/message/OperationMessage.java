@@ -4,6 +4,12 @@ package anthony.libs.chatapp.core.message;
  * Created by chend on 2017/8/14.
  */
 public class OperationMessage extends Message<OperationMessage.TYPE> {
+    public OperationMessage() {
+    }
+
+    public OperationMessage(TYPE type) {
+        setOperation(type);
+    }
 
     public void setOperation(TYPE type) {
         setBody(type);
@@ -41,7 +47,8 @@ public class OperationMessage extends Message<OperationMessage.TYPE> {
     }
 
     public enum TYPE {
-        LOGIN("LOGIN"), LOGOUT("LOGOUT"), ACK("ACK"), ACK_ACK("ACK_ACK");
+        LOGIN("LOGIN"), LOGOUT("LOGOUT"), ACK("ACK"), ACK_ACK("ACK_ACK"),
+        LOGIN_SUCCESS("LOGIN_SUCCESS"),ANOTHER_LOGIN("ANOTHER_LOGIN");
 
         private String value;
 

@@ -1,6 +1,6 @@
 package anthony.libs.chatapp.core.service.impl;
 
-import anthony.libs.chatapp.core.container.MessageContainer;
+import anthony.libs.chatapp.core.container.MessageAndKeyContainer;
 import anthony.libs.chatapp.core.handler.ReadableSelectionKeyHandler;
 import anthony.libs.chatapp.core.manager.ConnectionManager;
 import anthony.libs.chatapp.core.service.AbstractService;
@@ -23,13 +23,13 @@ public class MessageListener extends AbstractService {
 
     private ExecutorService es;
     private ConnectionManager connectionManager;
-    private MessageContainer messageContainer;
+    private MessageAndKeyContainer messageAndKeyContainer;
 
     private MessageListener() {
         super();
         this.es = Executors.newFixedThreadPool(3);
         this.connectionManager = ConnectionManager.getInstance();
-        this.messageContainer = MessageContainer.getInstance();
+        this.messageAndKeyContainer = MessageAndKeyContainer.getInstance();
     }
 
 
@@ -41,7 +41,7 @@ public class MessageListener extends AbstractService {
                 readableKeys.forEach((v) -> {
                     //开新线程处理消息
                     getLogger().debug("new message");
-                    messageContainer.addFuture(es.submit(new ReadableSelectionKeyHandler(v)));
+                    messageAndKeyContainer.addFuture(es.submit(new ReadableSelectionKeyHandler(v)));
                 });
         }
         es.shutdown();

@@ -1,6 +1,5 @@
 package anthony.libs.chatapp.core.service.impl;
 
-import anthony.libs.chatapp.core.manager.ServiceManager;
 import org.junit.Test;
 
 

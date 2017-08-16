@@ -1,9 +1,9 @@
 package anthony.libs.chatapp.core.service.impl;
 
-import anthony.libs.chatapp.core.container.MessageContainer;
-import anthony.libs.chatapp.core.message.Message;
+import anthony.libs.chatapp.core.container.MessageAndKeyContainer;
+import anthony.libs.chatapp.core.message.MessageAndKey;
 import anthony.libs.chatapp.core.processor.MessageProcessor;
-import anthony.libs.chatapp.core.processor.factory.MessageProcessorFactory;
+import anthony.libs.chatapp.core.processor.factory.AbstractMessageProcessorFactory;
 import anthony.libs.chatapp.core.service.AbstractService;
 
 /**
@@ -17,22 +17,28 @@ public class MessageProcessService extends AbstractService {
         return ourInstance;
     }
 
-    private MessageContainer messageContainer=MessageContainer.getInstance();
+    private MessageAndKeyContainer messageContainer = MessageAndKeyContainer.getInstance();
+
+    private AbstractMessageProcessorFactory messageProcessorFactory;
 
     private MessageProcessService() {
         super();
+    }
+
+    public void setMessageProcessorFactory(AbstractMessageProcessorFactory messageProcessorFactory) {
+        this.messageProcessorFactory = messageProcessorFactory;
     }
 
     @Override
     @SuppressWarnings("unchecked")
     protected void execute() {
         while (getStatus()) {
-            Message message = messageContainer.getMessage();
+            MessageAndKey messageAndKey = messageContainer.getMessageAndKey();
 
-            MessageProcessor messageProcessor = MessageProcessorFactory.getProcessor(message.getClass().getName());
+            MessageProcessor messageProcessor = messageProcessorFactory.getProcessor(messageAndKey.getMessage().getClass().getName());
             //转发消息
             if (null != messageProcessor)
-                messageProcessor.process(message);
+                messageProcessor.process(messageAndKey);
         }
     }
 }

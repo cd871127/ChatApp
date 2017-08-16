@@ -1,6 +1,5 @@
 package anthony.libs.chatapp.core.manager;
 
-import anthony.libs.chatapp.core.container.UnLoginSelectionKeyContainer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -51,7 +50,7 @@ public class ConnectionManager {
             selector.wakeup();
             key = socketChannel.register(selector, SelectionKey.OP_READ);
             lock.writeLock().unlock();
-            UnLoginSelectionKeyContainer.getInstance().put(key.toString(), key);
+
         } catch (IOException e) {
             key = null;
             logger.error("注册channel失败");
@@ -90,13 +89,13 @@ public class ConnectionManager {
         lock.writeLock().unlock();
     }
 
-    public void removeUnLoginSelectionKey(SelectionKey key) {
-        UnLoginSelectionKeyContainer.getInstance().remove(key.toString());
-        try {
-            key.channel().close();
-            key.cancel();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
+//    public void removeUnLoginSelectionKey(SelectionKey key) {
+//        UnLoginSelectionKeyContainer.getInstance().remove(key.toString());
+//        try {
+//            key.channel().close();
+//            key.cancel();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//    }
 }

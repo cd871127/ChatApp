@@ -1,6 +1,6 @@
 package anthony.libs.chatapp.core.container;
 
-import anthony.libs.chatapp.core.message.Message;
+import anthony.libs.chatapp.core.message.MessageAndKey;
 
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -9,20 +9,20 @@ import java.util.concurrent.Future;
  * Created by chend on 2017/8/14.
  * 保存SelectionKey返回的future
  */
-public class MessageContainer extends AbstractBlockingQueueBasedContainer<Future<Message>> {
-    private static MessageContainer ourInstance = new MessageContainer();
+public class MessageAndKeyContainer extends AbstractBlockingQueueBasedContainer<Future<MessageAndKey>> {
+    private static MessageAndKeyContainer ourInstance = new MessageAndKeyContainer();
 
-    public static MessageContainer getInstance() {
+    public static MessageAndKeyContainer getInstance() {
         return ourInstance;
     }
 
-    private MessageContainer() {
+    private MessageAndKeyContainer() {
 
     }
 
-    private Future<Message> getDoneFuture() {
+    private Future<MessageAndKey> getDoneFuture() {
 
-        Future<Message> future = null;
+        Future<MessageAndKey> future = null;
         while (future == null) {
             try {
                 future = getContainer().take();
@@ -38,7 +38,7 @@ public class MessageContainer extends AbstractBlockingQueueBasedContainer<Future
         return future;
     }
 
-    public void addFuture(Future<Message> future) {
+    public void addFuture(Future<MessageAndKey> future) {
         try {
             getContainer().put(future);
         } catch (InterruptedException e) {
@@ -46,17 +46,17 @@ public class MessageContainer extends AbstractBlockingQueueBasedContainer<Future
         }
     }
 
-    public Message getMessage() {
-        Message message=null;
+    public MessageAndKey getMessageAndKey() {
+        MessageAndKey messageAndKey = null;
         try {
-            Future<Message> future = getDoneFuture();
+            Future<MessageAndKey> future = getDoneFuture();
             if (future != null)
-                message = future.get();
+                messageAndKey = future.get();
         } catch (InterruptedException | ExecutionException e) {
-            message = null;
+            messageAndKey = null;
             e.printStackTrace();
         }
-        return message;
+        return messageAndKey;
     }
 
 }

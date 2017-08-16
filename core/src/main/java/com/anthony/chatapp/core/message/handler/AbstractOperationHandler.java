@@ -5,8 +5,6 @@ import com.anthony.chatapp.core.message.MessageAndKey;
 import com.anthony.chatapp.core.message.entity.Message;
 import com.anthony.chatapp.core.message.entity.Operation;
 
-import java.nio.file.OpenOption;
-
 /**
  * Created by chend on 2017/7/4.
  */

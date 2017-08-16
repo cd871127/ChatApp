@@ -1,10 +1,10 @@
 package anthony.libs.chatapp.core.processor;
 
-import anthony.libs.chatapp.core.message.Message;
+import anthony.libs.chatapp.core.message.MessageAndKey;
 
 /**
  * Created by chend on 2017/8/14.
  */
-public interface MessageProcessor<V extends Message> {
-    void process(V message);
+public interface MessageProcessor {
+    void process(MessageAndKey messageAndKey);
 }
