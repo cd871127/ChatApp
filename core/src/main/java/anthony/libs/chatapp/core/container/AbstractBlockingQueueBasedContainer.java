@@ -21,4 +21,6 @@ public class AbstractBlockingQueueBasedContainer<V> {
     protected BlockingQueue<V> getContainer() {
         return container;
     }
+
+    protected 
 }
