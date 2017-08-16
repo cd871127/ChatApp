@@ -1,5 +1,6 @@
 package anthony.libs.chatapp.core.processor;
 
+import anthony.libs.chatapp.core.container.MessageQueue;
 import anthony.libs.chatapp.core.message.MessageAndKey;
 
 import java.nio.channels.SelectionKey;
@@ -10,6 +11,7 @@ import java.nio.channels.SelectionKey;
 public abstract class AbstractMessageProcessor<V> implements MessageProcessor {
     private V message;
     private SelectionKey selectionKey;
+    protected MessageQueue messageQueue = MessageQueue.getInstance();
 
     protected abstract void doProcess(V message);
 

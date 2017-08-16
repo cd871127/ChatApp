@@ -1,11 +1,12 @@
 package anthony.libs.chatapp.client;
 
 import anthony.libs.chatapp.client.processor.factory.ClientMessageProcessorFactory;
+import anthony.libs.chatapp.client.service.ClientSendMessageService;
 import anthony.libs.chatapp.core.config.SystemConfig;
+import anthony.libs.chatapp.core.container.MessageQueue;
 import anthony.libs.chatapp.core.manager.ConnectionManager;
 import anthony.libs.chatapp.core.manager.ServiceManager;
 import anthony.libs.chatapp.core.message.Message;
-import anthony.libs.chatapp.core.message.MessageUtil;
 import anthony.libs.chatapp.core.message.OperationMessage;
 import anthony.libs.chatapp.core.service.impl.MessageListener;
 import anthony.libs.chatapp.core.service.impl.MessageProcessService;
@@ -16,6 +17,7 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
+import java.nio.channels.SelectionKey;
 import java.nio.channels.SocketChannel;
 
 /**
@@ -30,6 +32,9 @@ public class Client {
     private ConnectionManager connectionManager;
     private MessageProcessService messageProcessService;
     private MessageListener messageListener;
+    private ClientSendMessageService clientSendMessageService;
+    private MessageQueue messageQueue;
+    private static SelectionKey selectionKey;
 
     public Client() {
         serviceManager = new ServiceManager(2);
@@ -37,12 +42,16 @@ public class Client {
         messageProcessService.setMessageProcessorFactory(new ClientMessageProcessorFactory());
         messageListener = MessageListener.getInstance();
         connectionManager = ConnectionManager.getInstance();
+        clientSendMessageService = ClientSendMessageService.getInstance();
+        messageQueue = MessageQueue.getInstance();
+
     }
 
     public void clientServiceStart() {
         serviceManager = new ServiceManager(6);
         serviceManager.registerService(messageProcessService);
         serviceManager.registerService(messageListener);
+        serviceManager.registerService(clientSendMessageService);
         serviceManager.start();
     }
 
@@ -60,7 +69,7 @@ public class Client {
             e.printStackTrace();
             return false;
         }
-        connectionManager.registerSocketChannel(socketChannel);
+        selectionKey=connectionManager.registerSocketChannel(socketChannel);
         OperationMessage login = new OperationMessage();
         login.setOperation(OperationMessage.TYPE.LOGIN);
 
@@ -75,7 +84,8 @@ public class Client {
     }
 
     public void sendMessage(Message message) {
-        MessageUtil.sendMessage(message, socketChannel);
+//        MessageUtil.sendMessage(message, socketChannel);
+        messageQueue.put(message);
     }
 
     public void stop() {
@@ -84,5 +94,9 @@ public class Client {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public static SelectionKey getSelectionKey() {
+        return selectionKey;
     }
 }

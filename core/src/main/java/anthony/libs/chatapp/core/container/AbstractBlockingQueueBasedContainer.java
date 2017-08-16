@@ -47,11 +47,11 @@ public class AbstractBlockingQueueBasedContainer<V> {
         return container.poll(timeout, unit);
     }
 
-    public boolean remove(Object o) {
+    public boolean remove(V o) {
         return container.remove(o);
     }
 
-    public boolean contains(Object o) {
+    public boolean contains(V o) {
         return container.contains(o);
     }
 }
