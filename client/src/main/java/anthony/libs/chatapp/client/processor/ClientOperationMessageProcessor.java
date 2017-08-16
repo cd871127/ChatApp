@@ -11,10 +11,20 @@ public class ClientOperationMessageProcessor extends AbstractOperationMessagePro
     public void doProcess(OperationMessage message) {
         System.out.println("OperationMessageProcessor");
         switch (message.getOperation()) {
-            case LOGIN:
-//                ConnectionManager.getInstance().removeUnLoginSelectionKey(message.getSelectionKey());
-
+            case LOGIN_SUCCESS:
+                break;
+            case ANOTHER_LOGIN:
+                break;
+            case ACK:
+                break;
+            case ACK_ACK:
                 break;
         }
     }
+
+    private void ack(OperationMessage message)
+    {}
+
+    private void ackAck(OperationMessage message)
+    {}
 }

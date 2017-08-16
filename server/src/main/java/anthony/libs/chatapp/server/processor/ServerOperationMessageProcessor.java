@@ -22,6 +22,10 @@ public class ServerOperationMessageProcessor extends AbstractOperationMessagePro
             case LOGIN:
                 login(message);
                 break;
+            case ACK:
+                break;
+            case ACK_ACK:
+                break;
         }
     }
 
@@ -30,11 +34,24 @@ public class ServerOperationMessageProcessor extends AbstractOperationMessagePro
         newClientInfo.setSelectionKey(getSelectionKey());
         newClientInfo.setUserInfo(message.getUserInfo());
         ClientInfo oldClientInfo = clientInfoContainer.addClientInfo(newClientInfo);
+        //顶掉以前的登陆信息
         if (null != oldClientInfo)
             MessageUtil.sendMessage(new OperationMessage(OperationMessage.TYPE.ANOTHER_LOGIN),
                     (SocketChannel) oldClientInfo.getSelectionKey().channel());
+        //发送登陆成功确认
         MessageUtil.sendMessage(new OperationMessage(OperationMessage.TYPE.LOGIN_SUCCESS),
                 (SocketChannel) getSelectionKey().channel());
+    }
+
+    private void ack(OperationMessage message)
+    {
+        //删除缓存的message 缓存ack 发送ackack
+
+    }
+
+    private void ackAck(OperationMessage message)
+    {
+        //删除缓存的ack
     }
 
 }

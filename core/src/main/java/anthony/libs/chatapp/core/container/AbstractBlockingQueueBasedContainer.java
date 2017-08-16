@@ -16,9 +16,9 @@ public class AbstractBlockingQueueBasedContainer<V> {
         return logger;
     }
 
-    private BlockingQueue<V> futureList = new LinkedBlockingQueue<>();
+    private BlockingQueue<V> container = new LinkedBlockingQueue<>();
 
     protected BlockingQueue<V> getContainer() {
-        return futureList;
+        return container;
     }
 }

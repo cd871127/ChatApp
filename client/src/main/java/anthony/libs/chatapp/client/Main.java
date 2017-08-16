@@ -12,20 +12,28 @@ import java.util.Scanner;
  */
 public class Main {
     public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        String text = null;
+
+        System.out.println("input username:");
+        text = scanner.nextLine();
         Client client = new Client();
-        client.setClientInfo(new ClientInfo(new UserInfo("cd871127", "19871127cd")));
+        UserInfo userInfo=new UserInfo(text, "19871127cd");
+        userInfo.setUserId(text);
+        client.setClientInfo(new ClientInfo(userInfo));
 
         client.login();
         client.clientServiceStart();
-
-        Scanner scanner = new Scanner(System.in);
-
-        String text = null;
         while (!"exit".equals(text)) {
-            System.out.println("in put message:");
+            System.out.println("in put message:(target:message)");
             text = scanner.nextLine();
+            if (!text.contains(":"))
+                continue;
+            String[] tmp = text.split(":");
+
             TextMessage textMessage = new TextMessage();
-            textMessage.setText(text);
+            textMessage.setDestination(tmp[0]);
+            textMessage.setText(tmp[1]);
             client.sendMessage(textMessage);
         }
 

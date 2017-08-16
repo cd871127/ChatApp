@@ -10,7 +10,6 @@ public class ClientTextMessageProcessor extends AbstractTextMessageProcessor {
 
     @Override
     public void doProcess(TextMessage message) {
-        System.out.println("TextMessageProcessor");
-//        System.out.println(textMessage);
+        System.out.println(message);
     }
 }
