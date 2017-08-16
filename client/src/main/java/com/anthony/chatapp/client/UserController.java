@@ -1,8 +1,6 @@
 package com.anthony.chatapp.client;
 
-import com.anthony.chatapp.core.message.entity.Message;
 import com.anthony.chatapp.core.message.entity.Operation;
-import com.anthony.chatapp.core.system.Parameter;
 
 /**
  * Created by chend on 2017/7/3.

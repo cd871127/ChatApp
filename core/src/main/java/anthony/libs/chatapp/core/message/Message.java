@@ -1,5 +1,7 @@
 package anthony.libs.chatapp.core.message;
 
+import anthony.libs.chatapp.core.user.UserInfo;
+
 import java.nio.channels.SelectionKey;
 import java.util.HashMap;
 import java.util.Map;
@@ -11,7 +13,6 @@ import java.util.UUID;
 public abstract class Message<T> {
     private Map<String, String> headers = new HashMap<>();
     private T body;
-    private SelectionKey selectionKey;
 
     public Message() {
         headers.put("id", UUID.randomUUID().toString().replace("-", ""));
@@ -39,27 +40,27 @@ public abstract class Message<T> {
     }
 
     public void setSender(String sender) {
-        headers.put("SENDER", sender);
+        headers.put(HEAD_SENDER, sender);
     }
 
     public String getSender() {
-        return headers.get("SENDER");
+        return headers.get(HEAD_SENDER);
     }
 
     public void setDestination(String destination) {
-        headers.put("DESTINATION", destination);
+        headers.put(HEAD_DESTINATION, destination);
     }
 
     public String getDestination() {
-        return headers.get("DESTINATION");
+        return headers.get(HEAD_DESTINATION);
     }
 
-    public void setSelectionKey(SelectionKey selectionKey) {
-        this.selectionKey = selectionKey;
+    public void setUserInfo(UserInfo userInfo) {
+        headers.put(HEAD_USER_INFO, userInfo.toString());
     }
 
-    public SelectionKey getSelectionKey() {
-        return selectionKey;
+    public UserInfo getUserInfo() {
+        return UserInfo.buildUserInfoFromJSONString(headers.get(HEAD_USER_INFO));
     }
 
     public void setOneHeader(String key, String value) {
@@ -81,4 +82,8 @@ public abstract class Message<T> {
     public int hashCode() {
         return headers.get("id").hashCode();
     }
+
+    public String HEAD_USER_INFO = "USER_INFO";
+    public String HEAD_SENDER = "SENDER";
+    public String HEAD_DESTINATION = "DESTINATION";
 }

@@ -1,5 +1,6 @@
 package anthony.libs.chatapp.client;
 
+import anthony.libs.chatapp.client.processor.factory.ClientMessageProcessorFactory;
 import anthony.libs.chatapp.core.config.SystemConfig;
 import anthony.libs.chatapp.core.manager.ConnectionManager;
 import anthony.libs.chatapp.core.manager.ServiceManager;
@@ -8,6 +9,7 @@ import anthony.libs.chatapp.core.message.MessageUtil;
 import anthony.libs.chatapp.core.message.OperationMessage;
 import anthony.libs.chatapp.core.service.impl.MessageListener;
 import anthony.libs.chatapp.core.service.impl.MessageProcessService;
+import anthony.libs.chatapp.core.user.ClientInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,6 +34,7 @@ public class Client {
     public Client() {
         serviceManager = new ServiceManager(2);
         messageProcessService = MessageProcessService.getInstance();
+        messageProcessService.setMessageProcessorFactory(new ClientMessageProcessorFactory());
         messageListener = MessageListener.getInstance();
         connectionManager = ConnectionManager.getInstance();
     }

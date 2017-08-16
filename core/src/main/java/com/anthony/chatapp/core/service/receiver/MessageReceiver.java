@@ -2,7 +2,6 @@ package com.anthony.chatapp.core.service.receiver;
 
 import com.anthony.chatapp.core.message.MessageAndKey;
 import com.anthony.chatapp.core.message.entity.Message;
-import com.anthony.chatapp.core.message.entity.Operation;
 import com.anthony.chatapp.core.service.MessageReceiveService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -2,6 +2,7 @@ package anthony.libs.chatapp.client;
 
 import anthony.libs.chatapp.core.message.OperationMessage;
 import anthony.libs.chatapp.core.message.TextMessage;
+import anthony.libs.chatapp.core.user.ClientInfo;
 import anthony.libs.chatapp.core.user.UserInfo;
 
 import java.util.Scanner;

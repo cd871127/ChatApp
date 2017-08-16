@@ -2,7 +2,6 @@ package com.anthony.chatapp.client.message.hanlder;
 
 import com.anthony.chatapp.core.message.MessageAndKey;
 import com.anthony.chatapp.core.message.entity.Message;
-import com.anthony.chatapp.core.message.entity.Operation;
 import com.anthony.chatapp.core.message.handler.AbstractMessageHandler;
 
 /**

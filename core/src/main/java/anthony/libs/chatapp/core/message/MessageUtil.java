@@ -83,8 +83,8 @@ public class MessageUtil {
         return message;
     }
 
+    @SuppressWarnings("unchecked")
     public static <T> T decode(byte[] messageBytes,int headerLength,int bodyLength) {
-
         byte[] headerBytes = new byte[headerLength];
         System.arraycopy(messageBytes, 0, headerBytes, 0, headerLength);
         String[] headerArray = new String(headerBytes, MESSAGE_CHARSET).split("\n");

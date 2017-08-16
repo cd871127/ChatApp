@@ -2,8 +2,9 @@ package anthony.libs.chatapp.server;
 
 import anthony.libs.chatapp.core.manager.ServiceManager;
 import anthony.libs.chatapp.core.service.impl.ConnectionListener;
-import anthony.libs.chatapp.core.service.impl.MessageProcessService;
 import anthony.libs.chatapp.core.service.impl.MessageListener;
+import anthony.libs.chatapp.core.service.impl.MessageProcessService;
+import anthony.libs.chatapp.server.processor.factory.ServerMessageProcessorFactory;
 
 /**
  * Created by chend on 2017/8/11.
@@ -25,6 +26,7 @@ public class Server {
         serviceManager.registerService(ConnectionListener.getInstance());
         serviceManager.registerService(MessageListener.getInstance());
         serviceManager.registerService(MessageProcessService.getInstance());
+        MessageProcessService.getInstance().setMessageProcessorFactory(new ServerMessageProcessorFactory());
     }
 
     public void start() {

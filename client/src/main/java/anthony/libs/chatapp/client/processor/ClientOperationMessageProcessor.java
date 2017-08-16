@@ -1,14 +1,14 @@
-package anthony.libs.chatapp.core.processor;
+package anthony.libs.chatapp.client.processor;
 
-import anthony.libs.chatapp.core.manager.ConnectionManager;
 import anthony.libs.chatapp.core.message.OperationMessage;
+import anthony.libs.chatapp.core.processor.AbstractOperationMessageProcessor;
 
 /**
  * Created by chend on 2017/8/14.
  */
-public class OperationMessageProcessor implements MessageProcessor<OperationMessage> {
+public class ClientOperationMessageProcessor extends AbstractOperationMessageProcessor {
     @Override
-    public void process(OperationMessage message) {
+    public void doProcess(OperationMessage message) {
         System.out.println("OperationMessageProcessor");
         switch (message.getOperation()) {
             case LOGIN:
