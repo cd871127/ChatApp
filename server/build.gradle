@@ -1,2 +1,3 @@
 mainClassName = 'com.anthony.chatapp.server.Server'
 jar.manifest.attributes.'Main-Class' = mainClassName
+
