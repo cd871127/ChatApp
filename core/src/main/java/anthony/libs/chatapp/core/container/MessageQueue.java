@@ -1,9 +1,11 @@
 package anthony.libs.chatapp.core.container;
 
 import anthony.libs.chatapp.core.message.Message;
+import anthony.libs.chatapp.core.message.MessageInfo;
 
 /**
  * Created by chend on 2017/8/16.
+ * 待发送的message列表
  */
 public class MessageQueue extends AbstractBlockingQueueBasedContainer<Message> {
     private static MessageQueue ourInstance = new MessageQueue();
@@ -38,7 +40,7 @@ public class MessageQueue extends AbstractBlockingQueueBasedContainer<Message> {
     }
 
     public void putAndWaitReply(Message message) {
-        CachedMessageContainer.getInstance().put(message.getId(), message);
+        MessagesWaitReplay.getInstance().put(message.getId(), new MessageInfo(message, System.currentTimeMillis()));
         put(message);
     }
 

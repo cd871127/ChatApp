@@ -38,4 +38,8 @@ public abstract class AbstractMapBasedContainer<K, V> {
         mapContainer.remove(k);
         lock.writeLock().unlock();
     }
+
+    public boolean containsKey(K k) {
+        return mapContainer.containsKey(k);
+    }
 }

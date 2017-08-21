@@ -1,5 +1,6 @@
 package anthony.libs.chatapp.server.processor;
 
+import anthony.libs.chatapp.core.container.CachedMessages;
 import anthony.libs.chatapp.core.message.OperationMessage;
 import anthony.libs.chatapp.core.processor.AbstractOperationMessageProcessor;
 import anthony.libs.chatapp.core.user.ClientInfo;
@@ -11,6 +12,7 @@ import anthony.libs.chatapp.server.container.ClientInfoContainer;
 public class ServerOperationMessageProcessor extends AbstractOperationMessageProcessor {
 
     private ClientInfoContainer clientInfoContainer = ClientInfoContainer.getInstance();
+    private CachedMessages cachedMessages = CachedMessages.getInstance();
 
     @Override
     protected void doProcess(OperationMessage message) {
@@ -43,6 +45,7 @@ public class ServerOperationMessageProcessor extends AbstractOperationMessagePro
         OperationMessage loginSuccess = new OperationMessage(OperationMessage.TYPE.LOGIN_SUCCESS);
         loginSuccess.setDestination(newClientInfo.getUserInfo().getUserId());
         messageQueue.put(loginSuccess);
+        cachedMessages.get(newClientInfo.getUserInfo().getUserId()).forEach((v) -> messageQueue.put(v));
 //        MessageUtil.sendMessage(new OperationMessage(OperationMessage.TYPE.LOGIN_SUCCESS),
 //                (SocketChannel) getSelectionKey().channel());
     }

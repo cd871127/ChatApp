@@ -1,5 +1,6 @@
 package anthony.libs.chatapp.core.service.impl;
 
+import anthony.libs.chatapp.core.container.CachedMessages;
 import anthony.libs.chatapp.core.container.MessageQueue;
 import anthony.libs.chatapp.core.message.Message;
 import anthony.libs.chatapp.core.message.MessageUtil;
@@ -16,6 +17,7 @@ import java.util.concurrent.Executors;
  */
 public abstract class SendMessageService extends AbstractService {
     private MessageQueue messageQueue = MessageQueue.getInstance();
+    private CachedMessages cachedMessages = CachedMessages.getInstance();
     private ExecutorService es;
 
     protected SendMessageService(int nThreads) {
@@ -46,9 +48,10 @@ public abstract class SendMessageService extends AbstractService {
         @Override
         public void run() {
             SelectionKey key = getTargetKey(message.getDestination());
-            if(null==key) {
-                messageQueue.put(message);
-                return ;
+            if (null == key) {
+//                messageQueue.put(message);
+                cachedMessages.put(message.getDestination(), message);
+                return;
             }
             MessageUtil.sendMessage(message, (SocketChannel) key.channel());
         }
