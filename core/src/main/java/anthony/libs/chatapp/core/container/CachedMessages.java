@@ -51,7 +51,8 @@ public class CachedMessages extends AbstractMapBasedContainer<String, ArrayList<
         ArrayList<Message> userMessage = this.get(userId);
         remove(userId);
         lock.writeLock().unlock();
-        userMessage.forEach((v) -> messageQueue.put(v));
+        if (null != userMessage)
+            userMessage.forEach((v) -> messageQueue.put(v));
     }
 
 

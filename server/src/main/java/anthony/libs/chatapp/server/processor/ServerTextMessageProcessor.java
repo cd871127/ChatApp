@@ -1,5 +1,6 @@
 package anthony.libs.chatapp.server.processor;
 
+import anthony.libs.chatapp.core.container.CachedMessages;
 import anthony.libs.chatapp.core.message.TextMessage;
 import anthony.libs.chatapp.core.processor.AbstractTextMessageProcessor;
 import anthony.libs.chatapp.core.user.ClientInfo;
@@ -16,6 +17,9 @@ public class ServerTextMessageProcessor extends AbstractTextMessageProcessor {
         ClientInfo clientInfo = clientInfoContainer.get(message.getDestination());
         if (clientInfo != null) {
             messageQueue.putAndWaitReply(message);
+        }else
+        {
+            CachedMessages.getInstance().put(message.getDestination(),message);
         }
     }
 }
