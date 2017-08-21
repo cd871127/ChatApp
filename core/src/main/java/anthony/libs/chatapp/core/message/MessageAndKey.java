@@ -7,7 +7,7 @@ import java.nio.channels.SelectionKey;
  */
 public class MessageAndKey {
     private Message message;
-    private SelectionKey selectionKey;
+    private SelectionKey selectionKey;//message从哪个key读出来的
 
     public MessageAndKey() {
     }
