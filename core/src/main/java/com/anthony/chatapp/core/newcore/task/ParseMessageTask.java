@@ -13,7 +13,7 @@ import java.nio.channels.SocketChannel;
 /**
  * Created by chend on 2017/7/12.
  */
-public class ParseMessageTask extends Task<Object> {
+public class ParseMessageTask extends Task<MessageAndKey> {
     private SelectionKey key;
 
     public ParseMessageTask(SelectionKey key) {
@@ -21,7 +21,7 @@ public class ParseMessageTask extends Task<Object> {
     }
 
     @Override
-    protected Object execute() {
+    protected MessageAndKey execute() {
         Message message;
         try {
             //处理消息头
@@ -36,7 +36,8 @@ public class ParseMessageTask extends Task<Object> {
             //设置key对读感兴趣
         } catch (BufferUnderflowException | IOException e) {
             logger.warn("lose connection");
-            return new MessageAndKey(null, key);
+            //TODO 注销key
+            message = null;
         } finally {
             Selector.getInstance().setKeyInterestOnRead(key);
         }

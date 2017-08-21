@@ -1,45 +1,45 @@
 package com.anthony.chatapp.core.newcore.service;
 
-import com.anthony.chatapp.core.Const;
+import com.anthony.chatapp.core.newcore.Selector;
+import com.anthony.chatapp.core.system.Parameter;
 
 import java.io.IOException;
+import java.net.InetSocketAddress;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
 
 /**
- * Created by chend on 2017/7/12.
+ *
  */
-public abstract class ConnectionListenService extends AbstractService {
-
+public class ConnectionListenService extends AbstractService {
     private ServerSocketChannel serverSocketChannel;
-//    private Selector selector;
 
+
+    /**
+     *
+     */
     private ConnectionListenService() {
         try {
             serverSocketChannel = ServerSocketChannel.open();
-            bindSocketToPort();
+            serverSocketChannel.socket().bind(new InetSocketAddress(Parameter.getInstance().getListenPort()));
         } catch (IOException e) {
             logger.error("ConnectionHandleService constructor");
             e.printStackTrace();
         }
     }
 
-    /**
-     * subclass implement this method
-     * invoke bind method of socket
-     *
-     * @throws IOException .
-     */
-    protected abstract void bindSocketToPort() throws IOException;
 
+    /**
+     * @throws Exception .
+     */
     @Override
     protected final void start() throws Exception {
         SocketChannel socketChannel;
         try {
-            while (!Const.isShutdown) {
+            while (status) {
                 socketChannel = serverSocketChannel.accept();
                 logger.info("New connection from: " + socketChannel.getRemoteAddress().toString());
-//                mrs.addChannel(socketChannel);
+                Selector.getInstance().registChannel(socketChannel);
             }
         } catch (IOException e) {
             logger.error("ConnectionHandleService start");
