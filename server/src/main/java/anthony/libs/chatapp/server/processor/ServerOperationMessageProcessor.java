@@ -1,10 +1,13 @@
 package anthony.libs.chatapp.server.processor;
 
 import anthony.libs.chatapp.core.container.CachedMessages;
+import anthony.libs.chatapp.core.message.Message;
 import anthony.libs.chatapp.core.message.OperationMessage;
 import anthony.libs.chatapp.core.processor.AbstractOperationMessageProcessor;
 import anthony.libs.chatapp.core.user.ClientInfo;
 import anthony.libs.chatapp.server.container.ClientInfoContainer;
+
+import java.util.ArrayList;
 
 /**
  * Created by chend on 2017/8/14.
@@ -45,7 +48,9 @@ public class ServerOperationMessageProcessor extends AbstractOperationMessagePro
         OperationMessage loginSuccess = new OperationMessage(OperationMessage.TYPE.LOGIN_SUCCESS);
         loginSuccess.setDestination(newClientInfo.getUserInfo().getUserId());
         messageQueue.put(loginSuccess);
-        cachedMessages.get(newClientInfo.getUserInfo().getUserId()).forEach((v) -> messageQueue.put(v));
+        ArrayList<Message> tmpMessages = cachedMessages.get(newClientInfo.getUserInfo().getUserId());
+        if (null != tmpMessages)
+            tmpMessages.forEach((v) -> messageQueue.put(v));
 //        MessageUtil.sendMessage(new OperationMessage(OperationMessage.TYPE.LOGIN_SUCCESS),
 //                (SocketChannel) getSelectionKey().channel());
     }
