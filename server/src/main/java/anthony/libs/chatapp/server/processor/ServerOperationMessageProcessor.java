@@ -48,9 +48,7 @@ public class ServerOperationMessageProcessor extends AbstractOperationMessagePro
         OperationMessage loginSuccess = new OperationMessage(OperationMessage.TYPE.LOGIN_SUCCESS);
         loginSuccess.setDestination(newClientInfo.getUserInfo().getUserId());
         messageQueue.put(loginSuccess);
-        ArrayList<Message> tmpMessages = cachedMessages.get(newClientInfo.getUserInfo().getUserId());
-        if (null != tmpMessages)
-            tmpMessages.forEach((v) -> messageQueue.put(v));
+        cachedMessages.sendCachedMessage(newClientInfo.getUserInfo().getUserId());
 //        MessageUtil.sendMessage(new OperationMessage(OperationMessage.TYPE.LOGIN_SUCCESS),
 //                (SocketChannel) getSelectionKey().channel());
     }
