@@ -1,4 +1,6 @@
-package anthony.libs.chatapp.core.user;
+package anthony.libs.chatapp.server;
+
+import anthony.libs.chatapp.core.user.UserInfo;
 
 import java.nio.channels.SelectionKey;
 

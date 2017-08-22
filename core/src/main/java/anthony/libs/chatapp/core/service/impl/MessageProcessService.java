@@ -35,7 +35,9 @@ public class MessageProcessService extends AbstractService {
         while (getStatus()) {
             MessageAndKey messageAndKey = messageContainer.getMessageAndKey();
 
-            MessageProcessor messageProcessor = messageProcessorFactory.getProcessor(messageAndKey.getMessage().getClass().getName());
+            MessageProcessor messageProcessor=null;
+            if(messageAndKey!=null)
+                messageProcessor = messageProcessorFactory.getProcessor(messageAndKey.getMessage().getClass().getName());
             //转发消息
             if (null != messageProcessor)
                 messageProcessor.process(messageAndKey);

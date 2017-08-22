@@ -1,5 +1,7 @@
 package anthony.libs.chatapp.core.message;
 
+import java.nio.channels.SocketChannel;
+
 /**
  * Created by chend on 2017/8/21.
  */
@@ -20,6 +22,15 @@ public class MessageInfo {
 
     private Message message;
     private long lastActiveTime;
+    private SocketChannel socketChannel;//接收消息的channel
+
+    public SocketChannel getSocketChannel() {
+        return socketChannel;
+    }
+
+    public void setSocketChannel(SocketChannel socketChannel) {
+        this.socketChannel = socketChannel;
+    }
 
     public Message getMessage() {
         return message;

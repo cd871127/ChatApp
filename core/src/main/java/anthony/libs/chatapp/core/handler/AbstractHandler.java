@@ -1,5 +1,8 @@
 package anthony.libs.chatapp.core.handler;
 
+import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.nio.channels.SocketChannel;
 import java.util.concurrent.Callable;
 
 /**
@@ -11,5 +14,16 @@ public abstract class AbstractHandler<V> implements Callable<V> {
     @Override
     public V call() {
         return handle();
+    }
+
+    protected byte[] read(SocketChannel socketChannel, int length) throws IOException {
+        ByteBuffer byteBuffer = ByteBuffer.allocateDirect(length);
+        byteBuffer.clear();
+        byte[] bytes = new byte[length];
+        //这个方法没有超时的设置
+        socketChannel.read(byteBuffer);
+        byteBuffer.flip();
+        byteBuffer.get(bytes);
+        return bytes;
     }
 }

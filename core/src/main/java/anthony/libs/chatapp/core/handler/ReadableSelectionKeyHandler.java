@@ -17,6 +17,7 @@ import java.nio.channels.SocketChannel;
  * Created by chend on 2017/8/11.
  * 读取SelectionKey中的message
  */
+@Deprecated
 public class ReadableSelectionKeyHandler extends AbstractHandler<MessageAndKey> {
     private SelectionKey selectionKey;
     private Logger logger = LoggerFactory.getLogger(getClass());
@@ -47,14 +48,6 @@ public class ReadableSelectionKeyHandler extends AbstractHandler<MessageAndKey> 
         return messageAndKey;
     }
 
-    private byte[] read(SocketChannel socketChannel, int length) throws IOException, BufferUnderflowException {
-        ByteBuffer byteBuffer = ByteBuffer.allocateDirect(length);
-        byteBuffer.clear();
-        byte[] bytes = new byte[length];
-        socketChannel.read(byteBuffer);
-        byteBuffer.flip();
-        byteBuffer.get(bytes);
-        return bytes;
-    }
+
 
 }

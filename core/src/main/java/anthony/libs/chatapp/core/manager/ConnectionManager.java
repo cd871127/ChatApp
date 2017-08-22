@@ -63,7 +63,9 @@ public class ConnectionManager {
         if (lock.isWriteLocked())
             return null;
         try {
-            selector.select();
+            int readyKeys = selector.select();
+            if (readyKeys == 0)
+                return null;
         } catch (IOException e) {
             logger.error("selector.select() 失败");
             e.printStackTrace();

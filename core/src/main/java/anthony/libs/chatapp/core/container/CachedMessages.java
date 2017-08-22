@@ -34,7 +34,6 @@ public class CachedMessages extends AbstractMapBasedContainer<String, ArrayList<
         userMessage.add(message);
         put(userId, userMessage);
         lock.writeLock().unlock();
-        System.out.println("1");
     }
 
 

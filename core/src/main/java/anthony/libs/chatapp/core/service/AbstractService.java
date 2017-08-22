@@ -42,7 +42,11 @@ public abstract class AbstractService implements Runnable {
 
     @Override
     public void run() {
-        start();
+        try {
+            start();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     protected abstract void execute();

@@ -1,20 +1,17 @@
 package anthony.libs.chatapp.server.processor;
 
 import anthony.libs.chatapp.core.container.CachedMessages;
-import anthony.libs.chatapp.core.message.Message;
 import anthony.libs.chatapp.core.message.OperationMessage;
 import anthony.libs.chatapp.core.processor.AbstractOperationMessageProcessor;
-import anthony.libs.chatapp.core.user.ClientInfo;
-import anthony.libs.chatapp.server.container.ClientInfoContainer;
-
-import java.util.ArrayList;
+import anthony.libs.chatapp.server.ClientInfo;
+import anthony.libs.chatapp.server.container.OnlineClientInfoContainer;
 
 /**
  * Created by chend on 2017/8/14.
  */
 public class ServerOperationMessageProcessor extends AbstractOperationMessageProcessor {
 
-    private ClientInfoContainer clientInfoContainer = ClientInfoContainer.getInstance();
+    private OnlineClientInfoContainer clientInfoContainer = OnlineClientInfoContainer.getInstance();
     private CachedMessages cachedMessages = CachedMessages.getInstance();
 
     @Override

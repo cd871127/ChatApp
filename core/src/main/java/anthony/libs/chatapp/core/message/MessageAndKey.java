@@ -5,6 +5,7 @@ import java.nio.channels.SelectionKey;
 /**
  * Created by chend on 2017/8/16.
  */
+@Deprecated
 public class MessageAndKey {
     private Message message;
     private SelectionKey selectionKey;//message从哪个key读出来的

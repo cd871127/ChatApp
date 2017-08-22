@@ -1,32 +1,40 @@
-package anthony.libs.chatapp.core.service.impl;
+package anthony.libs.chatapp.server.service;
 
 import anthony.libs.chatapp.core.config.SystemConfig;
-import anthony.libs.chatapp.core.manager.ConnectionManager;
+import anthony.libs.chatapp.core.message.MessageInfo;
 import anthony.libs.chatapp.core.service.AbstractService;
+import anthony.libs.chatapp.server.handler.NewConnectionHandler;
+import anthony.libs.chatapp.server.manager.ClientManager;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 /**
  * Created by chend on 2017/8/10.
  * 监听新连接
  */
-public class ConnectionListener extends AbstractService {
+public class ServerConnectionListener extends AbstractService {
 
-    private static ConnectionListener ourInstance = new ConnectionListener();
+    private static ServerConnectionListener ourInstance = new ServerConnectionListener();
 
-    public static ConnectionListener getInstance() {
+    public static ServerConnectionListener getInstance() {
         return ourInstance;
     }
 
-    private ConnectionListener() {
+    private ServerConnectionListener() {
         super();
-        connectionManager=ConnectionManager.getInstance();
+        es = Executors.newFixedThreadPool(3);
+        clientManager = ClientManager.getInstance();
     }
 
-    private ConnectionManager connectionManager;
+    private ExecutorService es;
+    private ClientManager clientManager;
+
 
     @Override
     protected void execute() {
@@ -45,11 +53,13 @@ public class ConnectionListener extends AbstractService {
                 assert serverSocketChannel != null;
                 SocketChannel socketChannel = serverSocketChannel.accept();
                 getLogger().info("new connection: " + socketChannel.getRemoteAddress().toString());
-                //注册socketChannel
-                connectionManager.registerSocketChannel(socketChannel);
+                //新线程等待用户的登陆信息
+                Future<MessageInfo> loginInfo = es.submit(new NewConnectionHandler(socketChannel));
+                clientManager.clientLogin(loginInfo);
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
+        es.shutdown();
     }
 }

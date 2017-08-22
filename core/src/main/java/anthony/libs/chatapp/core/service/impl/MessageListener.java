@@ -1,8 +1,9 @@
 package anthony.libs.chatapp.core.service.impl;
 
-import anthony.libs.chatapp.core.container.MessageAndKeyContainer;
-import anthony.libs.chatapp.core.handler.ReadableSelectionKeyHandler;
+import anthony.libs.chatapp.core.container.MessageInfoFutureList;
+import anthony.libs.chatapp.core.handler.AbstractHandler;
 import anthony.libs.chatapp.core.manager.ConnectionManager;
+import anthony.libs.chatapp.core.message.MessageInfo;
 import anthony.libs.chatapp.core.service.AbstractService;
 
 import java.nio.channels.SelectionKey;
@@ -14,22 +15,18 @@ import java.util.concurrent.Executors;
  * Created by chend on 2017/8/10.
  * 监听新的消息
  */
-public class MessageListener extends AbstractService {
-    private static MessageListener ourInstance = new MessageListener();
+public abstract class MessageListener extends AbstractService {
 
-    public static MessageListener getInstance() {
-        return ourInstance;
-    }
 
     private ExecutorService es;
     private ConnectionManager connectionManager;
-    private MessageAndKeyContainer messageAndKeyContainer;
+    private MessageInfoFutureList messageInfoFutureList;
 
-    private MessageListener() {
+    protected MessageListener() {
         super();
         this.es = Executors.newFixedThreadPool(3);
         this.connectionManager = ConnectionManager.getInstance();
-        this.messageAndKeyContainer = MessageAndKeyContainer.getInstance();
+        this.messageInfoFutureList = MessageInfoFutureList.getInstance();
     }
 
 
@@ -41,9 +38,12 @@ public class MessageListener extends AbstractService {
                 readableKeys.forEach((v) -> {
                     //开新线程处理消息
                     getLogger().debug("new message");
-                    messageAndKeyContainer.addFuture(es.submit(new ReadableSelectionKeyHandler(v)));
+                    messageInfoFutureList.put(es.submit(getHandler(v)));
                 });
         }
         es.shutdown();
     }
+
+    protected abstract AbstractHandler<MessageInfo> getHandler(SelectionKey selectionKey);
+
 }
