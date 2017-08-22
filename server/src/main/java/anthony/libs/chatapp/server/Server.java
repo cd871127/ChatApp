@@ -26,8 +26,8 @@ public class Server {
         serviceManager = new ServiceManager(6);
         serviceManager.registerService(ConnectionListener.getInstance());
         serviceManager.registerService(MessageListener.getInstance());
-        serviceManager.registerService(MessageProcessService.getInstance());
         MessageProcessService.getInstance().setMessageProcessorFactory(new ServerMessageProcessorFactory());
+        serviceManager.registerService(MessageProcessService.getInstance());
         serviceManager.registerService(ServerSendMessageService.getInstance());
     }
 
