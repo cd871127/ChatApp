@@ -1,5 +1,7 @@
 package anthony.libs.chatapp.client.processor;
 
+import anthony.libs.chatapp.core.message.Message;
+import anthony.libs.chatapp.core.message.MessageInfo;
 import anthony.libs.chatapp.core.message.OperationMessage;
 import anthony.libs.chatapp.core.processor.AbstractOperationMessageProcessor;
 
@@ -8,7 +10,8 @@ import anthony.libs.chatapp.core.processor.AbstractOperationMessageProcessor;
  */
 public class ClientOperationMessageProcessor extends AbstractOperationMessageProcessor {
     @Override
-    public void doProcess(OperationMessage message) {
+    public void doProcess(MessageInfo messageInfo ) {
+        OperationMessage message= (OperationMessage) messageInfo.getMessage();
         System.out.println("OperationMessageProcessor");
         switch (message.getOperation()) {
             case LOGIN_SUCCESS:

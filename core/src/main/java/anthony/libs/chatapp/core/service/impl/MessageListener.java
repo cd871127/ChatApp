@@ -37,7 +37,7 @@ public abstract class MessageListener extends AbstractService {
             if (null != readableKeys)
                 readableKeys.forEach((v) -> {
                     //开新线程处理消息
-                    getLogger().debug("new message");
+                    getLogger().info("new message");
                     messageInfoFutureList.put(es.submit(getHandler(v)));
                 });
         }

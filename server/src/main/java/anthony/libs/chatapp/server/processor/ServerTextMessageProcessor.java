@@ -1,6 +1,7 @@
 package anthony.libs.chatapp.server.processor;
 
 import anthony.libs.chatapp.core.container.CachedMessages;
+import anthony.libs.chatapp.core.message.MessageInfo;
 import anthony.libs.chatapp.core.message.TextMessage;
 import anthony.libs.chatapp.core.processor.AbstractTextMessageProcessor;
 import anthony.libs.chatapp.server.ClientInfo;
@@ -13,13 +14,13 @@ public class ServerTextMessageProcessor extends AbstractTextMessageProcessor {
     private OnlineClientInfoContainer clientInfoContainer = OnlineClientInfoContainer.getInstance();
 
     @Override
-    protected void doProcess(TextMessage message) {
+    protected void doProcess(MessageInfo messageInfo) {
+        TextMessage message = (TextMessage) messageInfo.getMessage();
         ClientInfo clientInfo = clientInfoContainer.getClientInfoByUserId(message.getDestination());
         if (clientInfo != null) {
             messageQueue.putAndWaitReply(message);
-        }else
-        {
-            CachedMessages.getInstance().put(message.getDestination(),message);
+        } else {
+            CachedMessages.getInstance().put(message.getDestination(), message);
         }
     }
 }

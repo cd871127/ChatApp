@@ -40,7 +40,7 @@ public class MessageQueue extends AbstractBlockingQueueBasedContainer<Message> {
     }
 
     public void putAndWaitReply(Message message) {
-        MessagesWaitReplay.getInstance().put(message.getId(), new MessageInfo(message, System.currentTimeMillis()));
+//        MessagesWaitReplay.getInstance().put(message.getId(), new MessageInfo(message, System.currentTimeMillis()));
         put(message);
     }
 

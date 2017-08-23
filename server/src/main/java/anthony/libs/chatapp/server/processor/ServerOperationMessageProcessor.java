@@ -1,6 +1,7 @@
 package anthony.libs.chatapp.server.processor;
 
 import anthony.libs.chatapp.core.container.CachedMessages;
+import anthony.libs.chatapp.core.message.MessageInfo;
 import anthony.libs.chatapp.core.message.OperationMessage;
 import anthony.libs.chatapp.core.processor.AbstractOperationMessageProcessor;
 import anthony.libs.chatapp.server.ClientInfo;
@@ -11,12 +12,13 @@ import anthony.libs.chatapp.server.container.OnlineClientInfoContainer;
  */
 public class ServerOperationMessageProcessor extends AbstractOperationMessageProcessor {
 
-    private OnlineClientInfoContainer clientInfoContainer = OnlineClientInfoContainer.getInstance();
+    private OnlineClientInfoContainer onlineClientInfoContainer = OnlineClientInfoContainer.getInstance();
     private CachedMessages cachedMessages = CachedMessages.getInstance();
 
     @Override
-    protected void doProcess(OperationMessage message) {
+    protected void doProcess(MessageInfo messageInfo) {
         System.out.println("OperationMessageProcessor");
+        OperationMessage message= (OperationMessage) messageInfo.getMessage();
         switch (message.getOperation()) {
             case LOGIN:
                 login(message);
@@ -30,9 +32,9 @@ public class ServerOperationMessageProcessor extends AbstractOperationMessagePro
 
     private void login(OperationMessage message) {
         ClientInfo newClientInfo = new ClientInfo();
-        newClientInfo.setSelectionKey(getSelectionKey());
+//        newClientInfo.setSelectionKey(getSelectionKey());
         newClientInfo.setUserInfo(message.getUserInfo());
-        ClientInfo oldClientInfo = clientInfoContainer.addClientInfo(newClientInfo);
+        ClientInfo oldClientInfo = onlineClientInfoContainer.addClientInfo(newClientInfo);
         //顶掉以前的登陆信息
         if (null != oldClientInfo) {
             OperationMessage antherLogin = new OperationMessage(OperationMessage.TYPE.ANOTHER_LOGIN);

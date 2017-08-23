@@ -1,5 +1,7 @@
 package anthony.libs.chatapp.client.processor;
 
+import anthony.libs.chatapp.core.message.MessageInfo;
+import anthony.libs.chatapp.core.message.OperationMessage;
 import anthony.libs.chatapp.core.message.TextMessage;
 import anthony.libs.chatapp.core.processor.AbstractTextMessageProcessor;
 
@@ -9,7 +11,8 @@ import anthony.libs.chatapp.core.processor.AbstractTextMessageProcessor;
 public class ClientTextMessageProcessor extends AbstractTextMessageProcessor {
 
     @Override
-    public void doProcess(TextMessage message) {
-        System.out.println(message);
+    public void doProcess(MessageInfo messageInfo ) {
+        TextMessage message = (TextMessage) messageInfo.getMessage();
+        System.out.println(message.toString());
     }
 }

@@ -36,6 +36,10 @@ public abstract class SendMessageService extends AbstractService {
         es.shutdown();
     }
 
+    public void sendMessage(Message message) {
+        messageQueue.putAndWaitReply(message);
+    }
+
     protected abstract SelectionKey getTargetKey(String destination);
 
     private class Sender implements Runnable {
@@ -47,13 +51,17 @@ public abstract class SendMessageService extends AbstractService {
 
         @Override
         public void run() {
-            SelectionKey key = getTargetKey(message.getDestination());
-            if (null == key) {
+            try {
+                SelectionKey key = getTargetKey(message.getDestination());
+                if (null == key) {
 //                messageQueue.put(message);
-                cachedMessages.put(message.getDestination(), message);
-                return;
+                    cachedMessages.put(message.getDestination(), message);
+                    return;
+                }
+                MessageUtil.sendMessage(message, (SocketChannel) key.channel());
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-            MessageUtil.sendMessage(message, (SocketChannel) key.channel());
         }
     }
 }

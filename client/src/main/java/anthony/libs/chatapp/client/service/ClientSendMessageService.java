@@ -18,6 +18,7 @@ public class ClientSendMessageService extends SendMessageService {
 
     @Override
     protected SelectionKey getTargetKey(String destination) {
+
         return Client.getSelectionKey();
     }
 }

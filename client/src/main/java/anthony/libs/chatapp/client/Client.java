@@ -1,6 +1,7 @@
 package anthony.libs.chatapp.client;
 
 import anthony.libs.chatapp.client.processor.factory.ClientMessageProcessorFactory;
+import anthony.libs.chatapp.client.service.ClientMessageListener;
 import anthony.libs.chatapp.client.service.ClientSendMessageService;
 import anthony.libs.chatapp.core.config.SystemConfig;
 import anthony.libs.chatapp.core.container.MessageQueue;
@@ -10,7 +11,7 @@ import anthony.libs.chatapp.core.message.Message;
 import anthony.libs.chatapp.core.message.OperationMessage;
 import anthony.libs.chatapp.core.service.impl.MessageListener;
 import anthony.libs.chatapp.core.service.impl.MessageProcessService;
-import anthony.libs.chatapp.core.user.ClientInfo;
+import anthony.libs.chatapp.core.user.UserInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,8 +26,8 @@ import java.nio.channels.SocketChannel;
  */
 public class Client {
 
+    private UserInfo userInfo;
     private Logger logger = LoggerFactory.getLogger(getClass());
-    private ClientInfo clientInfo;
     private SocketChannel socketChannel;
     private ServiceManager serviceManager;
     private ConnectionManager connectionManager;
@@ -40,7 +41,7 @@ public class Client {
         serviceManager = new ServiceManager(2);
         messageProcessService = MessageProcessService.getInstance();
         messageProcessService.setMessageProcessorFactory(new ClientMessageProcessorFactory());
-        messageListener = MessageListener.getInstance();
+        messageListener = ClientMessageListener.getInstance();
         connectionManager = ConnectionManager.getInstance();
         clientSendMessageService = ClientSendMessageService.getInstance();
         messageQueue = MessageQueue.getInstance();
@@ -73,18 +74,19 @@ public class Client {
         OperationMessage login = new OperationMessage();
         login.setOperation(OperationMessage.TYPE.LOGIN);
 
-        login.setSender(clientInfo.getUserInfo().getUserId());
-        login.setOneHeader("USER_INFO", clientInfo.getUserInfo().toString());
+        login.setSender(userInfo.getUserId());
+        login.setOneHeader("USER_INFO", userInfo.toString());
         sendMessage(login);
         return true;
     }
 
-    public void setClientInfo(ClientInfo clientInfo) {
-        this.clientInfo = clientInfo;
+    public void setClientInfo(UserInfo userInfo) {
+        this.userInfo = userInfo;
     }
 
     public void sendMessage(Message message) {
 //        MessageUtil.sendMessage(message, socketChannel);
+        logger.info("send message");
         messageQueue.put(message);
     }
 
