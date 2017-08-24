@@ -39,6 +39,4 @@ public class ServerSendMessageService extends SendMessageService {
         if (null != offlineMessage)
             offlineMessage.forEach((this::sendMessage));
     }
-
-
 }
