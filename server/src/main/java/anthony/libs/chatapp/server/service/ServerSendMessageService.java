@@ -38,7 +38,6 @@ public class ServerSendMessageService extends SendMessageService {
         ArrayList<Message> offlineMessage = messagesSendFailedContainer.getMessagesByUserId(userId);
         if (null != offlineMessage)
             offlineMessage.forEach((this::sendMessage));
-
     }
 
 

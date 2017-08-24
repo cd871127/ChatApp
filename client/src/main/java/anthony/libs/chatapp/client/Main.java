@@ -22,7 +22,7 @@ public class Main {
             Scanner scanner = new Scanner(System.in);
             text = scanner.nextLine();
         }
-        Client client = new Client();
+        Client client = Client.getInstance();
         UserInfo userInfo = new UserInfo(text, "19871127cd");
         userInfo.setUserId(text);
         client.setClientInfo(userInfo);

@@ -3,6 +3,7 @@ package anthony.libs.chatapp.server.manager;
 import anthony.libs.chatapp.core.container.FutureList;
 import anthony.libs.chatapp.core.manager.ConnectionManager;
 import anthony.libs.chatapp.core.message.MessageInfo;
+import anthony.libs.chatapp.core.message.OperationMessage;
 import anthony.libs.chatapp.core.service.AbstractService;
 import anthony.libs.chatapp.server.ClientInfo;
 import anthony.libs.chatapp.server.container.OnlineClientInfoContainer;
@@ -35,24 +36,44 @@ public class ClientManager extends AbstractService {
     protected void execute() {
         while (getStatus()) {
             MessageInfo messageInfo = getLoginInfo();
-            login(messageInfo);
+            if (userAuthentication(messageInfo))
+                login(messageInfo);
+            else {
+                OperationMessage loginFailed = new OperationMessage(OperationMessage.TYPE.LOGIN_FAILED);
+                ServerSendMessageService.sendMessageViaSocketChannel(loginFailed, messageInfo.getSocketChannel());
+            }
         }
     }
 
+    //验证用户
+    private boolean userAuthentication(MessageInfo messageInfo) {
+        return true;
+    }
+
+
+    //登陆
     private void login(MessageInfo messageInfo) {
         if (messageInfo == null)
             return;
         ClientInfo clientInfo = new ClientInfo(messageInfo.getMessage().getUserInfo());
-        SelectionKey selectionKey = connectionManager.registerSocketChannel(messageInfo.getSocketChannel());
-        clientInfo.setSelectionKey(selectionKey);
-        ClientInfo oldClientInfo = onlineClientInfoContainer.addClientInfo(clientInfo);
+
+        ClientInfo oldClientInfo = onlineClientInfoContainer.getClientInfoByUserId(clientInfo.getUserInfo().getUserId());
 
         if (null != oldClientInfo) {
-            //TODO send another login
-
+            //send another login
+            OperationMessage anotherLogin = new OperationMessage(OperationMessage.TYPE.ANOTHER_LOGIN);
+            anotherLogin.setDestination(oldClientInfo.getUserInfo().getUserId());
+            ServerSendMessageService.getInstance().sendMessage(anotherLogin);
         }
 
-        //TODO send Login confirm
+        SelectionKey selectionKey = connectionManager.registerSocketChannel(messageInfo.getSocketChannel());
+        clientInfo.setSelectionKey(selectionKey);
+        onlineClientInfoContainer.addClientInfo(clientInfo);
+
+        //send Login confirm
+        OperationMessage confirm = new OperationMessage(OperationMessage.TYPE.LOGIN_SUCCESS);
+        confirm.setDestination(clientInfo.getUserInfo().getUserId());
+        ServerSendMessageService.getInstance().sendMessage(confirm);
 
         //发送离线时收到的消息
         ServerSendMessageService.getInstance().sendOfflineMessages(messageInfo.getMessage().getUserInfo().getUserId());

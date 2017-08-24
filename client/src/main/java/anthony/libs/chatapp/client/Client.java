@@ -24,6 +24,12 @@ import java.nio.channels.SocketChannel;
  * Created by chend on 2017/8/11.
  */
 public class Client {
+    private static Client ourInstance = new Client();
+
+    public static Client getInstance() {
+        return ourInstance;
+    }
+
 
     private UserInfo userInfo;
     private Logger logger = LoggerFactory.getLogger(getClass());
@@ -35,7 +41,7 @@ public class Client {
     private ClientSendMessageService clientSendMessageService;
     private static SelectionKey selectionKey;
 
-    public Client() {
+    private Client() {
         serviceManager = new ServiceManager(2);
         messageProcessService = MessageProcessService.getInstance();
         messageProcessService.setMessageProcessorFactory(new ClientMessageProcessorFactory());
@@ -82,13 +88,12 @@ public class Client {
     }
 
     public void sendMessage(Message message) {
-//        MessageUtil.sendMessage(message, socketChannel);
-        logger.info("send message");
         clientSendMessageService.sendMessage(message);
     }
 
     public void stop() {
         try {
+            serviceManager.stop();
             socketChannel.close();
         } catch (IOException e) {
             e.printStackTrace();

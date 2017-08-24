@@ -50,7 +50,7 @@ public class OperationMessage extends Message<OperationMessage.TYPE> {
 
     public enum TYPE {
         LOGIN("LOGIN"), LOGOUT("LOGOUT"), ACK("ACK"), ACK_ACK("ACK_ACK"),
-        LOGIN_SUCCESS("LOGIN_SUCCESS"), ANOTHER_LOGIN("ANOTHER_LOGIN");
+        LOGIN_SUCCESS("LOGIN_SUCCESS"),LOGIN_FAILED("LOGIN_FAILED"), ANOTHER_LOGIN("ANOTHER_LOGIN");
 
         private String value;
 

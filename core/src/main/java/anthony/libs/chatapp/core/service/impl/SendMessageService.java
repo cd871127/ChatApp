@@ -70,6 +70,10 @@ public abstract class SendMessageService extends AbstractService {
         sendMessage(ackAck);
     }
 
+    public static void sendMessageViaSocketChannel(Message message, SocketChannel socketChannel) {
+        MessageUtil.sendMessage(message, socketChannel);
+    }
+
     /**
      * 处理空的key
      */
@@ -89,7 +93,7 @@ public abstract class SendMessageService extends AbstractService {
         @Override
         public void run() {
             try {
-                MessageUtil.sendMessage(message, socketChannel);
+                sendMessageViaSocketChannel(message, socketChannel);
             } catch (Exception e) {
                 e.printStackTrace();
             }
