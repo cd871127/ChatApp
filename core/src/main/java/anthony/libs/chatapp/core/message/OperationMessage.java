@@ -35,6 +35,8 @@ public class OperationMessage extends Message<OperationMessage.TYPE> {
         }
     }
 
+    public static String CONFIRM_ID="CONFIRM_ID";
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();

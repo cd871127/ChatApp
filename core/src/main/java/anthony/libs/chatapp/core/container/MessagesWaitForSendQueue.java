@@ -2,19 +2,20 @@ package anthony.libs.chatapp.core.container;
 
 import anthony.libs.chatapp.core.message.Message;
 import anthony.libs.chatapp.core.message.MessageInfo;
+import anthony.libs.chatapp.core.monitor.Monitor;
 
 /**
  * Created by chend on 2017/8/16.
  * 待发送的message列表
  */
-public class MessageQueue extends AbstractBlockingQueueBasedContainer<Message> {
-    private static MessageQueue ourInstance = new MessageQueue();
+public class MessagesWaitForSendQueue extends AbstractBlockingQueueBasedContainer<Message> implements Monitor{
+    private static MessagesWaitForSendQueue ourInstance = new MessagesWaitForSendQueue();
 
-    public static MessageQueue getInstance() {
+    public static MessagesWaitForSendQueue getInstance() {
         return ourInstance;
     }
 
-    private MessageQueue() {
+    private MessagesWaitForSendQueue() {
 
     }
 
@@ -39,9 +40,8 @@ public class MessageQueue extends AbstractBlockingQueueBasedContainer<Message> {
         }
     }
 
-    public void putAndWaitReply(Message message) {
-//        MessagesWaitReplay.getInstance().put(message.getId(), new MessageInfo(message, System.currentTimeMillis()));
-        put(message);
+    @Override
+    public void logInfo() {
+        getLogger().info("{} messages wait for send",size());
     }
-
 }

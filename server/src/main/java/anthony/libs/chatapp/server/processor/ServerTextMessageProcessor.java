@@ -1,26 +1,20 @@
 package anthony.libs.chatapp.server.processor;
 
-import anthony.libs.chatapp.core.container.CachedMessages;
 import anthony.libs.chatapp.core.message.MessageInfo;
 import anthony.libs.chatapp.core.message.TextMessage;
 import anthony.libs.chatapp.core.processor.AbstractTextMessageProcessor;
-import anthony.libs.chatapp.server.ClientInfo;
-import anthony.libs.chatapp.server.container.OnlineClientInfoContainer;
+import anthony.libs.chatapp.server.service.ServerSendMessageService;
 
 /**
  * Created by chend on 2017/8/14.
  */
 public class ServerTextMessageProcessor extends AbstractTextMessageProcessor {
-    private OnlineClientInfoContainer clientInfoContainer = OnlineClientInfoContainer.getInstance();
+    private ServerSendMessageService serverSendMessageService = ServerSendMessageService.getInstance();
 
     @Override
     protected void doProcess(MessageInfo messageInfo) {
         TextMessage message = (TextMessage) messageInfo.getMessage();
-        ClientInfo clientInfo = clientInfoContainer.getClientInfoByUserId(message.getDestination());
-        if (clientInfo != null) {
-            messageQueue.putAndWaitReply(message);
-        } else {
-            CachedMessages.getInstance().put(message.getDestination(), message);
-        }
+        serverSendMessageService.sendMessageForReplay(message);
+        serverSendMessageService.sendAck(message);
     }
 }

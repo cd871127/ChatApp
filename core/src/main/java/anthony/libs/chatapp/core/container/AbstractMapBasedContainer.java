@@ -42,4 +42,8 @@ public abstract class AbstractMapBasedContainer<K, V> {
     public boolean containsKey(K k) {
         return mapContainer.containsKey(k);
     }
+
+    public int size() {
+        return mapContainer.size();
+    }
 }

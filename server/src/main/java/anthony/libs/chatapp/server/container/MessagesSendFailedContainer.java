@@ -1,5 +1,6 @@
-package anthony.libs.chatapp.core.container;
+package anthony.libs.chatapp.server.container;
 
+import anthony.libs.chatapp.core.container.AbstractMapBasedContainer;
 import anthony.libs.chatapp.core.message.Message;
 
 import java.util.ArrayList;
@@ -9,15 +10,15 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  * Created by chend on 2017/8/21.
  * 缓存没有找到收件人的消息
  */
-public class CachedMessages extends AbstractMapBasedContainer<String, ArrayList<Message>> {
-    private static CachedMessages ourInstance = new CachedMessages();
-    private MessageQueue messageQueue = MessageQueue.getInstance();
+public class MessagesSendFailedContainer extends AbstractMapBasedContainer<String, ArrayList<Message>> {
+    private static MessagesSendFailedContainer ourInstance = new MessagesSendFailedContainer();
+//    private MessageQueue messageQueue = MessageQueue.getInstance();
 
-    private CachedMessages() {
+    private MessagesSendFailedContainer() {
 
     }
 
-    public static CachedMessages getInstance() {
+    public static MessagesSendFailedContainer getInstance() {
         return ourInstance;
     }
 
@@ -45,14 +46,12 @@ public class CachedMessages extends AbstractMapBasedContainer<String, ArrayList<
         return userMessage;
     }
 
-    public void sendCachedMessage(String userId) {
+    public ArrayList<Message> getMessagesByUserId(String userId) {
         lock.writeLock().lock();
         ArrayList<Message> userMessage = this.get(userId);
         remove(userId);
         lock.writeLock().unlock();
-        if (null != userMessage)
-            userMessage.forEach((v) -> messageQueue.put(v));
+        return userMessage;
     }
-
 
 }

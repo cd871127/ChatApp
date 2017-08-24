@@ -54,4 +54,8 @@ public class AbstractBlockingQueueBasedContainer<V> {
     public boolean contains(V o) {
         return container.contains(o);
     }
+
+    public int size() {
+        return container.size();
+    }
 }

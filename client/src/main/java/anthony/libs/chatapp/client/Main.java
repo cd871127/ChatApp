@@ -10,34 +10,33 @@ import java.util.Scanner;
  * Created by chend on 2017/8/15.
  */
 public class Main {
-    private static boolean AUTO_INPUT=false;
+    private static boolean AUTO_INPUT = false;
+
     public static void main(String[] args) throws InterruptedException {
-        Scanner scanner = new Scanner(System.in);
-        String text = null;
+        String text;
 
         System.out.println("input username:");
-        if(AUTO_INPUT)
-        {
-            text="test";
+        if (AUTO_INPUT) {
+            text = "test";
+        } else {
+            Scanner scanner = new Scanner(System.in);
+            text = scanner.nextLine();
         }
-        else {
-        text = scanner.nextLine();}
         Client client = new Client();
-        UserInfo userInfo=new UserInfo(text, "19871127cd");
+        UserInfo userInfo = new UserInfo(text, "19871127cd");
         userInfo.setUserId(text);
         client.setClientInfo(userInfo);
 
         client.login();
         client.clientServiceStart();
-        int i=0;
+        int i = 0;
         while (!"exit".equals(text)) {
             System.out.println("in put message:(target:message)");
-            if(AUTO_INPUT)
-            {
-                text="test:"+(i++);
+            if (AUTO_INPUT) {
+                text = "test:" + (i++);
                 Thread.sleep(5000);
-            }
-            else{
+            } else {
+                Scanner scanner = new Scanner(System.in);
                 text = scanner.nextLine();
                 if (!text.contains(":"))
                     continue;
@@ -47,6 +46,7 @@ public class Main {
             TextMessage textMessage = new TextMessage();
             textMessage.setDestination(tmp[0]);
             textMessage.setText(tmp[1]);
+            textMessage.setSender(userInfo.getUserId());
             client.sendMessage(textMessage);
         }
 

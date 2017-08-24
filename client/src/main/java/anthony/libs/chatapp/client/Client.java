@@ -4,7 +4,6 @@ import anthony.libs.chatapp.client.processor.factory.ClientMessageProcessorFacto
 import anthony.libs.chatapp.client.service.ClientMessageListener;
 import anthony.libs.chatapp.client.service.ClientSendMessageService;
 import anthony.libs.chatapp.core.config.SystemConfig;
-import anthony.libs.chatapp.core.container.MessageQueue;
 import anthony.libs.chatapp.core.manager.ConnectionManager;
 import anthony.libs.chatapp.core.manager.ServiceManager;
 import anthony.libs.chatapp.core.message.Message;
@@ -34,7 +33,6 @@ public class Client {
     private MessageProcessService messageProcessService;
     private MessageListener messageListener;
     private ClientSendMessageService clientSendMessageService;
-    private MessageQueue messageQueue;
     private static SelectionKey selectionKey;
 
     public Client() {
@@ -44,7 +42,6 @@ public class Client {
         messageListener = ClientMessageListener.getInstance();
         connectionManager = ConnectionManager.getInstance();
         clientSendMessageService = ClientSendMessageService.getInstance();
-        messageQueue = MessageQueue.getInstance();
 
     }
 
@@ -70,7 +67,7 @@ public class Client {
             e.printStackTrace();
             return false;
         }
-        selectionKey=connectionManager.registerSocketChannel(socketChannel);
+        selectionKey = connectionManager.registerSocketChannel(socketChannel);
         OperationMessage login = new OperationMessage();
         login.setOperation(OperationMessage.TYPE.LOGIN);
 
@@ -87,7 +84,7 @@ public class Client {
     public void sendMessage(Message message) {
 //        MessageUtil.sendMessage(message, socketChannel);
         logger.info("send message");
-        messageQueue.put(message);
+        clientSendMessageService.sendMessage(message);
     }
 
     public void stop() {

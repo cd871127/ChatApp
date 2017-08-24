@@ -62,17 +62,16 @@ public class ClientManager extends AbstractService {
     }
 
     public void clientLogout(SelectionKey selectionKey) {
-        onlineClientInfoContainer.removeBySelectionKey(selectionKey);
-        selectionKey.cancel();
+        ClientInfo clientInfo = onlineClientInfoContainer.removeBySelectionKey(selectionKey);
+        if (selectionKey.isValid())
+            selectionKey.cancel();
+        getLogger().info("user {} logout", clientInfo.getUserInfo().getUserId());
     }
 
     /**
      * @return 从futureList中获取一个用户登陆的信息
      */
     private MessageInfo getLoginInfo() {
-        MessageInfo messageInfo = null;
-        messageInfo = loginInfoList.getElement();
-
-        return messageInfo;
+        return loginInfoList.getElement();
     }
 }

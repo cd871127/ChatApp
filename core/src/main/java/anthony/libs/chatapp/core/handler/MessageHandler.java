@@ -15,7 +15,7 @@ import java.nio.channels.SocketChannel;
 public abstract class MessageHandler extends NewDataHandler {
     private static ConnectionManager connectionManager = ConnectionManager.getInstance();
 
-    private Logger logger= LoggerFactory.getLogger(getClass());
+    private Logger logger = LoggerFactory.getLogger(getClass());
 
     private SelectionKey selectionKey;
 
@@ -32,7 +32,8 @@ public abstract class MessageHandler extends NewDataHandler {
         } catch (IOException e) {
             exceptionHandle(e);
         }
-        connectionManager.interestOps(selectionKey, selectionKey.interestOps() | SelectionKey.OP_READ);
+        if (selectionKey.isValid())
+            connectionManager.interestOps(selectionKey, selectionKey.interestOps() | SelectionKey.OP_READ);
         return messageInfo;
     }
 

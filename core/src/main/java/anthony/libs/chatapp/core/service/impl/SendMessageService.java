@@ -1,9 +1,10 @@
 package anthony.libs.chatapp.core.service.impl;
 
-import anthony.libs.chatapp.core.container.CachedMessages;
-import anthony.libs.chatapp.core.container.MessageQueue;
+import anthony.libs.chatapp.core.container.MessagesWaitForSendQueue;
+import anthony.libs.chatapp.core.container.MessagesWaitReplay;
 import anthony.libs.chatapp.core.message.Message;
 import anthony.libs.chatapp.core.message.MessageUtil;
+import anthony.libs.chatapp.core.message.OperationMessage;
 import anthony.libs.chatapp.core.service.AbstractService;
 
 import java.nio.channels.SelectionKey;
@@ -16,8 +17,8 @@ import java.util.concurrent.Executors;
  * 发送消息的服务
  */
 public abstract class SendMessageService extends AbstractService {
-    private MessageQueue messageQueue = MessageQueue.getInstance();
-    private CachedMessages cachedMessages = CachedMessages.getInstance();
+    private MessagesWaitForSendQueue messagesWaitForSendQueue = MessagesWaitForSendQueue.getInstance();
+    private MessagesWaitReplay messagesWaitReplay = MessagesWaitReplay.getInstance();
     private ExecutorService es;
 
     protected SendMessageService(int nThreads) {
@@ -28,37 +29,67 @@ public abstract class SendMessageService extends AbstractService {
     @Override
     protected void execute() {
         while (getStatus()) {
-            Message message = messageQueue.take();
+            Message message = messagesWaitForSendQueue.take();
             if (message == null)
                 continue;
-            es.submit(new Sender(message));
+            SelectionKey key = getTargetKey(message.getDestination());
+            if (null == key) {
+                //添加message到未发送
+                dealNullKey(message);
+                continue;
+            }
+            es.submit(new Sender(message, (SocketChannel) key.channel()));
         }
         es.shutdown();
     }
 
     public void sendMessage(Message message) {
-        messageQueue.putAndWaitReply(message);
+        messagesWaitForSendQueue.put(message);
     }
+
+    public void sendMessageForReplay(Message message) {
+        messagesWaitForSendQueue.put(message);
+        messagesWaitReplay.put(message.getId(), message);
+    }
+
+    public void sendAck(Message message) {
+        OperationMessage ack = new OperationMessage();
+        ack.setBody(OperationMessage.TYPE.ACK);
+        ack.setOneHeader(OperationMessage.CONFIRM_ID,message.getId());
+        ack.setDestination(message.getSender());
+        ack.setSender(message.getDestination());
+        sendMessageForReplay(ack);
+    }
+
+    public void sendAckAck(Message message) {
+        OperationMessage ackAck = new OperationMessage();
+        ackAck.setBody(OperationMessage.TYPE.ACK_ACK);
+        ackAck.setDestination(message.getSender());
+        ackAck.setOneHeader(OperationMessage.CONFIRM_ID,message.getId());
+        ackAck.setSender(message.getDestination());
+        sendMessage(ackAck);
+    }
+
+    /**
+     * 处理空的key
+     */
+    protected abstract void dealNullKey(Message message);
 
     protected abstract SelectionKey getTargetKey(String destination);
 
     private class Sender implements Runnable {
         private Message message;
+        private SocketChannel socketChannel;
 
-        Sender(Message message) {
+        Sender(Message message, SocketChannel socketChannel) {
             this.message = message;
+            this.socketChannel = socketChannel;
         }
 
         @Override
         public void run() {
             try {
-                SelectionKey key = getTargetKey(message.getDestination());
-                if (null == key) {
-//                messageQueue.put(message);
-                    cachedMessages.put(message.getDestination(), message);
-                    return;
-                }
-                MessageUtil.sendMessage(message, (SocketChannel) key.channel());
+                MessageUtil.sendMessage(message, socketChannel);
             } catch (Exception e) {
                 e.printStackTrace();
             }
