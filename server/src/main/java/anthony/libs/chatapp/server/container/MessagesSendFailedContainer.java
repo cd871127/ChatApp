@@ -12,7 +12,6 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  */
 public class MessagesSendFailedContainer extends AbstractMapBasedContainer<String, ArrayList<Message>> {
     private static MessagesSendFailedContainer ourInstance = new MessagesSendFailedContainer();
-//    private MessageQueue messageQueue = MessageQueue.getInstance();
 
     private MessagesSendFailedContainer() {
 

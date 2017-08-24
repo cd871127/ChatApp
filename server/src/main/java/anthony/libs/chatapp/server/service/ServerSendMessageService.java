@@ -2,10 +2,12 @@ package anthony.libs.chatapp.server.service;
 
 import anthony.libs.chatapp.core.message.Message;
 import anthony.libs.chatapp.core.service.impl.SendMessageService;
+import anthony.libs.chatapp.server.ClientInfo;
 import anthony.libs.chatapp.server.container.MessagesSendFailedContainer;
 import anthony.libs.chatapp.server.container.OnlineClientInfoContainer;
 
 import java.nio.channels.SelectionKey;
+import java.util.ArrayList;
 
 public class ServerSendMessageService extends SendMessageService {
     private MessagesSendFailedContainer messagesSendFailedContainer = MessagesSendFailedContainer.getInstance();
@@ -28,7 +30,15 @@ public class ServerSendMessageService extends SendMessageService {
 
     @Override
     protected SelectionKey getTargetKey(String destination) {
-        return clientInfoContainer.getClientInfoByUserId(destination).getSelectionKey();
+        ClientInfo clientInfo = clientInfoContainer.getClientInfoByUserId(destination);
+        return clientInfo == null ? null : clientInfo.getSelectionKey();
+    }
+
+    public void sendOfflineMessages(String userId) {
+        ArrayList<Message> offlineMessage = messagesSendFailedContainer.getMessagesByUserId(userId);
+        if (null != offlineMessage)
+            offlineMessage.forEach((this::sendMessage));
+
     }
 
 

@@ -6,6 +6,7 @@ import anthony.libs.chatapp.core.message.MessageInfo;
 import anthony.libs.chatapp.core.service.AbstractService;
 import anthony.libs.chatapp.server.ClientInfo;
 import anthony.libs.chatapp.server.container.OnlineClientInfoContainer;
+import anthony.libs.chatapp.server.service.ServerSendMessageService;
 
 import java.nio.channels.SelectionKey;
 import java.util.concurrent.Future;
@@ -52,6 +53,10 @@ public class ClientManager extends AbstractService {
         }
 
         //TODO send Login confirm
+
+        //发送离线时收到的消息
+        ServerSendMessageService.getInstance().sendOfflineMessages(messageInfo.getMessage().getUserInfo().getUserId());
+
     }
 
     private FutureList<MessageInfo> loginInfoList = new FutureList<>();
