@@ -5,7 +5,6 @@ import anthony.libs.chatapp.core.message.MessageInfo;
 import anthony.libs.chatapp.core.message.MessageUtil;
 
 import java.io.IOException;
-import java.nio.ByteBuffer;
 import java.nio.channels.SocketChannel;
 
 /**

@@ -19,7 +19,7 @@ public class MessageProcessService extends AbstractService {
 
 //    private MessageAndKeyContainer messageContainer = MessageAndKeyContainer.getInstance();
 
-    private MessageInfoFutureList messageInfoFutureList=MessageInfoFutureList.getInstance();
+    private MessageInfoFutureList messageInfoFutureList = MessageInfoFutureList.getInstance();
     private AbstractMessageProcessorFactory messageProcessorFactory;
 
     private MessageProcessService() {
@@ -35,9 +35,9 @@ public class MessageProcessService extends AbstractService {
     protected void execute() {
         while (getStatus()) {
 //            MessageAndKey messageAndKey = messageContainer.getMessageAndKey();
-            MessageInfo messageInfo=messageInfoFutureList.getElement();
-            MessageProcessor messageProcessor=null;
-            if(messageInfo!=null)
+            MessageInfo messageInfo = messageInfoFutureList.getElement();
+            MessageProcessor messageProcessor = null;
+            if (messageInfo != null)
                 messageProcessor = messageProcessorFactory.getProcessor(messageInfo.getMessage().getClass().getName());
             //转发消息
             if (null != messageProcessor)

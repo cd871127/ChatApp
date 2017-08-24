@@ -13,8 +13,8 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 //保存用户信息的容器,内部用两个map
 //public class ClientInfoContainer extends AbstractMapBasedContainer<String, ClientInfo> {
-public class OnlineClientInfoContainer implements Monitor{
-    private Logger logger= LoggerFactory.getLogger(getClass());
+public class OnlineClientInfoContainer implements Monitor {
+    private Logger logger = LoggerFactory.getLogger(getClass());
     private static OnlineClientInfoContainer ourInstance = new OnlineClientInfoContainer();
 
     public static OnlineClientInfoContainer getInstance() {
@@ -30,7 +30,7 @@ public class OnlineClientInfoContainer implements Monitor{
 
     private Map<String, ClientInfo> selectionKeyNameMap = new HashMap<>();
 
-    private int onlineUserNum=0;
+    private int onlineUserNum = 0;
 
     public ClientInfo addClientInfo(ClientInfo clientInfo) {
         String userId = clientInfo.getUserInfo().getUserId();
@@ -43,9 +43,9 @@ public class OnlineClientInfoContainer implements Monitor{
         remove(oldClientInfo);
         userIdMap.put(userId, clientInfo);
         selectionKeyNameMap.put(selectionKeyName, clientInfo);
-        onlineUserNum=userIdMap.size();
+        onlineUserNum = userIdMap.size();
         lock.writeLock().unlock();
-        logger.info("user {} login",userId);
+        logger.info("user {} login", userId);
         return oldClientInfo;
     }
 
@@ -85,13 +85,13 @@ public class OnlineClientInfoContainer implements Monitor{
         lock.writeLock().lock();
         userIdMap.remove(clientInfo.getUserInfo().getUserId());
         selectionKeyNameMap.remove(clientInfo.getSelectionKey().toString());
-        onlineUserNum=userIdMap.size();
+        onlineUserNum = userIdMap.size();
         lock.writeLock().unlock();
         return clientInfo;
     }
 
     @Override
     public void logInfo() {
-        logger.info("{} users online",onlineUserNum);
+        logger.info("{} users online", onlineUserNum);
     }
 }

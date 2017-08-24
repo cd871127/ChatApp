@@ -1,7 +1,6 @@
 package anthony.libs.chatapp.core.container;
 
 import anthony.libs.chatapp.core.message.Message;
-import anthony.libs.chatapp.core.message.MessageInfo;
 
 /**
  * Created by chend on 2017/8/16.

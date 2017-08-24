@@ -7,7 +7,7 @@ import anthony.libs.chatapp.core.service.impl.MessageListener;
 
 import java.nio.channels.SelectionKey;
 
-public class ClientMessageListener extends MessageListener{
+public class ClientMessageListener extends MessageListener {
     private static ClientMessageListener ourInstance = new ClientMessageListener();
 
     public static ClientMessageListener getInstance() {

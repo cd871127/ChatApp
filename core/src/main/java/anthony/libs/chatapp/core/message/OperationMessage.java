@@ -35,7 +35,7 @@ public class OperationMessage extends Message<OperationMessage.TYPE> {
         }
     }
 
-    public static String CONFIRM_ID="CONFIRM_ID";
+    public static String CONFIRM_ID = "CONFIRM_ID";
 
     @Override
     public String toString() {
@@ -50,7 +50,7 @@ public class OperationMessage extends Message<OperationMessage.TYPE> {
 
     public enum TYPE {
         LOGIN("LOGIN"), LOGOUT("LOGOUT"), ACK("ACK"), ACK_ACK("ACK_ACK"),
-        LOGIN_SUCCESS("LOGIN_SUCCESS"),ANOTHER_LOGIN("ANOTHER_LOGIN");
+        LOGIN_SUCCESS("LOGIN_SUCCESS"), ANOTHER_LOGIN("ANOTHER_LOGIN");
 
         private String value;
 

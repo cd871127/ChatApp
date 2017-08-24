@@ -55,7 +55,7 @@ public abstract class SendMessageService extends AbstractService {
     public void sendAck(Message message) {
         OperationMessage ack = new OperationMessage();
         ack.setBody(OperationMessage.TYPE.ACK);
-        ack.setOneHeader(OperationMessage.CONFIRM_ID,message.getId());
+        ack.setOneHeader(OperationMessage.CONFIRM_ID, message.getId());
         ack.setDestination(message.getSender());
         ack.setSender(message.getDestination());
         sendMessageForReplay(ack);
@@ -65,7 +65,7 @@ public abstract class SendMessageService extends AbstractService {
         OperationMessage ackAck = new OperationMessage();
         ackAck.setBody(OperationMessage.TYPE.ACK_ACK);
         ackAck.setDestination(message.getSender());
-        ackAck.setOneHeader(OperationMessage.CONFIRM_ID,message.getId());
+        ackAck.setOneHeader(OperationMessage.CONFIRM_ID, message.getId());
         ackAck.setSender(message.getDestination());
         sendMessage(ackAck);
     }
