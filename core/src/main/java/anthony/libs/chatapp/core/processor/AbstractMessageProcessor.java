@@ -1,6 +1,5 @@
 package anthony.libs.chatapp.core.processor;
 
-import anthony.libs.chatapp.core.message.MessageAndKey;
 import anthony.libs.chatapp.core.message.MessageInfo;
 
 import java.nio.channels.SelectionKey;
