@@ -21,10 +21,8 @@ import java.util.concurrent.Future;
 public class ServerConnectionListener extends AbstractService {
 
     private static ServerConnectionListener ourInstance = new ServerConnectionListener();
-
-    public static ServerConnectionListener getInstance() {
-        return ourInstance;
-    }
+    private ExecutorService es;
+    private ClientManager clientManager;
 
     private ServerConnectionListener() {
         super();
@@ -32,9 +30,9 @@ public class ServerConnectionListener extends AbstractService {
         clientManager = ClientManager.getInstance();
     }
 
-    private ExecutorService es;
-    private ClientManager clientManager;
-
+    public static ServerConnectionListener getInstance() {
+        return ourInstance;
+    }
 
     @Override
     protected void execute() {

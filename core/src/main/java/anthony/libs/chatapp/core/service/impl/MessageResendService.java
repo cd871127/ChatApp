@@ -9,15 +9,13 @@ import anthony.libs.chatapp.core.service.AbstractService;
 import java.util.List;
 
 public abstract class MessageResendService extends AbstractService implements Monitor {
+    private final long maxTime = 5000;
     private MessagesWaitReplay messagesWaitReplay = MessagesWaitReplay.getInstance();
     private SendMessageService sendMessageService;
-
+    private long minTime;
     public MessageResendService(SendMessageService sendMessageService) {
         this.sendMessageService = sendMessageService;
     }
-
-    private final long maxTime = 5000;
-    private long minTime;
 
     @Override
     public void logInfo() {

@@ -25,12 +25,7 @@ import java.nio.channels.SocketChannel;
  */
 public class Client {
     private static Client ourInstance = new Client();
-
-    public static Client getInstance() {
-        return ourInstance;
-    }
-
-
+    private static SelectionKey selectionKey;
     private UserInfo userInfo;
     private Logger logger = LoggerFactory.getLogger(getClass());
     private SocketChannel socketChannel;
@@ -39,8 +34,6 @@ public class Client {
     private MessageProcessService messageProcessService;
     private MessageListener messageListener;
     private ClientSendMessageService clientSendMessageService;
-    private static SelectionKey selectionKey;
-
     private Client() {
         serviceManager = new ServiceManager(2);
         messageProcessService = MessageProcessService.getInstance();
@@ -49,6 +42,14 @@ public class Client {
         connectionManager = ConnectionManager.getInstance();
         clientSendMessageService = ClientSendMessageService.getInstance();
 
+    }
+
+    public static Client getInstance() {
+        return ourInstance;
+    }
+
+    public static SelectionKey getSelectionKey() {
+        return selectionKey;
     }
 
     public void clientServiceStart() {
@@ -99,9 +100,5 @@ public class Client {
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-    public static SelectionKey getSelectionKey() {
-        return selectionKey;
     }
 }

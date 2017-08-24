@@ -8,11 +8,11 @@ import anthony.libs.chatapp.core.service.AbstractService;
 public class ServiceContainer extends AbstractMapBasedContainer<String, AbstractService> {
     private static ServiceContainer ourInstance = new ServiceContainer();
 
-    public static ServiceContainer getInstance() {
-        return ourInstance;
+    private ServiceContainer() {
     }
 
-    private ServiceContainer() {
+    public static ServiceContainer getInstance() {
+        return ourInstance;
     }
 
 }

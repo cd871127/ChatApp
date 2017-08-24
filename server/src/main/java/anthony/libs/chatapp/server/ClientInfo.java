@@ -8,18 +8,16 @@ import java.nio.channels.SelectionKey;
  * Created by chend on 2017/8/15.
  */
 public class ClientInfo {
+    private UserInfo userInfo;
+    private long loginTime;
+    private SelectionKey selectionKey;
     public ClientInfo() {
         loginTime = System.currentTimeMillis();
     }
-
     public ClientInfo(UserInfo userInfo) {
         this();
         this.userInfo = userInfo;
     }
-
-    private UserInfo userInfo;
-    private long loginTime;
-    private SelectionKey selectionKey;
 
     public UserInfo getUserInfo() {
         return userInfo;

@@ -10,12 +10,12 @@ import anthony.libs.chatapp.core.monitor.Monitor;
 public class MessagesWaitForSendQueue extends AbstractBlockingQueueBasedContainer<Message> implements Monitor {
     private static MessagesWaitForSendQueue ourInstance = new MessagesWaitForSendQueue();
 
-    public static MessagesWaitForSendQueue getInstance() {
-        return ourInstance;
-    }
-
     private MessagesWaitForSendQueue() {
 
+    }
+
+    public static MessagesWaitForSendQueue getInstance() {
+        return ourInstance;
     }
 
     @Override

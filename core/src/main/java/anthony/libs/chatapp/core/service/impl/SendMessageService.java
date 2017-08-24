@@ -27,6 +27,10 @@ public abstract class SendMessageService extends AbstractService {
         this.messageResendService = messageResendService;
     }
 
+    public static void sendMessageViaSocketChannel(Message message, SocketChannel socketChannel) {
+        MessageUtil.sendMessage(message, socketChannel);
+    }
+
     @Override
     protected void execute() {
         while (getStatus()) {
@@ -73,10 +77,6 @@ public abstract class SendMessageService extends AbstractService {
 
     public void confirmReceiveMessage(String messageId) {
         messageResendService.removeMessageById(messageId);
-    }
-
-    public static void sendMessageViaSocketChannel(Message message, SocketChannel socketChannel) {
-        MessageUtil.sendMessage(message, socketChannel);
     }
 
     /**

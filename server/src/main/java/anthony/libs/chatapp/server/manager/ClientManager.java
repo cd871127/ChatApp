@@ -18,16 +18,15 @@ import java.util.concurrent.Future;
  */
 public class ClientManager extends AbstractService {
     private static ClientManager ourInstance = new ClientManager();
+    private OnlineClientInfoContainer onlineClientInfoContainer = OnlineClientInfoContainer.getInstance();
+    private ConnectionManager connectionManager = ConnectionManager.getInstance();
+    private FutureList<MessageInfo> loginInfoList = new FutureList<>();
+    private ClientManager() {
+    }
 
     public static ClientManager getInstance() {
         return ourInstance;
     }
-
-    private ClientManager() {
-    }
-
-    private OnlineClientInfoContainer onlineClientInfoContainer = OnlineClientInfoContainer.getInstance();
-    private ConnectionManager connectionManager = ConnectionManager.getInstance();
 
     /**
      * 服务:处理用户登录信息
@@ -49,7 +48,6 @@ public class ClientManager extends AbstractService {
     private boolean userAuthentication(MessageInfo messageInfo) {
         return true;
     }
-
 
     //登陆
     private void login(MessageInfo messageInfo) {
@@ -79,9 +77,6 @@ public class ClientManager extends AbstractService {
         ServerSendMessageService.getInstance().sendOfflineMessages(messageInfo.getMessage().getUserInfo().getUserId());
 
     }
-
-    private FutureList<MessageInfo> loginInfoList = new FutureList<>();
-
 
     public void clientLogin(Future<MessageInfo> loginInfo) {
         loginInfoList.put(loginInfo);

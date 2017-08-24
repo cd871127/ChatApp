@@ -14,23 +14,19 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 //保存用户信息的容器,内部用两个map
 //public class ClientInfoContainer extends AbstractMapBasedContainer<String, ClientInfo> {
 public class OnlineClientInfoContainer implements Monitor {
-    private Logger logger = LoggerFactory.getLogger(getClass());
     private static OnlineClientInfoContainer ourInstance = new OnlineClientInfoContainer();
-
-    public static OnlineClientInfoContainer getInstance() {
-        return ourInstance;
-    }
+    private Logger logger = LoggerFactory.getLogger(getClass());
+    private ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
+    private Map<String, ClientInfo> userIdMap = new HashMap<>();
+    private Map<String, ClientInfo> selectionKeyNameMap = new HashMap<>();
+    private int onlineUserNum = 0;
 
     private OnlineClientInfoContainer() {
     }
 
-    private ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
-
-    private Map<String, ClientInfo> userIdMap = new HashMap<>();
-
-    private Map<String, ClientInfo> selectionKeyNameMap = new HashMap<>();
-
-    private int onlineUserNum = 0;
+    public static OnlineClientInfoContainer getInstance() {
+        return ourInstance;
+    }
 
     public ClientInfo addClientInfo(ClientInfo clientInfo) {
         String userId = clientInfo.getUserInfo().getUserId();

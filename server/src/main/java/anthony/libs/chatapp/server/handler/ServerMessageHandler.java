@@ -9,11 +9,11 @@ import java.nio.channels.SelectionKey;
  * Created by chend on 2017/8/22.
  */
 public class ServerMessageHandler extends MessageHandler {
+    private ClientManager clientManager = ClientManager.getInstance();
+
     public ServerMessageHandler(SelectionKey selectionKey) {
         super(selectionKey);
     }
-
-    private ClientManager clientManager = ClientManager.getInstance();
 
     @Override
     protected void exceptionHandle(Exception e) {

@@ -9,11 +9,11 @@ import anthony.libs.chatapp.core.message.MessageInfo;
 public class MessageInfoFutureList extends FutureList<MessageInfo> {
     private static MessageInfoFutureList ourInstance = new MessageInfoFutureList();
 
-    public static MessageInfoFutureList getInstance() {
-        return ourInstance;
+    private MessageInfoFutureList() {
     }
 
-    private MessageInfoFutureList() {
+    public static MessageInfoFutureList getInstance() {
+        return ourInstance;
     }
 
 

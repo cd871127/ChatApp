@@ -6,24 +6,21 @@ import java.nio.channels.SocketChannel;
  * Created by chend on 2017/8/21.
  */
 public class MessageInfo {
-    public MessageInfo() {
-
-    }
-
-    public MessageInfo(Message message) {
-        this();
-        setMessage(message);
-    }
-
-    public MessageInfo(Message message, long lastActiveTime) {
-        this(message);
-        setLastActiveTime(lastActiveTime);
-    }
-
     private Message message;
     private long lastActiveTime;
     private SocketChannel socketChannel;//接收消息的channel
     private long sendTime; //发送消息的时间
+    public MessageInfo() {
+
+    }
+    public MessageInfo(Message message) {
+        this();
+        setMessage(message);
+    }
+    public MessageInfo(Message message, long lastActiveTime) {
+        this(message);
+        setLastActiveTime(lastActiveTime);
+    }
 
     public SocketChannel getSocketChannel() {
         return socketChannel;

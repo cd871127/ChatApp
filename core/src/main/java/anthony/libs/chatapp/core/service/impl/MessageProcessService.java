@@ -12,18 +12,16 @@ import anthony.libs.chatapp.core.service.AbstractService;
  */
 public class MessageProcessService extends AbstractService {
     private static MessageProcessService ourInstance = new MessageProcessService();
+    private MessageInfoFutureList messageInfoFutureList = MessageInfoFutureList.getInstance();
+
+//    private MessageAndKeyContainer messageContainer = MessageAndKeyContainer.getInstance();
+    private AbstractMessageProcessorFactory messageProcessorFactory;
+    private MessageProcessService() {
+        super();
+    }
 
     public static MessageProcessService getInstance() {
         return ourInstance;
-    }
-
-//    private MessageAndKeyContainer messageContainer = MessageAndKeyContainer.getInstance();
-
-    private MessageInfoFutureList messageInfoFutureList = MessageInfoFutureList.getInstance();
-    private AbstractMessageProcessorFactory messageProcessorFactory;
-
-    private MessageProcessService() {
-        super();
     }
 
     public void setMessageProcessorFactory(AbstractMessageProcessorFactory messageProcessorFactory) {

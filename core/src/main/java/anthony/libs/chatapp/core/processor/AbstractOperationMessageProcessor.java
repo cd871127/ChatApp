@@ -1,6 +1,5 @@
 package anthony.libs.chatapp.core.processor;
 
-import anthony.libs.chatapp.core.container.MessagesWaitReplay;
 import anthony.libs.chatapp.core.message.OperationMessage;
 import anthony.libs.chatapp.core.service.impl.SendMessageService;
 

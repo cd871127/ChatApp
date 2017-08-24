@@ -10,17 +10,16 @@ import java.nio.channels.SelectionKey;
 import java.util.ArrayList;
 
 public class ServerSendMessageService extends SendMessageService {
-    private MessagesSendFailedContainer messagesSendFailedContainer = MessagesSendFailedContainer.getInstance();
     private static ServerSendMessageService ourInstance = new ServerSendMessageService();
-
+    private MessagesSendFailedContainer messagesSendFailedContainer = MessagesSendFailedContainer.getInstance();
     private OnlineClientInfoContainer clientInfoContainer = OnlineClientInfoContainer.getInstance();
+
+    private ServerSendMessageService() {
+        super(3, ServerMessageResendService.getInstance());
+    }
 
     public static ServerSendMessageService getInstance() {
         return ourInstance;
-    }
-
-    private ServerSendMessageService() {
-        super(3,ServerMessageResendService.getInstance());
     }
 
     @Override

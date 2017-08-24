@@ -19,17 +19,17 @@ import java.util.TimerTask;
  * Created by chend on 2017/8/11.
  */
 public class Server {
-    public static void main(String[] args) {
-        Server server = new Server();
-        server.monitorServer();
-        server.start();
-    }
+    private ServiceManager serviceManager;
 
     public Server() {
         init();
     }
 
-    private ServiceManager serviceManager;
+    public static void main(String[] args) {
+        Server server = new Server();
+        server.monitorServer();
+        server.start();
+    }
 
     private void init() {
         serviceManager = new ServiceManager(6);
