@@ -62,6 +62,7 @@ public class Client {
     private void connect() throws IOException {
         socketChannel = SocketChannel.open();
         InetAddress server = InetAddress.getLocalHost();
+//        InetAddress server = InetAddress.getByName("app-1.anthony");
         socketChannel.connect(new InetSocketAddress(server, SystemConfig.SERVER_PORT));
     }
 

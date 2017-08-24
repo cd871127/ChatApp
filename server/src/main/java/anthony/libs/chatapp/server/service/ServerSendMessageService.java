@@ -20,7 +20,7 @@ public class ServerSendMessageService extends SendMessageService {
     }
 
     private ServerSendMessageService() {
-        super(3);
+        super(3,ServerMessageResendService.getInstance());
     }
 
     @Override

@@ -9,6 +9,7 @@ import anthony.libs.chatapp.server.manager.ClientManager;
 import anthony.libs.chatapp.server.processor.factory.ServerMessageProcessorFactory;
 import anthony.libs.chatapp.server.service.ServerConnectionListener;
 import anthony.libs.chatapp.server.service.ServerMessageListener;
+import anthony.libs.chatapp.server.service.ServerMessageResendService;
 import anthony.libs.chatapp.server.service.ServerSendMessageService;
 
 import java.util.Timer;
@@ -38,6 +39,7 @@ public class Server {
         serviceManager.registerService(MessageProcessService.getInstance());
         serviceManager.registerService(ServerSendMessageService.getInstance());
         serviceManager.registerService(ClientManager.getInstance());
+        serviceManager.registerService(ServerMessageResendService.getInstance());
     }
 
     public void start() {

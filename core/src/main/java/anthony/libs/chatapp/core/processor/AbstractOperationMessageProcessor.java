@@ -21,7 +21,8 @@ public abstract class AbstractOperationMessageProcessor extends AbstractMessageP
     }
 
     protected void ackAck(OperationMessage message) {
-        MessagesWaitReplay.getInstance().remove(message.getHeaders().get(OperationMessage.CONFIRM_ID));
+        sendMessageService.confirmReceiveMessage(message.getHeaders().get(OperationMessage.CONFIRM_ID));
+
     }
 
 

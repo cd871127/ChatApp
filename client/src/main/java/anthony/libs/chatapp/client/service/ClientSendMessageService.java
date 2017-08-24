@@ -14,7 +14,7 @@ public class ClientSendMessageService extends SendMessageService {
     }
 
     private ClientSendMessageService() {
-        super(2);
+        super(2, ClientMessageResendService.getInstance());
     }
 
     @Override

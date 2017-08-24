@@ -23,6 +23,7 @@ public class MessageInfo {
     private Message message;
     private long lastActiveTime;
     private SocketChannel socketChannel;//接收消息的channel
+    private long sendTime; //发送消息的时间
 
     public SocketChannel getSocketChannel() {
         return socketChannel;
@@ -46,5 +47,13 @@ public class MessageInfo {
 
     public void setLastActiveTime(long lastActiveTime) {
         this.lastActiveTime = lastActiveTime;
+    }
+
+    public long getSendTime() {
+        return sendTime;
+    }
+
+    public void setSendTime(long sendTime) {
+        this.sendTime = sendTime;
     }
 }
