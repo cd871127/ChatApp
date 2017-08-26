@@ -10,7 +10,7 @@ buildscript {
 allprojects {
     //Add configuration here
     group 'anthony.cdapps'
-    version '0.1'
+    version '0.2'
 
     apply plugin: 'java'
     apply plugin: 'com.github.johnrengelman.shadow'
