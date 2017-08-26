@@ -1,5 +1,6 @@
 package anthony.libs.chatapp.client.processor;
 
+import anthony.libs.chatapp.client.Client;
 import anthony.libs.chatapp.client.service.ClientSendMessageService;
 import anthony.libs.chatapp.core.message.MessageInfo;
 import anthony.libs.chatapp.core.message.OperationMessage;
@@ -26,6 +27,7 @@ public class ClientOperationMessageProcessor extends AbstractOperationMessagePro
             case LOGIN_SUCCESS:
                 break;
             case ANOTHER_LOGIN:
+                anotherLogin();
                 break;
             case ACK:
                 ack(message);
@@ -33,7 +35,15 @@ public class ClientOperationMessageProcessor extends AbstractOperationMessagePro
             case ACK_ACK:
                 ackAck(message);
                 break;
+            case LOGIN_FAILED:
+                getLogger().info("login failed");
+                break;
         }
+    }
+
+    public void anotherLogin() {
+        getLogger().info("another logging");
+        Client.getInstance().stop();
     }
 
 

@@ -3,6 +3,7 @@ package anthony.libs.chatapp.core.container;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -25,6 +26,14 @@ public abstract class AbstractMapBasedContainer<K, V> {
         v = mapContainer.get(k);
         lock.readLock().unlock();
         return v;
+    }
+
+    public ArrayList<V> getAll() {
+        ArrayList<V> allList = new ArrayList<>();
+        lock.readLock().lock();
+        mapContainer.forEach((k, v) -> allList.add(v));
+        lock.readLock().unlock();
+        return allList;
     }
 
     public void put(K k, V v) {

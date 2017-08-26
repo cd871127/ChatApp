@@ -1,6 +1,5 @@
 package anthony.libs.chatapp.core.processor;
 
-import anthony.libs.chatapp.core.container.MessagesWaitReplay;
 import anthony.libs.chatapp.core.message.OperationMessage;
 import anthony.libs.chatapp.core.service.impl.SendMessageService;
 
@@ -21,7 +20,8 @@ public abstract class AbstractOperationMessageProcessor extends AbstractMessageP
     }
 
     protected void ackAck(OperationMessage message) {
-        MessagesWaitReplay.getInstance().remove(message.getHeaders().get(OperationMessage.CONFIRM_ID));
+        sendMessageService.confirmReceiveMessage(message.getHeaders().get(OperationMessage.CONFIRM_ID));
+
     }
 
 

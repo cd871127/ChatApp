@@ -24,7 +24,8 @@ import java.nio.channels.SocketChannel;
  * Created by chend on 2017/8/11.
  */
 public class Client {
-
+    private static Client ourInstance = new Client();
+    private static SelectionKey selectionKey;
     private UserInfo userInfo;
     private Logger logger = LoggerFactory.getLogger(getClass());
     private SocketChannel socketChannel;
@@ -33,9 +34,7 @@ public class Client {
     private MessageProcessService messageProcessService;
     private MessageListener messageListener;
     private ClientSendMessageService clientSendMessageService;
-    private static SelectionKey selectionKey;
-
-    public Client() {
+    private Client() {
         serviceManager = new ServiceManager(2);
         messageProcessService = MessageProcessService.getInstance();
         messageProcessService.setMessageProcessorFactory(new ClientMessageProcessorFactory());
@@ -43,6 +42,14 @@ public class Client {
         connectionManager = ConnectionManager.getInstance();
         clientSendMessageService = ClientSendMessageService.getInstance();
 
+    }
+
+    public static Client getInstance() {
+        return ourInstance;
+    }
+
+    public static SelectionKey getSelectionKey() {
+        return selectionKey;
     }
 
     public void clientServiceStart() {
@@ -56,6 +63,7 @@ public class Client {
     private void connect() throws IOException {
         socketChannel = SocketChannel.open();
         InetAddress server = InetAddress.getLocalHost();
+//        InetAddress server = InetAddress.getByName("app-1.anthony");
         socketChannel.connect(new InetSocketAddress(server, SystemConfig.SERVER_PORT));
     }
 
@@ -82,20 +90,15 @@ public class Client {
     }
 
     public void sendMessage(Message message) {
-//        MessageUtil.sendMessage(message, socketChannel);
-        logger.info("send message");
         clientSendMessageService.sendMessage(message);
     }
 
     public void stop() {
         try {
+            serviceManager.stop();
             socketChannel.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-    public static SelectionKey getSelectionKey() {
-        return selectionKey;
     }
 }

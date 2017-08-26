@@ -1,7 +1,6 @@
 package anthony.libs.chatapp.core.service.impl;
 
 import anthony.libs.chatapp.core.container.MessagesWaitForSendQueue;
-import anthony.libs.chatapp.core.container.MessagesWaitReplay;
 import anthony.libs.chatapp.core.message.Message;
 import anthony.libs.chatapp.core.message.MessageUtil;
 import anthony.libs.chatapp.core.message.OperationMessage;
@@ -18,12 +17,18 @@ import java.util.concurrent.Executors;
  */
 public abstract class SendMessageService extends AbstractService {
     private MessagesWaitForSendQueue messagesWaitForSendQueue = MessagesWaitForSendQueue.getInstance();
-    private MessagesWaitReplay messagesWaitReplay = MessagesWaitReplay.getInstance();
+    //    private MessagesWaitReplay messagesWaitReplay = MessagesWaitReplay.getInstance();
+    private MessageResendService messageResendService;
     private ExecutorService es;
 
-    protected SendMessageService(int nThreads) {
+    protected SendMessageService(int nThreads, MessageResendService messageResendService) {
         super();
         es = Executors.newFixedThreadPool(nThreads);
+        this.messageResendService = messageResendService;
+    }
+
+    public static void sendMessageViaSocketChannel(Message message, SocketChannel socketChannel) {
+        MessageUtil.sendMessage(message, socketChannel);
     }
 
     @Override
@@ -49,7 +54,7 @@ public abstract class SendMessageService extends AbstractService {
 
     public void sendMessageForReplay(Message message) {
         messagesWaitForSendQueue.put(message);
-        messagesWaitReplay.put(message.getId(), message);
+        messageResendService.addMessage(message);
     }
 
     public void sendAck(Message message) {
@@ -68,6 +73,10 @@ public abstract class SendMessageService extends AbstractService {
         ackAck.setOneHeader(OperationMessage.CONFIRM_ID, message.getId());
         ackAck.setSender(message.getDestination());
         sendMessage(ackAck);
+    }
+
+    public void confirmReceiveMessage(String messageId) {
+        messageResendService.removeMessageById(messageId);
     }
 
     /**
@@ -89,7 +98,7 @@ public abstract class SendMessageService extends AbstractService {
         @Override
         public void run() {
             try {
-                MessageUtil.sendMessage(message, socketChannel);
+                sendMessageViaSocketChannel(message, socketChannel);
             } catch (Exception e) {
                 e.printStackTrace();
             }

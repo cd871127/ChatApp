@@ -10,12 +10,12 @@ import java.nio.channels.SelectionKey;
 public class ClientMessageListener extends MessageListener {
     private static ClientMessageListener ourInstance = new ClientMessageListener();
 
-    public static ClientMessageListener getInstance() {
-        return ourInstance;
-    }
-
     private ClientMessageListener() {
 
+    }
+
+    public static ClientMessageListener getInstance() {
+        return ourInstance;
     }
 
     @Override

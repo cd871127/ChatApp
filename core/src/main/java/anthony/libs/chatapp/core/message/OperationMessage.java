@@ -4,6 +4,8 @@ package anthony.libs.chatapp.core.message;
  * Created by chend on 2017/8/14.
  */
 public class OperationMessage extends Message<OperationMessage.TYPE> {
+    public static String CONFIRM_ID = "CONFIRM_ID";
+
     public OperationMessage() {
     }
 
@@ -11,12 +13,12 @@ public class OperationMessage extends Message<OperationMessage.TYPE> {
         setOperation(type);
     }
 
-    public void setOperation(TYPE type) {
-        setBody(type);
-    }
-
     public TYPE getOperation() {
         return getBody();
+    }
+
+    public void setOperation(TYPE type) {
+        setBody(type);
     }
 
     @Override
@@ -35,8 +37,6 @@ public class OperationMessage extends Message<OperationMessage.TYPE> {
         }
     }
 
-    public static String CONFIRM_ID = "CONFIRM_ID";
-
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -50,7 +50,7 @@ public class OperationMessage extends Message<OperationMessage.TYPE> {
 
     public enum TYPE {
         LOGIN("LOGIN"), LOGOUT("LOGOUT"), ACK("ACK"), ACK_ACK("ACK_ACK"),
-        LOGIN_SUCCESS("LOGIN_SUCCESS"), ANOTHER_LOGIN("ANOTHER_LOGIN");
+        LOGIN_SUCCESS("LOGIN_SUCCESS"), LOGIN_FAILED("LOGIN_FAILED"), ANOTHER_LOGIN("ANOTHER_LOGIN");
 
         private String value;
 

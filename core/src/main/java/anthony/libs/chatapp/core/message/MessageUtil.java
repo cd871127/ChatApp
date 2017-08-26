@@ -12,12 +12,11 @@ import java.util.Map;
  * 处理消息的工具
  */
 public class MessageUtil {
+    public static final Charset MESSAGE_CHARSET = Charset.forName("UNICODE");
     private static final int BODY_BLOCK_LENGTH = 4;
     private static final int HEADER_BLOCK_LENGTH = 4;
     private static final int TOTAL_FIXED_LENGTH = BODY_BLOCK_LENGTH + HEADER_BLOCK_LENGTH;
     private static final String SPLITOR = ":=:";
-
-    public static final Charset MESSAGE_CHARSET = Charset.forName("UNICODE");
 
     //消息转换为byte
     @SuppressWarnings("unchecked")

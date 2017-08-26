@@ -1,30 +1,24 @@
 package anthony.libs.chatapp.core.processor;
 
 import anthony.libs.chatapp.core.message.MessageInfo;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Created by chend on 2017/8/16.
  */
 public abstract class AbstractMessageProcessor implements MessageProcessor {
-//    private SelectionKey selectionKey;
-//    protected MessageQueue messageQueue = MessageQueue.getInstance();
+
+    private Logger logger = LoggerFactory.getLogger(getClass());
 
     protected abstract void doProcess(MessageInfo messageInfo);
 
-
-//    protected SelectionKey getSelectionKey() {
-//        return selectionKey;
-//    }
-
-//    protected void setSelectionKey(SelectionKey selectionKey) {
-//        this.selectionKey = selectionKey;
-//    }
-
     @Override
-    @SuppressWarnings("unchecked")
     public void process(MessageInfo messageInfo) {
-//        V message = (V) messageInfo.getMessage();
-//        setSelectionKey(messageInfo.getSelectionKey());
         doProcess(messageInfo);
+    }
+
+    public Logger getLogger() {
+        return logger;
     }
 }

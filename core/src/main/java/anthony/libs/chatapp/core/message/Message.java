@@ -10,6 +10,10 @@ import java.util.UUID;
  * Created by Anthony on 2017/8/1.UUID.randomUUID().toString().replace("-", "");
  */
 public abstract class Message<T> {
+    public String HEAD_USER_INFO = "USER_INFO";
+    public String HEAD_SENDER = "SENDER";
+    public String HEAD_DESTINATION = "DESTINATION";
+    public String HEAD_ID = "ID";
     private Map<String, String> headers = new HashMap<>();
     private T body;
 
@@ -22,6 +26,10 @@ public abstract class Message<T> {
         return headers;
     }
 
+    public void setHeaders(Map<String, String> headers) {
+        this.headers = headers;
+    }
+
     public abstract byte[] getBodyBytes();
 
     public String getId() {
@@ -32,38 +40,34 @@ public abstract class Message<T> {
         return body;
     }
 
-    public void setBody(T body) {
-        this.body = body;
-    }
-
     public abstract void setBody(byte[] bodyBytes);
 
-    public void setHeaders(Map<String, String> headers) {
-        this.headers = headers;
-    }
-
-    public void setSender(String sender) {
-        headers.put(HEAD_SENDER, sender);
+    public void setBody(T body) {
+        this.body = body;
     }
 
     public String getSender() {
         return headers.get(HEAD_SENDER);
     }
 
-    public void setDestination(String destination) {
-        headers.put(HEAD_DESTINATION, destination);
+    public void setSender(String sender) {
+        headers.put(HEAD_SENDER, sender);
     }
 
     public String getDestination() {
         return headers.get(HEAD_DESTINATION);
     }
 
-    public void setUserInfo(UserInfo userInfo) {
-        headers.put(HEAD_USER_INFO, userInfo.toString());
+    public void setDestination(String destination) {
+        headers.put(HEAD_DESTINATION, destination);
     }
 
     public UserInfo getUserInfo() {
         return UserInfo.buildUserInfoFromJSONString(headers.get(HEAD_USER_INFO));
+    }
+
+    public void setUserInfo(UserInfo userInfo) {
+        headers.put(HEAD_USER_INFO, userInfo.toString());
     }
 
     public void setOneHeader(String key, String value) {
@@ -85,9 +89,4 @@ public abstract class Message<T> {
     public int hashCode() {
         return headers.get(HEAD_ID).hashCode();
     }
-
-    public String HEAD_USER_INFO = "USER_INFO";
-    public String HEAD_SENDER = "SENDER";
-    public String HEAD_DESTINATION = "DESTINATION";
-    public String HEAD_ID = "ID";
 }

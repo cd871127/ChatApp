@@ -31,7 +31,8 @@ public class ServiceManager {
 
     public void stop() {
         serviceList.forEach(AbstractService::stop);
-        es.shutdown();
+        es.shutdownNow();
+        System.exit(0);
     }
 
 }

@@ -9,7 +9,7 @@ buildscript {
 //所有项目配置
 allprojects {
     //Add configuration here
-    group 'anthony.cdapps'
+    group 'anthony'
     version '0.2'
 
     apply plugin: 'java'

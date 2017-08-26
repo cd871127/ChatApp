@@ -9,12 +9,12 @@ import java.nio.channels.SelectionKey;
 public class ClientSendMessageService extends SendMessageService {
     private static ClientSendMessageService ourInstance = new ClientSendMessageService();
 
-    public static ClientSendMessageService getInstance() {
-        return ourInstance;
+    private ClientSendMessageService() {
+        super(2, ClientMessageResendService.getInstance());
     }
 
-    private ClientSendMessageService() {
-        super(2);
+    public static ClientSendMessageService getInstance() {
+        return ourInstance;
     }
 
     @Override
@@ -24,7 +24,6 @@ public class ClientSendMessageService extends SendMessageService {
 
     @Override
     protected SelectionKey getTargetKey(String destination) {
-
         return Client.getSelectionKey();
     }
 }

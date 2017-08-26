@@ -16,19 +16,12 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  * Created by chend on 2017/8/11.
  */
 public class ConnectionManager {
+    //连接数量
+    private final static int CON_NUM = 2;
+    private static ConnectionManager ourInstance = new ConnectionManager();
     private Logger logger = LoggerFactory.getLogger(getClass());
     private Selector selector;
     private ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
-
-    private static ConnectionManager ourInstance = new ConnectionManager();
-
-    //连接数量
-    private final static int CON_NUM = 2;
-
-    public static ConnectionManager getInstance() {
-        return ourInstance;
-    }
-
 
     private ConnectionManager() {
         try {
@@ -37,6 +30,10 @@ public class ConnectionManager {
             logger.error("打开selector失败");
             e.printStackTrace();
         }
+    }
+
+    public static ConnectionManager getInstance() {
+        return ourInstance;
     }
 
     public SelectionKey registerSocketChannel(SocketChannel socketChannel) {

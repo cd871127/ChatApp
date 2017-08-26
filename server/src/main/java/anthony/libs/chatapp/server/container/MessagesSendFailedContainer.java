@@ -12,6 +12,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  */
 public class MessagesSendFailedContainer extends AbstractMapBasedContainer<String, ArrayList<Message>> {
     private static MessagesSendFailedContainer ourInstance = new MessagesSendFailedContainer();
+    private ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
 
     private MessagesSendFailedContainer() {
 
@@ -20,9 +21,6 @@ public class MessagesSendFailedContainer extends AbstractMapBasedContainer<Strin
     public static MessagesSendFailedContainer getInstance() {
         return ourInstance;
     }
-
-
-    private ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
 
     public void put(String userId, Message message) {
         lock.writeLock().lock();

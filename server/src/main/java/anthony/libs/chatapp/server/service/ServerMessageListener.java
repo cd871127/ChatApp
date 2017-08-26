@@ -14,12 +14,12 @@ public class ServerMessageListener extends MessageListener {
 
     private static ServerMessageListener ourInstance = new ServerMessageListener();
 
-    public static ServerMessageListener getInstance() {
-        return ourInstance;
-    }
-
     private ServerMessageListener() {
 
+    }
+
+    public static ServerMessageListener getInstance() {
+        return ourInstance;
     }
 
     @Override

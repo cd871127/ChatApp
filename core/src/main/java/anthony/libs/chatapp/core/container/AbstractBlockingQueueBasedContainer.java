@@ -12,12 +12,11 @@ import java.util.concurrent.TimeUnit;
  */
 public class AbstractBlockingQueueBasedContainer<V> {
     private Logger logger = LoggerFactory.getLogger(getClass());
+    private BlockingQueue<V> container = new LinkedBlockingQueue<>();
 
     public Logger getLogger() {
         return logger;
     }
-
-    private BlockingQueue<V> container = new LinkedBlockingQueue<>();
 
     protected BlockingQueue<V> getContainer() {
         return container;
