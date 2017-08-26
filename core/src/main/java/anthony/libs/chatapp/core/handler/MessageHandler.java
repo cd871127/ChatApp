@@ -29,7 +29,7 @@ public abstract class MessageHandler extends NewDataHandler {
         MessageInfo messageInfo = null;
         try {
             messageInfo = getMessageInfo(socketChannel);
-        } catch (IOException e) {
+        } catch (Exception e) {
             exceptionHandle(e);
         }
         if (selectionKey.isValid())

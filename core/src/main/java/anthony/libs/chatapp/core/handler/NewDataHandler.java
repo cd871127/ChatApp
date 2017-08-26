@@ -12,7 +12,7 @@ import java.nio.channels.SocketChannel;
  */
 public abstract class NewDataHandler extends AbstractHandler<MessageInfo> {
 
-    protected MessageInfo getMessageInfo(SocketChannel socketChannel) throws IOException {
+    protected MessageInfo getMessageInfo(SocketChannel socketChannel) throws Exception {
         Message message;
         MessageInfo messageInfo = new MessageInfo();
         messageInfo.setSocketChannel(socketChannel);

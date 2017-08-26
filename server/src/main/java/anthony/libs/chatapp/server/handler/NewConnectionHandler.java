@@ -21,7 +21,7 @@ public class NewConnectionHandler extends NewDataHandler {
     public MessageInfo handle() {
         try {
             return getMessageInfo(socketChannel);
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return null;
