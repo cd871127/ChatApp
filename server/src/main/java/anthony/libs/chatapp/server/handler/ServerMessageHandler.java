@@ -17,7 +17,7 @@ public class ServerMessageHandler extends MessageHandler {
 
     @Override
     protected void exceptionHandle(Exception e) {
-        e.printStackTrace();
+//        e.printStackTrace();
         clientManager.clientLogout(getSelectionKey());
     }
 }

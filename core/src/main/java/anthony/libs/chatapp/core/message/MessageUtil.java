@@ -50,7 +50,6 @@ public class MessageUtil {
     }
 
     //byte转换为消息
-    @SuppressWarnings("unchecked")
     public static <T> T decode(byte[] messageBytes) {
         int headerLength = byteArrayToInt(messageBytes);
         int bodyLength = byteArrayToInt(messageBytes, HEADER_BLOCK_LENGTH);
@@ -69,20 +68,9 @@ public class MessageUtil {
             bodyBytes = new byte[bodyLength];
             System.arraycopy(messageBytes, TOTAL_FIXED_LENGTH + headerLength, bodyBytes, 0, bodyLength);
         }
-        T message;
-        try {
-            Class<?> clazz = Message.class.getClassLoader().loadClass(headers.get("class-name"));
-            message = (T) clazz.newInstance();
-            ((Message) message).setHeaders(headers);
-            ((Message) message).setBody(bodyBytes);
-        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {
-            e.printStackTrace();
-            return null;
-        }
-        return message;
+        return buildMessage(headers, bodyBytes);
     }
 
-    @SuppressWarnings("unchecked")
     public static <T> T decode(byte[] messageBytes, int headerLength, int bodyLength) {
         byte[] headerBytes = new byte[headerLength];
         System.arraycopy(messageBytes, 0, headerBytes, 0, headerLength);
@@ -98,6 +86,11 @@ public class MessageUtil {
             bodyBytes = new byte[bodyLength];
             System.arraycopy(messageBytes, headerLength, bodyBytes, 0, bodyLength);
         }
+        return buildMessage(headers, bodyBytes);
+    }
+
+    @SuppressWarnings("unchecked")
+    private static <T> T buildMessage(Map<String, String> headers, byte[] bodyBytes) {
         T message;
         try {
             Class<?> clazz = Message.class.getClassLoader().loadClass(headers.get("class-name"));
